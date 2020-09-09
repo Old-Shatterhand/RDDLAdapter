@@ -7,10 +7,11 @@ import shutil
 import subprocess
 import sys
 
-def main():
+def run_prost(argv):
+    print("[PROST]:",argv)
     search_params = []
     run_debug = False
-    for arg in sys.argv[1:]:
+    for arg in argv[1:]:
         if arg == "--debug":
             run_debug = True
         elif arg == "--release":
@@ -46,4 +47,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    run_prost(sys.argv)

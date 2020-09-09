@@ -8,7 +8,7 @@ import sys
 import os
 
 
-def parse_arguments():
+def parse_arguments(arguments):
     formatter = lambda prog: argparse.ArgumentDefaultsHelpFormatter(
         prog, max_help_position=38
     )
@@ -86,11 +86,11 @@ def parse_arguments():
         default="500",
         help="Maximum amount of memory in MB that may be allocated by the Java VM.",
     )
-    args = parser.parse_args()
+    args = parser.parse_args(args=arguments)
     return args
 
 
-if __name__ == "__main__":
+def run_server(arguments):
     # Check if the environment variable RDDLSIM_ROOT exists
     try:
         rddlsim_root = os.environ["RDDLSIM_ROOT"]
@@ -102,7 +102,7 @@ if __name__ == "__main__":
         print(err_msg)
         sys.exit()
 
-    args = parse_arguments()
+    args = parse_arguments(arguments)
 
     lib_dir = os.path.join(rddlsim_root, "lib")
     bin_dir = os.path.join(rddlsim_root, "bin")
@@ -186,3 +186,8 @@ if __name__ == "__main__":
         print("Delete temporary directory with symlinks.")
         shutil.rmtree("tmp-benchmark")
     print("Finishing rddlsim.")
+
+
+if __name__ == "__main__":
+    run_server(sys.argv[1:])
+
