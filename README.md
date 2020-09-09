@@ -43,7 +43,7 @@ need need to install java:
 
 ## Installation
 
-###RiDDLeSim
+### RiDDLeSim
 
 To install RiDDLeSim you need to do the following (without any guarantee for success):
 
