@@ -23,28 +23,20 @@ include_directories("logical_expressions_includes")
 include_directories("utils")
 
 set(SEARCH_SOURCES
-  action_selection
-  backup_function
-  depth_first_search
+  adapter
   evaluatables
-  initializer
   ipc_client
-  iterative_deepening_search
   logical_expressions
-  minimal_lookahead_search
-  outcome_selection
   parser
   probability_distribution
   prost_planner
-  random_walk
-  recommendation_function
   search_engine
   states
-  thts
   uniform_evaluation_search
   utils/base64
   utils/logger
   utils/math_utils
+  utils/pstream
   utils/random
   utils/stopwatch
   utils/string_utils

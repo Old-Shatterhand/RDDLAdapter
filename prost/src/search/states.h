@@ -335,6 +335,15 @@ public:
         }
     };
 
+    double getStateFluent(int index){
+        assert(0 <= index && index < numberOfDeterministicStateFluents + numberOfProbabilisticStateFluents);
+
+        if(index < numberOfDeterministicStateFluents){
+            return deterministicStateFluents[index];
+        }
+        return probabilisticStateFluents[index - numberOfDeterministicStateFluents];
+    }
+
     virtual std::string toCompactString() const;
     virtual std::string toString() const;
 

@@ -59,7 +59,8 @@ ProstPlanner::ProstPlanner(string& plannerDesc)
                                    value);
             }
         } else if (param == "-se") {
-            setSearchEngine(SearchEngine::fromString(value));
+            //TODO: Set in the adapter instead of this search_engine
+            //setSearchEngine(SearchEngine::fromString(value));
             searchEngineDefined = true;
         } else if (param == "-log") {
             if (value == "SILENT") {
@@ -130,6 +131,8 @@ void ProstPlanner::finishSession(double& totalReward) {
     double avgReward = totalReward / numberOfRounds;
     Logger::logLine(">>> END OF SESSION  -- AVERAGE REWARD: " +
                     to_string(avgReward), Verbosity::SILENT);
+
+    searchEngine->finishSession(totalReward);
 }
 
 void ProstPlanner::initRound(long const& remainingTime) {
@@ -195,7 +198,7 @@ void ProstPlanner::initStep(vector<double> const& nextStateVec,
     searchEngine->initStep(currentState);
 }
 
-void ProstPlanner::finishStep(double const& immediateReward) {
+void ProstPlanner::finishStep(double const& immediateReward, vector<double> *successor=nullptr) {
     int usedRAM = SystemUtils::getRAMUsedByThis();
     Logger::logLine("Used RAM: " + to_string(usedRAM), Verbosity::NORMAL);
 
@@ -210,7 +213,11 @@ void ProstPlanner::finishStep(double const& immediateReward) {
                     Verbosity::NORMAL);
 
     // Notify search engine
-    searchEngine->finishStep();
+    if(successor == nullptr){
+        searchEngine->finishStep(immediateReward);
+    }else{
+        searchEngine->finishStep(*successor, immediateReward);
+    }
 }
 
 vector<string> ProstPlanner::plan() {

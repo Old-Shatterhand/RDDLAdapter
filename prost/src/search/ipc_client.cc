@@ -46,8 +46,7 @@ void IPCClient::run(string const& instanceName, string& plannerDesc) {
     double immediateReward = 0.0;
 
     // Main loop
-    for (unsigned int currentRound = 0; currentRound < numberOfRounds;
-         ++currentRound) {
+    for (unsigned int currentRound = 0 ; currentRound < numberOfRounds ; ++currentRound) {
         initRound(nextState, immediateReward);
 
         while (true) {
@@ -56,7 +55,7 @@ void IPCClient::run(string const& instanceName, string& plannerDesc) {
             if (!submitAction(nextActions, nextState, immediateReward)) {
                 break;
             }
-            planner->finishStep(immediateReward);
+            planner->finishStep(immediateReward, &nextState);
         }
     }
 

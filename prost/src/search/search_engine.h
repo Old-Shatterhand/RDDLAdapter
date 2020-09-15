@@ -31,12 +31,6 @@ public:
 
     virtual ~SearchEngine() {}
 
-    // Create a SearchEngine
-    static SearchEngine* fromString(std::string& desc);
-
-    // Set parameters from command line
-    virtual bool setValueFromString(std::string& param, std::string& value);
-
     // This is called when caching is disabled because memory becomes sparse.
     // Overwrite this if your search engine uses another component that caches
     // stuff and make sure caching is disabled everywhere.
@@ -87,14 +81,16 @@ protected:
 public:
     // Notify the search engine that the session starts
     virtual void initSession() {}
+    virtual void finishSession(double totalReward) {}
 
     // Notify the search engine that a new round starts or ends
     virtual void initRound() {}
     virtual void finishRound() {}
 
     // Notify the search engine that a new step starts or ends
-    virtual void initStep(State const& /*current*/) {}
-    virtual void finishStep() {}
+    virtual void initStep(State const& current) {}
+	virtual void finishStep(int reward){}
+	virtual void finishStep(vector<double> *successor, int reward){}
 
     // Start the search engine to calculate best actions
     virtual void estimateBestActions(State const& _rootState,
@@ -133,7 +129,7 @@ public:
     *****************************************************************/
 
 protected:
-    // Calculate the reward (since the reward must be deteriministic, this is
+    // Calculate the reward (since the reward must be deterministic, this is
     // identical for probabilistic and deterministic search engines)
     void calcReward(State const& current, int const& actionIndex,
                     double& reward) const {

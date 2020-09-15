@@ -25,7 +25,7 @@ public:
     // These are called at the beginning and end of a step
     void initStep(std::vector<double> const& nextStateVec,
                   long const& remainingTime);
-    void finishStep(double const& immediateReward);
+    void finishStep(double const& immediateReward, vector<double> *successor=nullptr);
 
     // This is the main function of the PROST planner that starts the search
     // engine and return the next decision
