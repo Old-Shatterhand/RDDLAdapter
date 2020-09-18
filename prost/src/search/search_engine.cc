@@ -2,13 +2,6 @@
 
 #include "prost_planner.h"
 
-#include "depth_first_search.h"
-#include "iterative_deepening_search.h"
-#include "minimal_lookahead_search.h"
-#include "random_walk.h"
-#include "thts.h"
-#include "uniform_evaluation_search.h"
-
 #include "utils/math_utils.h"
 #include "utils/string_utils.h"
 #include "utils/system_utils.h"

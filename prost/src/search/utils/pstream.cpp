@@ -5,6 +5,10 @@ PStream::PStream(const char* filename){
 	stream.open(filename);
 }
 
+PStream::PStream(std::string& filename){
+	stream.open(filename);
+}
+
 PStream& PStream::operator<<(bool val){
 	stream << val << std::endl;
 	stream.flush();
@@ -80,6 +84,10 @@ PStream& PStream::operator<<(void* val){
 	stream.flush();
 
 	return *this;
+}
+
+void PStream::open(std::string& file){
+    stream.open(file);
 }
 
 void PStream::flush(){

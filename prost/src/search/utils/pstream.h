@@ -2,11 +2,13 @@
 #define RDDLPARSER_PSTREAM_H
 
 #include<fstream>
+#include<string>
 
 class PStream{
 public:
+	PStream() = default;
 	PStream(const char* name);
-
+	PStream(std::string& name);
 	PStream& operator<<(bool val);
 	PStream& operator<<(short val);
 	PStream& operator<<(unsigned short val);
@@ -19,6 +21,7 @@ public:
 	PStream& operator<<(long double val);
 	PStream& operator<<(void* val);
 
+	void open(std::string&);
 	void flush();
 	void close();
 private:

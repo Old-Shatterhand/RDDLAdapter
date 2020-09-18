@@ -81,16 +81,16 @@ protected:
 public:
     // Notify the search engine that the session starts
     virtual void initSession() {}
-    virtual void finishSession(double totalReward) {}
+    virtual void finishSession(double) {}
 
     // Notify the search engine that a new round starts or ends
     virtual void initRound() {}
-    virtual void finishRound() {}
+    virtual void finishRound(double) {}
 
     // Notify the search engine that a new step starts or ends
-    virtual void initStep(State const& current) {}
-	virtual void finishStep(int reward){}
-	virtual void finishStep(vector<double> *successor, int reward){}
+    virtual void initStep(State const&) {}
+    virtual void finishStep(double){}
+    virtual void finishStep(std::vector<double>*, const double&){}
 
     // Start the search engine to calculate best actions
     virtual void estimateBestActions(State const& _rootState,

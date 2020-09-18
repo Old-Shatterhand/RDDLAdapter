@@ -32,7 +32,6 @@ set(SEARCH_SOURCES
   prost_planner
   search_engine
   states
-  uniform_evaluation_search
   utils/base64
   utils/logger
   utils/math_utils

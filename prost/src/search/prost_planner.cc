@@ -1,7 +1,5 @@
 #include "prost_planner.h"
 
-#include "iterative_deepening_search.h"
-#include "minimal_lookahead_search.h"
 #include "search_engine.h"
 
 #include "utils/logger.h"
@@ -161,7 +159,7 @@ void ProstPlanner::finishRound(double const& roundReward) {
     Logger::logLine("", Verbosity::NORMAL);
 
     // Notify search engine
-    searchEngine->finishRound();
+    searchEngine->finishRound(roundReward);
 }
 
 void ProstPlanner::initStep(vector<double> const& nextStateVec,
@@ -198,7 +196,7 @@ void ProstPlanner::initStep(vector<double> const& nextStateVec,
     searchEngine->initStep(currentState);
 }
 
-void ProstPlanner::finishStep(double const& immediateReward, vector<double> *successor=nullptr) {
+void ProstPlanner::finishStep(double const& immediateReward, vector<double> *successor) {
     int usedRAM = SystemUtils::getRAMUsedByThis();
     Logger::logLine("Used RAM: " + to_string(usedRAM), Verbosity::NORMAL);
 
@@ -216,7 +214,7 @@ void ProstPlanner::finishStep(double const& immediateReward, vector<double> *suc
     if(successor == nullptr){
         searchEngine->finishStep(immediateReward);
     }else{
-        searchEngine->finishStep(*successor, immediateReward);
+        searchEngine->finishStep(successor, immediateReward);
     }
 }
 
