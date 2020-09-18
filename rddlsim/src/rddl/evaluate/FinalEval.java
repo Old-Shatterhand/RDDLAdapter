@@ -253,7 +253,7 @@ public class FinalEval {
 					domain_client2normvalAll.putValue(new Pair<String,String>(domain_name,client_name), norm_reward);
 				}
 				
-				System.out.print("[SERVER] "client_name + "\t" + count + "\t" + format4(norm_score) + "\t" + format(pre_min_avg) + "\t+/- " + format(stderr) + "\t[ " + format(min_val) + "\t" + format(max_val) + " ]\t");
+				System.out.print("[SERVER] " + client_name + "\t" + count + "\t" + format4(norm_score) + "\t" + format(pre_min_avg) + "\t+/- " + format(stderr) + "\t[ " + format(min_val) + "\t" + format(max_val) + " ]\t");
 				all_results.print(client_name + "\t" + count + "\t" + format4(norm_score) + "\t" + format(pre_min_avg) + "\t" + format(stderr) + "\t" + format(min_val) + "\t" + format(max_val) + "\t");
 			}
 			System.out.println();

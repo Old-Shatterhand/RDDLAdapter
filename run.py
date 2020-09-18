@@ -26,7 +26,7 @@ def parse_args():
         "-b",
         "--benchmark",
         action="store",
-        default=None,
+        default="./prost/testbed/benchmarks/elevators-2011/",
         dest="benchmark",
         help="Path to RDDL files."
     )
@@ -34,7 +34,7 @@ def parse_args():
         "-i",
         "--instance",
         action="store",
-        default=None,
+        default="./prost/testbed/benchmarks/elevators-2011/elevators_inst_mdp__1.rddl",
         dest="instance",
         help="RDDL-instance file."
     )
