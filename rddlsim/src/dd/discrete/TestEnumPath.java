@@ -14,16 +14,16 @@ public class TestEnumPath {
 		int dd = GetCountingDD(context, vars);
 		
 		// Show the DD whose paths are enumerated
-		System.out.println("ADD:\n====\n" + context.printNode(dd));
+		System.out.println("[SERVER] ADD:\n====\n" + context.printNode(dd));
 		
 		// Create your leaf processing operation inline as follows
 		// Here the path and leaf value are simply printed to System.out
-		System.out.println("\nPath enumeration:\n=================");
+		System.out.println("\n[SERVER] Path enumeration:\n=================");
 		context.enumeratePaths(dd, 
 			new ADD.ADDLeafOperation() {
 				public void processADDLeaf(ArrayList<String> assign,
 						double leaf_val) {
-					System.out.println(assign + " -> " + leaf_val);
+					System.out.println("[SERVER] " + assign + " -> " + leaf_val);
 				}
 			});
 	}

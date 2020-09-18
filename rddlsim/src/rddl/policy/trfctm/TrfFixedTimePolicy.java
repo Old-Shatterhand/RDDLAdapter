@@ -40,7 +40,7 @@ public class TrfFixedTimePolicy extends Policy {
 		if (time < 0) {
 			int maxCol = 0, maxRow = 0; 
 			for(ArrayList<LCONST> intersection: intersections) {
-				System.out.println("- " + intersection);
+				System.out.println("[SERVER] - " + intersection);
 				if (intersection.toString().startsWith("[I_")) {
 					String[] split = intersection.toString().replace("]", "").split("[_a]");
 					int col = new Integer(split[1]);			
@@ -49,7 +49,7 @@ public class TrfFixedTimePolicy extends Policy {
 					if (row > maxRow) maxRow = row;
 				}
 			}
-			System.out.println(maxCol + ", " + maxRow);
+			System.out.println("[SERVER] " + maxCol + ", " + maxRow);
 			signal = new int[maxCol + 1][maxRow + 1];
 			signalTimeOut = new int[maxCol + 1][maxRow + 1];
 			signal[5][5] = 1;
@@ -102,8 +102,6 @@ public class TrfFixedTimePolicy extends Policy {
 					
 					PVAR_INST_DEF d = new PVAR_INST_DEF(p._sPVarName, r, intersection);
 					actions.add(d);
-//					System.out.println("Action: {signal " + intersection + " = " + r + "} ...until TIME=" + signalTimeOut[col][row]);
-					
 				}
 			}
 		}

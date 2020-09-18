@@ -110,15 +110,7 @@ public class RDDL2Graph {
 		// that each variable type goes at a separate level (with unilinks below)
 		if (!_bStrictGrouping)
 			g.setSuppressRank(true);
-		
-		// Set the actions
-		//for (PVAR_NAME p : _state._actions.keySet())
-		//	_state._actions.get(p).clear();
-		//setPVariables(_state._actions, actions);
-		
-		//System.out.println("Starting state: " + _state + "\n");
-		//System.out.println("Starting nonfluents: " + _nonfluents + "\n");
-		
+
 		// Store node parents temporarily
 		HashSet<Pair> parents = new HashSet<Pair>();
 				
@@ -156,7 +148,6 @@ public class RDDL2Graph {
 			PVAR_NAME p = e.getValue();
 			
 			// Generate updates for each ground fluent
-			//System.out.println("Updating interm var " + p + " @ level " + level + ":");
 			PVARIABLE_INTERM_DEF def = (PVARIABLE_INTERM_DEF)_state._hmPVariables.get(p);
 			
 			ArrayList<ArrayList<LCONST>> gfluents = _state.generateAtoms(p);
@@ -183,7 +174,7 @@ public class RDDL2Graph {
 				try {
 					cpf._exprEquals.collectGFluents(subs, _state, parents);
 				} catch (Exception e2) {
-					System.out.println("Error while collecting parents of " + cpf._exprVarName + " under " + subs + " when evaluating: " + cpf._exprEquals);
+					System.out.println("[SERVER] Error while collecting parents of " + cpf._exprVarName + " under " + subs + " when evaluating: " + cpf._exprEquals);
 					throw e2;
 				}
 				
@@ -198,14 +189,7 @@ public class RDDL2Graph {
 				_hmName2Formula.put(interm_name, cpf._exprEquals.toString());
 				_hmName2Type.put(interm_name, "Intermediate @ Level " + level);
 				_hmName2ParamName.put(
-						interm_name, CleanFluentName("" + p + cpf._exprVarName._alTerms)); 
-				
-				//Object value = cpf._exprEquals.sample(subs, this, r);
-				//if (DISPLAY_UPDATES) System.out.println(value);
-				
-				// Update value
-				//HashMap<ArrayList<LCONST>,Object> pred_assign = _state._interm.get(p);
-				//pred_assign.put(gfluent, value);
+						interm_name, CleanFluentName("" + p + cpf._exprVarName._alTerms));
 			}
 		}
 		for (Object o : m.keySet()) {
@@ -214,7 +198,6 @@ public class RDDL2Graph {
 			l.add(0, o.toString());
 			// Add all node names at this level
 			g.addSameRank(l);
-			//System.out.println("At same rank: " + l);
 		}
 		
 		// Do same for *observations*
@@ -222,7 +205,6 @@ public class RDDL2Graph {
 		for (PVAR_NAME p : _state._alObservNames) {
 			
 			// Generate updates for each ground fluent
-			//System.out.println("Updating observation var " + p);
 			ArrayList<ArrayList<LCONST>> gfluents = _state.generateAtoms(p);
 			
 			for (ArrayList<LCONST> gfluent : gfluents) {
@@ -250,21 +232,13 @@ public class RDDL2Graph {
 				_hmName2Formula.put(observ_name, cpf._exprEquals.toString());
 				_hmName2Type.put(observ_name, "Observation");
 				_hmName2ParamName.put(
-						observ_name, CleanFluentName("" + p + cpf._exprVarName._alTerms)); 
-				
-				//Object value = cpf._exprEquals.sample(subs, this, r);
-				//if (DISPLAY_UPDATES) System.out.println(value);
-				
-				// Update value
-				//HashMap<ArrayList<LCONST>,Object> pred_assign = _state._observ.get(p);
-				//pred_assign.put(gfluent, value);
+						observ_name, CleanFluentName("" + p + cpf._exprVarName._alTerms));
 			}
 		}
 		observations.add(0, "Observations");
 		if (observations.size() > 1) // will always contain default "Observations" node
 			g.addSameRank(observations);
-		//System.out.println("At same rank: " + observations);
-		
+
 		// Do same for next-state (keeping in mind primed variables)
 		ArrayList cur_state = new ArrayList();
 		ArrayList next_state = new ArrayList();
@@ -280,7 +254,6 @@ public class RDDL2Graph {
 			
 			// Generate updates for each ground fluent
 			PVAR_NAME primed = new PVAR_NAME(p._sPVarName + "'");
-			//System.out.println("Updating next state var " + primed + " (" + p + ")");
 			ArrayList<ArrayList<LCONST>> gfluents = _state.generateAtoms(p);
 			
 			for (ArrayList<LCONST> gfluent : gfluents) {
@@ -320,28 +293,15 @@ public class RDDL2Graph {
 				_hmName2Type.put(primed_name, "Next State");
 				_hmName2ParamName.put(
 						primed_name, CleanFluentName("" + p + "'" + cpf._exprVarName._alTerms
-						/*_state._hmPVariables.get(p)._alParamTypes*/)); 
-
-				//Object value = cpf._exprEquals.sample(subs, this, r);
-				//if (DISPLAY_UPDATES) System.out.println(value);
-				
-				// Update value if not default
-				//if (!value.equals(def_value)) {
-				//	HashMap<ArrayList<LCONST>,Object> pred_assign = _state._nextState.get(p);
-				//	pred_assign.put(gfluent, value);
-				//}
+						/*_state._hmPVariables.get(p)._alParamTypes*/));
 			}
 		}
 		
 		// Add all current state and action nodes at same rank
 		actions.addAll(cur_state);
 		actions.add(0, "Current State and Actions");
-		//cur_state.add(0, "Current State");
-		//g.addSameRank(cur_state);
-		//System.out.println("At same rank: " + cur_state);
 		g.addSameRank(actions);
-		//System.out.println("At same rank: " + actions);
-		
+
 		// Create reward node
 		g.addNode("Reward Function", 1, "firebrick1", "diamond", "filled");
 		parents.clear();
@@ -358,8 +318,7 @@ public class RDDL2Graph {
 		next_state.add(0, "Next State and Reward");
 		next_state.add(0, "Reward Function");
 		g.addSameRank(next_state);
-		//System.out.println("At same rank: " + next_state);
-		
+
 		// Setup some stratification nodes and links if strict levels
 		if (_bStrictGrouping) {
 			TreeSet<Integer> levels = new TreeSet<Integer>();
@@ -368,9 +327,6 @@ public class RDDL2Graph {
 				levels.add(level);
 			}
 			
-			//g.addNode("Current State", 1, "white", "plaintext", "bold");
-			//if (_bStrictLevels) 
-			//	g.addUniLink("Current State", "Current State and Actions", "black", "invis", "");
 			g.addNode("Current State and Actions", 1, "white", "plaintext", "bold");
 			String prev_level = "Current State and Actions";
 			for (Integer level : levels) {
@@ -408,7 +364,7 @@ public class RDDL2Graph {
 		_graph.genFormatDotFile(VIEWER_FILE);
 		DotViewer dv = new DotViewer() {
 			public void nodeClicked(String name) {
-				System.out.println("Lookup: '" + name + "'");
+				System.out.println("[SERVER] Lookup: '" + name + "'");
 				String dependents = _hmName2Dependents.get(name);
 				String formula    = _hmName2Formula.get(name);
 				String type       = _hmName2Type.get(name);
@@ -430,7 +386,7 @@ public class RDDL2Graph {
 		
 		// Parse arguments
 		if (args.length != 2 && args.length != 5) {
-			System.out.println("usage: RDDL-file instance-name [directed={true,false}] [strict-levels={true,false}] [strict-grouping={true,false}]");
+			System.out.println("[SERVER] usage: RDDL-file instance-name [directed={true,false}] [strict-levels={true,false}] [strict-grouping={true,false}]");
 			System.exit(1);
 		}
 		String rddl_file = args[0];
@@ -457,34 +413,8 @@ public class RDDL2Graph {
 
 		// Build the graph for this RDDL file
 		RDDL2Graph r2g = GetRDDL2Graph(rddl, instance_name, directed, strict_levels, strict_grouping);
-		
-		// TODO: could not white ellipses (interm parents that have no dependencies)
-		// TODO: could not nodes which were omitted due to no parents (no effect on evolution of network)
-		
-//				/*strict levels*/false, /*strict grouping*/false);
-//				/*strict levels*/true,  /*strict grouping*/true);
-//				/*strict levels*/false, /*strict grouping*/true);
-		
-		// Reset, pass a policy, a visualization interface, a random seed, and simulate!
-//		System.out.println(r2g._graph);
-		r2g.launchViewer(1024, 768);
-		
-		// Print out some graph analysis...
-//		System.out.println();
-//		List order = r2g._graph.computeBestOrder(); // _graph.greedyTWSort(true);
-//		System.out.println("\nBest Order:   " + order);
-//		System.out.println("Num state vars:  " + r2g._nStateVars);
-//		System.out.println("Num interm vars: " + r2g._nIntermVars);
-//		System.out.println("Num observ vars: " + r2g._nObservVars);
-//		System.out.println("Num action vars: " + r2g._nActionVars);
-//		System.out.println("MAX Bin Size: " + r2g._graph._df.format(r2g._graph._dMaxBinaryWidth));
-//		System.out.println("Tree Width:   " + r2g._graph.computeTreeWidth(order));
-		
-		//System.out.println("Topological sort of nodes: " + r2g._graph.topologicalSort(false));
-		//System.out.println("Strongly connected components: " + r2g._graph.getStronglyConnectedComponents());
-		//System.out.println("HAS CYCLE: " + r2g._graph.hasCycle());
 
-		//r2g._graph.genDotFile(VIEWER_FILE);
+		r2g.launchViewer(1024, 768);
 	}
 
 }

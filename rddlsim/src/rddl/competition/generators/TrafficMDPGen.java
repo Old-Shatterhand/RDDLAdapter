@@ -43,8 +43,8 @@ public class TrafficMDPGen {
 	}
 	
 	public static void usage() {
-		System.err.println("Usage: output-dir instance-name num-cells input-min input-max horizon discount");
-		System.err.println("Example: files/testcomp/rddl traffic_3 3 0.3 0.5 100 0.9");
+		System.err.println("[SERVER] Usage: output-dir instance-name num-cells input-min input-max horizon discount");
+		System.err.println("[SERVER] Example: files/testcomp/rddl traffic_3 3 0.3 0.5 100 0.9");
 		System.exit(127);
 	}
 	
@@ -61,11 +61,11 @@ public class TrafficMDPGen {
 		discount = Float.parseFloat(args[6]);
 		
 		if (num_cells < 2) {
-			System.out.println("num-cells (" + num_cells + ") must be >= 2");
+			System.out.println("[SERVER] num-cells (" + num_cells + ") must be >= 2");
 			System.exit(1);
 		}
 		if (input_min < 0d || input_max > 1d || input_min > input_max) {
-			System.out.println("num-cells range [" + input_min + "," + input_max + "] must be in [0,1]");
+			System.out.println("[SERVER] num-cells range [" + input_min + "," + input_max + "] must be in [0,1]");
 			System.exit(1);
 		}
 	}

@@ -30,7 +30,7 @@ public class SysAdminScreenDisplay extends StateViz {
 	
 	public void display(State s, int time) {
 		
-		System.out.println("TIME = " + time + ": " + getStateDescription(s));
+		System.out.println("[SERVER] TIME = " + time + ": " + getStateDescription(s));
 	}
 
 	//////////////////////////////////////////////////////////////////////

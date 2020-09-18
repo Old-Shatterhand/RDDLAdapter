@@ -75,11 +75,10 @@ public class VI extends Policy {
 
 	public ArrayList<PVAR_INST_DEF> getActions(State s) throws EvalException {
 		
-		//System.out.println("FULL STATE:\n\n" + SPerseusSPUDDPolicy.getStateDescription(s));
 
 		if (s == null) {
 			// This should only occur on the **first step** of a POMDP trial
-			System.err.println("ERROR: NO STATE/OBS: MDP must have state.");
+			System.err.println("[SERVER] ERROR: NO STATE/OBS: MDP must have state.");
 			System.exit(1);
 		}
 		
@@ -87,10 +86,10 @@ public class VI extends Policy {
 		TreeSet<CString> true_vars = 
 			CString.Convert2CString(SPerseusSPUDDPolicy.getTrueFluents(s, "states"));
 		if (SHOW_STATE) {
-			System.out.println("\n==============================================");
-			System.out.println("\nTrue state variables:");
+			System.out.println("\n[SERVER] ==============================================");
+			System.out.println("\n[SERVER] True state variables:");
 			for (CString prop_var : true_vars)
-				System.out.println(" - " + prop_var);
+				System.out.println("[SERVER]  - " + prop_var);
 		}
 		
 		// Get a map of { legal action names -> RDDL action definition }  
@@ -106,10 +105,10 @@ public class VI extends Policy {
 			action_taken = actions.get(_rand.nextInt(actions.size()));			
 			
 			if (SHOW_ACTION_TAKEN)
-				System.out.println("\n--> [Random] action taken: " + action_taken);
+				System.out.println("\n[SERVER] --> [Random] action taken: " + action_taken);
 		} else {
 			if (SHOW_ACTION_TAKEN)
-				System.out.println("\nActions and Q-values:");
+				System.out.println("\n[SERVER] Actions and Q-values:");
 
 			double best_action_value = -Double.MAX_VALUE;
 			ArrayList add_state_assign = DDUtils.ConvertTrueVars2DDAssign(_context, true_vars, _alStateVars);
@@ -121,10 +120,9 @@ public class VI extends Policy {
 					continue; // Action is not legal in this state
 				
 				Integer q_function = me.getValue();
-				//System.out.println("Qfun:\n" + _context.printNode(q_function) + "\n" + add_state_assign);
 				double action_value = _context.evaluate(q_function, add_state_assign);
 				if (SHOW_ACTION_TAKEN)
-					System.out.println(" - " + me.getKey() + ": " + _df.format(action_value));
+					System.out.println("[SERVER]  - " + me.getKey() + ": " + _df.format(action_value));
 				if (action_taken == null || action_value > best_action_value) {
 					action_taken = me.getKey()._string;
 					best_action_value = action_value;
@@ -132,7 +130,7 @@ public class VI extends Policy {
 			}
 			
 			if (SHOW_ACTION_TAKEN)
-				System.out.println("\n--> Best action taken [" + best_action_value + "]: " 
+				System.out.println("\n[SERVER] --> Best action taken [" + best_action_value + "]: "
 						+ action_taken);
 		}
 		
@@ -147,9 +145,9 @@ public class VI extends Policy {
 	///////////////////////////////////////////////////////////////////////////
 
 	public void roundInit(double time_left, int horizon, int round_number, int total_rounds) {
-		System.out.println("\n*********************************************************");
-		System.out.println(">>> ROUND INIT " + round_number + "/" + total_rounds + "; time remaining = " + time_left + ", horizon = " + horizon);
-		System.out.println("*********************************************************");
+		System.out.println("\n[SERVER] *********************************************************");
+		System.out.println("[SERVER] >>> ROUND INIT " + round_number + "/" + total_rounds + "; time remaining = " + time_left + ", horizon = " + horizon);
+		System.out.println("[SERVER] *********************************************************");
 				
 		// Build ADDs for transition, reward and value function (if not already built)
 		if (_translation == null) {
@@ -158,7 +156,7 @@ public class VI extends Policy {
 			try {
 				_translation = new RDDL2Format(_rddl, _sInstanceName, RDDL2Format.SPUDD_CURR, "");
 			} catch (Exception e) {
-				System.err.println("Could not construct MDP for: " + _sInstanceName + "\n" + e);
+				System.err.println("[SERVER] Could not construct MDP for: " + _sInstanceName + "\n" + e);
 				e.printStackTrace(System.err);
 				System.exit(1);
 			}
@@ -199,9 +197,6 @@ public class VI extends Policy {
 					dd_true = _context.applyInt(dd_true, dd, ADD.ARITH_PROD);
 		
 					int dd_false = _context.getVarNode(s + "'", 1d, 0d);
-					//System.out.println("Multiplying..." + dd + ", " + DD_ONE);
-					//_context.printNode(dd);
-					//_context.printNode(DD_ONE);
 					int one_minus_dd = _context.applyInt(_context.getConstantNode(1d), dd, ADD.ARITH_MINUS);
 					dd_false = _context.applyInt(dd_false, one_minus_dd, ADD.ARITH_PROD);
 					
@@ -220,12 +215,12 @@ public class VI extends Policy {
 			
 			// Display ADDs on terminal?
 			if (DISPLAY_SPUDD_ADDS_TEXT) {
-				System.out.println("State variables: " + _alStateVars);
-				System.out.println("Action names: " + _alActionNames);
+				System.out.println("[SERVER] State variables: " + _alStateVars);
+				System.out.println("[SERVER] Action names: " + _alActionNames);
 				
 				for (CString a : _alActionNames) {
 					Action action = _hmActionName2Action.get(a);
-					System.out.println("Content of action '" + a + "'\n" + action);
+					System.out.println("[SERVER] Content of action '" + a + "'\n" + action);
 				}
 			}
 			
@@ -258,40 +253,40 @@ public class VI extends Policy {
 				resetSolver();
 				solve(SOLVER_TIME_LIMIT);
 			} catch (TimeOutException e) {
-				System.out.println("TIME LIMIT EXCEEDED at " + _nIter + " iterations.");
+				System.out.println("[SERVER] TIME LIMIT EXCEEDED at " + _nIter + " iterations.");
 			} catch (Exception e) {
-				System.err.println("ERROR at " + _nIter + " iterations.");
+				System.err.println("[SERVER] ERROR at " + _nIter + " iterations.");
 				e.printStackTrace(System.err);
 				System.exit(1);
 			} finally {
 				
-				System.out.println("\n*********************************************************");
-				System.out.println("Solution in VI exit at iteration " + _nIter + ": " + 
+				System.out.println("\n[SERVER] *********************************************************");
+				System.out.println("[SERVER] Solution in VI exit at iteration " + _nIter + ": " +
 						_context.countExactNodes(_valueDD) + " nodes.");
 
 				// Display value function if small enough
 				if (_context.countExactNodes(_valueDD) < 20) {
-					System.out.print("Value function DD:");
+					System.out.print("[SERVER] Value function DD:");
 					StringWriter sw = new StringWriter();
 					_context.exportTree(_valueDD, new PrintWriter(sw), true);
-					System.out.println(sw);
+					System.out.println("[SERVER] " + sw);
 				}
 				
-				System.out.println("*********************************************************");
+				System.out.println("[SERVER] *********************************************************");
 			}
 		}		
 	}
 	
 	public void roundEnd(double reward) {
-		System.out.println("\n*********************************************************");
-		System.out.println(">>> ROUND END, reward = " + reward);
-		System.out.println("*********************************************************");
+		System.out.println("\n[SERVER] *********************************************************");
+		System.out.println("[SERVER] >>> ROUND END, reward = " + reward);
+		System.out.println("[SERVER] *********************************************************");
 	}
 	
 	public void sessionEnd(double total_reward) {
-		System.out.println("\n*********************************************************");
-		System.out.println(">>> SESSION END, total reward = " + total_reward);
-		System.out.println("*********************************************************");
+		System.out.println("\n[SERVER] *********************************************************");
+		System.out.println("[SERVER] >>> SESSION END, total reward = " + total_reward);
+		System.out.println("[SERVER] *********************************************************");
 	}
 	
 	///////////////////////////////////////////////////////////////////////////
@@ -334,7 +329,7 @@ public class VI extends Policy {
 		_sRegrAction = null;
 		_rddlInstance = _rddl._tmInstanceNodes.get(this._sInstanceName);
 		if (_rddlInstance == null) {
-			System.err.println("ERROR: Could not fine RDDL instance '" + _rddlInstance + "'");
+			System.err.println("[SERVER] ERROR: Could not fine RDDL instance '" + _rddlInstance + "'");
 			System.exit(1);
 		}
 		_dDiscount = _rddlInstance._dDiscount;
@@ -356,9 +351,9 @@ public class VI extends Policy {
 
 		_nTimeLimitSecs = time_limit_secs;
 		
-		System.out.println("Using time limit: " + _nTimeLimitSecs + " seconds");
-		System.out.println("Using discount:   " + _dDiscount);
-		System.out.println("Using horizon:    " + _nHorizon + "\n");
+		System.out.println("[SERVER] Using time limit: " + _nTimeLimitSecs + " seconds");
+		System.out.println("[SERVER] Using discount:   " + _dDiscount);
+		System.out.println("[SERVER] Using horizon:    " + _nHorizon + "\n");
 
 		// Other initialization
 		_nIter = 0;
@@ -375,8 +370,8 @@ public class VI extends Policy {
 			flushCaches();
 
 			// Show diagnostics including whether error is decreasing
-			System.out.print(error_decreasing ? "  " : "* ");
-			System.out.println("Iteration #" + _nIter + ", "
+			System.out.print(error_decreasing ? "[SERVER]   " : "[SERVER] * ");
+			System.out.println("[SERVER] Iteration #" + _nIter + ", "
 					+ _context.countExactNodes(_valueDD) + " nodes / "
 					+ _context.getCacheSize() + " cache / " + MemDisplay()
 					+ " bytes, " + "diff:[" + _df.format(max_diff) + "], mr:["
@@ -410,7 +405,7 @@ public class VI extends Policy {
 
 				// Show debug info if required
 				if (VERBOSE_LEVEL >= 1) {
-					System.out.println("  - After regress '" + action_name + "', "
+					System.out.println("[SERVER]   - After regress '" + action_name + "', "
 							+ _context.countExactNodes(regr) + " nodes / "
 							+ _context.getCacheSize() + " cache");
 					if (VERBOSE_LEVEL >= 3) {
@@ -443,7 +438,7 @@ public class VI extends Policy {
 
 				// Show debug info if required
 				if (VERBOSE_LEVEL >= 1) {
-					System.out.println("  - After max '" + action_name + "', "
+					System.out.println("[SERVER]   - After max '" + action_name + "', "
 							+ _context.countExactNodes(_maxDD) + " nodes / "
 							+ _context.getCacheSize() + " cache");
 				}
@@ -467,7 +462,7 @@ public class VI extends Policy {
 
 			// Show debug info if required
 			if (VERBOSE_LEVEL >= 1) {
-				System.out.println("\n  - After sum, "
+				System.out.println("\n[SERVER]   - After sum, "
 						+ _context.countExactNodes(_valueDD) + " nodes / "
 						+ _context.getCacheSize() + " cache");
 				if (VERBOSE_LEVEL >= 2) {
@@ -481,7 +476,7 @@ public class VI extends Policy {
 					//Graph g2 = _context.getGraph(_prevDD);
 					//g2.launchViewer(1300, 770);
 				}
-				System.out.println("\n  - Max diff: " + _df.format(max_diff));
+				System.out.println("\n[SERVER]   - Max diff: " + _df.format(max_diff));
 			}
 		}
 
@@ -500,7 +495,7 @@ public class VI extends Policy {
 
 		// Show debug info if required
 		if (VERBOSE_LEVEL >= 1) {
-			System.out.println("Regressing action: " + a._csActionName + "\nGIDs: " + vfun_gids);
+			System.out.println("[SERVER] Regressing action: " + a._csActionName + "\nGIDs: " + vfun_gids);
 		}
 
 		//////////////////////////////////////////////////////////////
@@ -514,15 +509,15 @@ public class VI extends Policy {
 			// No need to regress variables not in the value function  
 			if (!vfun_gids.contains(head_var_gid)) {
 				if (VERBOSE_LEVEL >= 1) {
-					System.out.println("Skipping " + _context._hmID2VarName.get(head_var_gid) + " / " + head_var_gid);
-					System.out.println("... not in " + vfun_gids);
+					System.out.println("[SERVER] Skipping " + _context._hmID2VarName.get(head_var_gid) + " / " + head_var_gid);
+					System.out.println("[SERVER] ... not in " + vfun_gids);
 				}
 				continue;
 			}
 
 			// Show debug info if required
 			if (VERBOSE_LEVEL >= 2)
-				System.out.println("  - Summing out: " + _context._hmID2VarName.get(head_var_gid));
+				System.out.println("[SERVER]   - Summing out: " + _context._hmID2VarName.get(head_var_gid));
 
 			///////////////////////////////////////////////////////////////////
 			// Multiply next state variable DBN into current value function

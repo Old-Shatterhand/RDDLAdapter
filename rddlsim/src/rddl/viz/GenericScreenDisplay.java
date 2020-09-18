@@ -33,9 +33,9 @@ public class GenericScreenDisplay extends StateViz {
 	
 	public void display(State s, int time) {
 		
-		System.out.println("\n============================\n" + 
-				           "TIME = " + time + 
-				           "\n============================\n" +
+		System.out.println("\n[SERVER] ============================\n" + 
+				           "[SERVER] TIME = " + time + 
+				           "\n[SERVER] ============================\n" +
 				           getStateDescription(s));
 	}
 

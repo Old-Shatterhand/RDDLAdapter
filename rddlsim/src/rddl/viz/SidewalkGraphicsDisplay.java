@@ -34,9 +34,9 @@ public class SidewalkGraphicsDisplay extends StateViz {
 	
 	public void display(State s, int time) {
 		try {
-			System.out.println("TIME = " + time + ": " + getStateDescription(s));
+			System.out.println("[SERVER] TIME = " + time + ": " + getStateDescription(s));
 		} catch (EvalException e) {
-			System.out.println("\n\nError during visualization:\n" + e);
+			System.out.println("\n\n[SERVER] Error during visualization:\n" + e);
 			e.printStackTrace();
 			System.exit(1);
 		}
@@ -82,7 +82,7 @@ public class SidewalkGraphicsDisplay extends StateViz {
 			int goal_pos = (Integer)s.getPVariableAssign(goal, params);
 			int x_pos = (Integer)s.getPVariableAssign(xpos, params);
 			int y_pos = (Integer)s.getPVariableAssign(ypos, params);
-			System.out.println(person + " @ (" + x_pos + "," + y_pos + ")");
+			System.out.println("[SERVER] " + person + " @ (" + x_pos + "," + y_pos + ")");
 			
 			// Update screen
 			//_bd.setCell(1, goal_pos, c, "*");
@@ -95,7 +95,7 @@ public class SidewalkGraphicsDisplay extends StateViz {
 	    try {
 			Thread.currentThread().sleep(_nTimeDelay);
 		} catch (InterruptedException e) {
-			System.err.println(e);
+			System.err.println("[SERVER] " + e);
 			e.printStackTrace(System.err);
 		}
 				

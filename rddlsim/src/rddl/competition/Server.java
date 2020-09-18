@@ -164,10 +164,10 @@ public class Server implements Runnable {
 		ArrayList<RDDL> rddls = new ArrayList<RDDL>();
 		int port = PORT_NUMBER;
 		if ( args.length < 1 ) {
-			System.out.println("usage: rddlfilename-or-dir (optional) portnumber num-rounds random-seed use-timeout individual-session log-folder monitor-execution state-viz-class-name");
-			System.out.println("\nexample 1: Server rddlfilename-or-dir");
-			System.out.println("example 2: Server rddlfilename-or-dir 2323");
-			System.out.println("example 3: Server rddlfilename-or-dir 2323 100 0 0 1 experiments/experiment23/ 1 rddl.viz.GenericScreenDisplay");
+			System.out.println("[SERVER] usage: rddlfilename-or-dir (optional) portnumber num-rounds random-seed use-timeout individual-session log-folder monitor-execution state-viz-class-name");
+			System.out.println("\n[SERVER] example 1: Server rddlfilename-or-dir");
+			System.out.println("[SERVER] example 2: Server rddlfilename-or-dir 2323");
+			System.out.println("[SERVER] example 3: Server rddlfilename-or-dir 2323 100 0 0 1 experiments/experiment23/ 1 rddl.viz.GenericScreenDisplay");
 			System.exit(1);
 		}
 				
@@ -226,7 +226,7 @@ public class Server implements Runnable {
 			if (args.length > 8) {
 				state_viz = (StateViz)Class.forName(args[8]).newInstance();
 			}
-			System.out.println("RDDL Server Initialized");
+			System.out.println("[SERVER] RDDL Server Initialized");
 			while (true) {
 				Socket connection = socket1.accept();
 				RandomDataGenerator rdg = new RandomDataGenerator();
@@ -238,10 +238,10 @@ public class Server implements Runnable {
 					break;
 				}
 			}
-			System.out.println("Single client has connected, no more are accepted.");
+			System.out.println("[SERVER] Single client has connected, no more are accepted.");
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			System.out.println(e);
+			System.out.println("[SERVER] " + e);
 			e.printStackTrace();
 		}
 	}
@@ -265,7 +265,7 @@ public class Server implements Runnable {
 			String client_hostname = ia.getCanonicalHostName();
 			String client_IP = ia.getHostAddress();
 			long start_time = System.currentTimeMillis();
-			System.out.println("Connection from client at address " + client_hostname + " / " + client_IP);
+			System.out.println("[SERVER] Connection from client at address " + client_hostname + " / " + client_IP);
 			writeToLog(createClientHostMessage(client_hostname, client_IP));
 			
 			// Begin communication protocol from PROTOCOL.txt
@@ -273,11 +273,11 @@ public class Server implements Runnable {
 			InputSource isrc = readOneMessage(isr);
 			requestedInstance = null;
 			processXMLSessionRequest(p, isrc, this);
-			System.out.println("Client name: " + clientName);
-			System.out.println("Instance requested: " + requestedInstance);
+			System.out.println("[SERVER] Client name: " + clientName);
+			System.out.println("[SERVER] Instance requested: " + requestedInstance);
 	
 			if (!rddl._tmInstanceNodes.containsKey(requestedInstance)) {
-				System.out.println("Instance name '" + requestedInstance + "' not found.");
+				System.out.println("[SERVER] Instance name '" + requestedInstance + "' not found.");
 				return;
 			}
 
@@ -288,8 +288,7 @@ public class Server implements Runnable {
 			sendOneMessage(osw,msg);			
 
 			initializeState(rddl, requestedInstance);
-			//System.out.println("STATE:\n" + state);
-			
+
 			double accum_total_reward = 0d;
 			ArrayList<Double> rewards = new ArrayList<Double>();
 			int r = 0;
@@ -313,9 +312,9 @@ public class Server implements Runnable {
 			sendOneMessage(osw,msg);
 				
 				if (executePolicy) {
-					System.out.println("Round " + (r+1) + " / " + numRounds + ", time remaining: " + (timeAllowed - System.currentTimeMillis() + start_time));
+					System.out.println("[SERVER] Round " + (r+1) + " / " + numRounds + ", time remaining: " + (timeAllowed - System.currentTimeMillis() + start_time));
 					if (SHOW_MEMORY_USAGE) {
-						System.out.print("[ Memory usage: " + 
+						System.out.print("[SERVER] [ Memory usage: " +
 							_df.format((RUNTIME.totalMemory() - RUNTIME.freeMemory())/1e6d) + "Mb / " + 
 							_df.format(RUNTIME.totalMemory()/1e6d) + "Mb" + 
 							" = " + _df.format(((double) (RUNTIME.totalMemory() - RUNTIME.freeMemory()) / 
@@ -331,21 +330,13 @@ public class Server implements Runnable {
 				while (true) {
 					Timer timer = new Timer();
 				
-					//if ( observStore != null) {
-					//	for ( PVAR_NAME pn : observStore.keySet() ) {
-					//		System.out.println("check3 " + pn);
-					//		for( ArrayList<LCONST> aa : observStore.get(pn).keySet()) {
-					//			System.out.println("check3 :" + aa + ": " + observStore.get(pn).get(aa));
-					//		}
-					//	}
-					//}
 					msg = createXMLTurn(state, h+1, domain, observStore, timeAllowed - System.currentTimeMillis() + start_time, immediate_reward);
 					
 					if (SHOW_TIMING)
-						System.out.println("**TIME to create XML turn: " + timer.GetTimeSoFarAndReset());
+						System.out.println("[SERVER] **TIME to create XML turn: " + timer.GetTimeSoFarAndReset());
 					
 					if (SHOW_MSG)
-						System.out.println("Sending msg:\n" + msg);
+						System.out.println("[SERVER] Sending msg:\n" + msg);
 
 					sendOneMessage(osw,msg);
 
@@ -353,7 +344,7 @@ public class Server implements Runnable {
 					while (ds == null) {
 						isrc = readOneMessage(isr);
 						if (isrc == null) {
-							throw new Exception("FATAL SERVER EXCEPTION: EMPTY CLIENT MESSAGE");
+							throw new Exception("[SERVER] FATAL SERVER EXCEPTION: EMPTY CLIENT MESSAGE");
 						}
 
 						ds = processXMLAction(p,isrc,state);
@@ -367,7 +358,7 @@ public class Server implements Runnable {
 					try {
 						state.checkStateActionConstraints(ds);
 					} catch (Exception e) {
-						System.out.println("TRIAL ERROR -- ACTION NOT APPLICABLE:\n" + e);
+						System.out.println("[SERVER] TRIAL ERROR -- ACTION NOT APPLICABLE:\n" + e);
 						if (INDIVIDUAL_SESSION) {
 							try {
 								connection.close();
@@ -377,22 +368,17 @@ public class Server implements Runnable {
 						break;
 					}
 
-					//Sungwook: this is not required.  -Scott
-					//if ( h== 0 && domain._bPartiallyObserved && ds.size() != 0) {
-					//	System.err.println("the first action for partial observable domain should be noop");
-					//}
 					if (SHOW_ACTIONS && executePolicy) {
 						boolean suppress_object_cast_temp = RDDL.SUPPRESS_OBJECT_CAST;
 						RDDL.SUPPRESS_OBJECT_CAST = true;
-						System.out.println("** Actions received: " + ds);
+						System.out.println("[SERVER] ** Actions received: " + ds);
 						RDDL.SUPPRESS_OBJECT_CAST = suppress_object_cast_temp;
 					}
 
 					try {
 						state.computeNextState(ds, rand);
 					} catch (Exception ee) {
-						System.out.println("FATAL SERVER EXCEPTION:\n" + ee);
-						//ee.printStackTrace();
+						System.out.println("[SERVER] FATAL SERVER EXCEPTION:\n" + ee);
 						if (INDIVIDUAL_SESSION) {
 							try {
 								connection.close();
@@ -401,15 +387,9 @@ public class Server implements Runnable {
 						}
 						throw ee;
 					}
-					//for ( PVAR_NAME pn : state._observ.keySet() ) {
-					//	System.out.println("check1 " + pn);
-					//	for( ArrayList<LCONST> aa : state._observ.get(pn).keySet()) {
-					//		System.out.println("check1 :" + aa + ": " + state._observ.get(pn).get(aa));
-					//	}
-					//}
-					
+
 					if (SHOW_TIMING)
-						System.out.println("**TIME to compute next state: " + timer.GetTimeSoFarAndReset());
+						System.out.println("[SERVER] **TIME to compute next state: " + timer.GetTimeSoFarAndReset());
 					
 					if (domain._bPartiallyObserved)
 						observStore = copyObserv(state._observ);
@@ -419,18 +399,16 @@ public class Server implements Runnable {
 							state, rand)).doubleValue();
 					rewards.add(immediate_reward);
 					accum_reward += cur_discount * immediate_reward;
-					//System.out.println("Accum reward: " + accum_reward + ", instance._dDiscount: " + instance._dDiscount + 
-					//   " / " + (cur_discount * reward) + " / " + reward);
 					cur_discount *= instance._dDiscount;
 					
 					if (SHOW_TIMING)
-						System.out.println("**TIME to copy observations & update rewards: " + timer.GetTimeSoFarAndReset());
+						System.out.println("[SERVER] **TIME to copy observations & update rewards: " + timer.GetTimeSoFarAndReset());
 
 					stateViz.display(state, h);			
 					state.advanceNextState();
 					
 					if (SHOW_TIMING)
-						System.out.println("**TIME to advance state: " + timer.GetTimeSoFarAndReset());
+						System.out.println("[SERVER] **TIME to advance state: " + timer.GetTimeSoFarAndReset());
 										
 					// Scott: Update 2014 to check for out of time... this can trigger
 					//        an early round end
@@ -439,27 +417,24 @@ public class Server implements Runnable {
 
 					// Thomas: Update 2018 to allow simulation of SSPs
 					if (OUT_OF_TIME) {
-						// System.out.println("OUT OF TIME!");
 						break;
 					}
 					if ((instance._termCond == null) && (h == instance._nHorizon)) {
-						// System.out.println("Horizon reached");
 						break;
 					}
 					if ((instance._termCond != null) && state.checkTerminationCondition(instance._termCond)) {
-						// System.out.println("Terminal state reached");
 						break;
 					}
 				}
 				if (executePolicy) {
 					accum_total_reward += accum_reward;
-					System.out.println("** Round reward: " + accum_reward);
+					System.out.println("[SERVER] ** Round reward: " + accum_reward);
 				}
 				msg = createXMLRoundEnd(requestedInstance, r, accum_reward, h,
 							timeAllowed - System.currentTimeMillis() + start_time,
                                                         clientName, immediate_reward);
 				if (SHOW_MSG)
-					System.out.println("Sending msg:\n" + msg);
+					System.out.println("[SERVER] Sending msg:\n" + msg);
 				sendOneMessage(osw, msg);
 				
 				writeToLog(msg);
@@ -467,17 +442,17 @@ public class Server implements Runnable {
 			msg = createXMLSessionEnd(requestedInstance, accum_total_reward, r,
 						  timeAllowed - System.currentTimeMillis() + start_time, this.clientName, this.id);
 			if (SHOW_MSG)
-				System.out.println("Sending msg:\n" + msg);
+				System.out.println("[SERVER] Sending msg:\n" + msg);
 			sendOneMessage(osw, msg);
 
 			writeToLog(msg);
 
-			System.out.println("Session finished successfully: " + clientName);
-			System.out.println("Time left: " + (timeAllowed - System.currentTimeMillis() + start_time));
-			System.out.println("Number of simulations: " + numSimulations);
-			System.out.println("Number of runs: " + numRounds);
-			System.out.println("Accumulated reward: " + (accum_total_reward));
-			System.out.println("Average reward: " + (accum_total_reward / numRounds));
+			System.out.println("[SERVER] Session finished successfully: " + clientName);
+			System.out.println("[SERVER] Time left: " + (timeAllowed - System.currentTimeMillis() + start_time));
+			System.out.println("[SERVER] Number of simulations: " + numSimulations);
+			System.out.println("[SERVER] Number of runs: " + numRounds);
+			System.out.println("[SERVER] Accumulated reward: " + (accum_total_reward));
+			System.out.println("[SERVER] Average reward: " + (accum_total_reward / numRounds));
 
 			if (INDIVIDUAL_SESSION) {
 				try {
@@ -485,18 +460,10 @@ public class Server implements Runnable {
 				} catch (IOException ioe){}
 				System.exit(0);
 			}
-
-			//need to wait 10 seconds to pretend that we're processing something
-//			try {
-//				Thread.sleep(10000);
-//			}
-//			catch (Exception e){}
-//			TimeStamp = new java.util.Date().toString();
-//			String returnCode = "MultipleSocketServer repsonded at "+ TimeStamp + (char) 3;
 		}
 		catch (Exception e) {
 			e.printStackTrace();
-			System.out.println("\n>> TERMINATING TRIAL.");
+			System.out.println("\n[SERVER] >> TERMINATING TRIAL.");
 			if (INDIVIDUAL_SESSION) {
 				try {
 					connection.close();
@@ -525,7 +492,6 @@ public class Server implements Runnable {
 		HashMap<PVAR_NAME, HashMap<ArrayList<LCONST>, Object>> r = new
 		HashMap<PVAR_NAME, HashMap<ArrayList<LCONST>, Object>>();
 	
-		//System.out.println("Observation pvars: " + observ);
 		for ( PVAR_NAME pn : observ.keySet() ) {
 			HashMap<ArrayList<LCONST>, Object> v = 
 				new HashMap<ArrayList<LCONST>, Object>();
@@ -577,7 +543,7 @@ public class Server implements Runnable {
 		if ((domain._bPartiallyObserved && state._alObservNames.size() == 0)
 				|| (!domain._bPartiallyObserved && state._alObservNames.size() > 0)) {
 			boolean observations_present = (state._alObservNames.size() > 0);
-			System.err.println("WARNING: Domain '" + domain._sDomainName
+			System.err.println("\t\t\t\t\t//}\nWARNING: Domain '" + domain._sDomainName
 							+ "' partially observed (PO) flag and presence of observations mismatched.\nSetting PO flag = " + observations_present + ".");
 			domain._bPartiallyObserved = observations_present;
 		}
@@ -646,7 +612,7 @@ public class Server implements Runnable {
 			p.parse(isrc);
 			Element e = p.getDocument().getDocumentElement();
 			if (SHOW_XML) {
-				System.out.println("Received action msg:");
+				System.out.println("[SERVER] Received action msg:");
 				printXMLNode(e);
 			}
 			if ( e.getNodeName().equals(RESOURCE_REQUEST) ) {
@@ -654,13 +620,12 @@ public class Server implements Runnable {
 			}
             
 			if ( !e.getNodeName().equals(ACTIONS) ) {
-				System.out.println("ERROR: NO ACTIONS NODE");
-				System.out.println("Received action msg:");
+				System.out.println("[SERVER] ERROR: NO ACTIONS NODE");
+				System.out.println("[SERVER] Received action msg:");
 				printXMLNode(e);
-				throw new Exception("ERROR: NO ACTIONS NODE");
+				throw new Exception("[SERVER] ERROR: NO ACTIONS NODE");
 			}
 			NodeList nl = e.getElementsByTagName(ACTION);
-//			System.out.println(nl);
 			if(nl != null) { // && nl.getLength() > 0) { // TODO: Scott
 				ArrayList<PVAR_INST_DEF> ds = new ArrayList<PVAR_INST_DEF>();
 				for(int i = 0 ; i < nl.getLength();i++) {
@@ -669,7 +634,6 @@ public class Server implements Runnable {
 					ArrayList<String> args = getTextValue(el, ACTION_ARG);
 					ArrayList<LCONST> lcArgs = new ArrayList<LCONST>();
 					for( String arg : args ) {
-						//System.out.println("arg: " + arg);
 						if (arg.startsWith("@"))
 							lcArgs.add(new RDDL.ENUM_VAL(arg));
 						else // TODO $ <> (forgiving)... done$
@@ -683,25 +647,14 @@ public class Server implements Runnable {
 				return ds;
 			} else
 				return new ArrayList<PVAR_INST_DEF>(); // FYI: May be unreachable. -Scott
-			//} else { // TODO: Removed by Scott, NOOP should not be handled differently
-			//	nl = e.getElementsByTagName(NOOP);
-			//	if ( nl != null && nl.getLength() > 0) {
-			//		ArrayList<PVAR_INST_DEF> ds = new ArrayList<PVAR_INST_DEF>();
-			//		return ds;
-			//	}
-			//}
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			System.out.println("FATAL SERVER ERROR:\n" + e);
-			//t.printStackTrace();
+			System.out.println("[SERVER] FATAL SERVER ERROR:\n" + e);
 			throw e;
 		}
 	}
 	
 	public static void sendOneMessage (OutputStreamWriter osw, String msg) throws IOException {
-//		System.out.println(msg);
 		if (NO_XML_HEADING) {
-//			System.out.println(msg.substring(39));
 			osw.write(msg.substring(39));
 		} else {
 			osw.write(msg + '\0');
@@ -718,29 +671,22 @@ public class Server implements Runnable {
 		try {
 		
 			int cur_pos = 0; 
-			//System.out.println("\n===\n");
 			while (true && cur_pos < MAX_BYTES) {
 				cur_pos += isr.read( bytes, cur_pos, 1 );
 				if (/* Socket closed  */ cur_pos == -1 || 
 					/* End of message */ bytes[cur_pos - 1] == '\0')
 					break;
-				//System.out.print(cur_pos + "[" + Byte.toString(bytes[cur_pos - 1]) + "]");
 			}
-			//System.out.println("\n===\n");
-			
-			//while((character = isr.read()) != '\0' && character != -1) { 
-			//	message.append((char)character);
-			//}
+
 			if (SHOW_MSG) {
-				System.out.println("Received message [" + (cur_pos - 1) + "]: **" + new String(bytes, 0, cur_pos - 1) + "**");
+				System.out.println("[SERVER] Received message [" + (cur_pos - 1) + "]: **" + new String(bytes, 0, cur_pos - 1) + "**");
 			}
-			//ByteArrayInputStream bais = new ByteArrayInputStream(message.toString().getBytes());
+
 			ByteArrayInputStream bais = new ByteArrayInputStream(bytes, 0, cur_pos - 1); // No '\0'
 			InputSource isrc = new InputSource();
 			isrc.setByteStream(bais);
 			return isrc;
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return null;
 		}
@@ -758,7 +704,7 @@ public class Server implements Runnable {
 			return Client.serialize(dom);
 		}
 		catch (Exception e) {
-			System.out.println(e);
+			System.out.println("[SERVER] " + e);
 			return null;
 		}
 	}
@@ -805,7 +751,7 @@ public class Server implements Runnable {
 			return Client.serialize(dom);
 		}
 		catch (Exception e) {
-			System.out.println(e);
+			System.out.println("[SERVER] " + e);
 			return null;
 		}
 	}
@@ -847,7 +793,6 @@ public class Server implements Runnable {
 			Element e = p.getDocument().getDocumentElement();
 			if ( e.getNodeName().equals(ROUND_REQUEST) ) {
 				if (MONITOR_EXECUTION) {
-					// System.out.println("Monitoring execution!");
 					String executePolicyString = "no";
 					ArrayList<String> exec_pol = getTextValue(e, EXECUTE_POLICY);
 					if (exec_pol != null && exec_pol.size() > 0) {
@@ -859,21 +804,18 @@ public class Server implements Runnable {
 						assert(executePolicyString.equals("no"));
 						server.executePolicy = false;
 						server.numSimulations++;
-						// System.out.println("Do not execute the policy!");
 					}
 				}
 				return true;			
 			} else if ( e.getNodeName().equals(RESOURCE_REQUEST) ) {
 				return false;
 			}
-			System.out.println("Illegal message from server: " + e.getNodeName());
-			System.out.println("round request or time left request expected");
+			System.out.println("[SERVER] Illegal message from server: " + e.getNodeName());
+			System.out.println("[SERVER] round request or time left request expected");
 			System.exit(1);
 		} catch (SAXException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		} catch (IOException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 		return false;
@@ -915,24 +857,18 @@ public class Server implements Runnable {
                         immediateRewardElem.appendChild(textImmediateRewardElem);
                         rootEle.appendChild(immediateRewardElem);
 
-			//System.out.println("PO: " + domain._bPartiallyObserved);
 			if( !domain._bPartiallyObserved || observStore != null) {
 				for ( PVAR_NAME pn : 
 					(domain._bPartiallyObserved 
 							? observStore.keySet() 
 									: state._state.keySet()) ) {
-					//System.out.println(turn + " check2 Partial Observ " + pn +" : "+ domain._bPartiallyObserved);
-					
+
 					// No problem to overwrite observations, only ever read from
 					if (domain._bPartiallyObserved && observStore != null)
 						state._observ.put(pn, observStore.get(pn));
 					
 					ArrayList<ArrayList<LCONST>> gfluents = state.generateAtoms(pn);			
 					for (ArrayList<LCONST> gfluent : gfluents) { 
-					//for ( Map.Entry<ArrayList<LCONST>,Object> gfluent : 
-					//	(domain._bPartiallyObserved
-					//			? observStore.get(pn).entrySet() 
-					//					: state._state.get(pn).entrySet())) {
 						Element ofEle = dom.createElement(OBSERVED_FLUENT);
 						rootEle.appendChild(ofEle);
 						Element pName = dom.createElement(FLUENT_NAME);
@@ -948,8 +884,8 @@ public class Server implements Runnable {
 						Element pValue = dom.createElement(FLUENT_VALUE);
 						Object value = state.getPVariableAssign(pn, gfluent);
 						if (value == null) {
-							System.out.println("STATE:\n" + state);
-							throw new Exception("ERROR: Could not retrieve value for " + pn + gfluent.toString());
+							System.out.println("[SERVER] STATE:\n" + state);
+							throw new Exception("[SERVER] ERROR: Could not retrieve value for " + pn + gfluent.toString());
 						}
 
 						Text pTextValue = value instanceof LCONST 
@@ -973,7 +909,7 @@ public class Server implements Runnable {
 			return(Client.serialize(dom));
 			
 		} catch (Exception e) {
-			System.out.println("FATAL SERVER EXCEPTION: " + e);
+			System.out.println("[SERVER] FATAL SERVER EXCEPTION: " + e);
 			e.printStackTrace();
 			throw e;
 			//System.exit(1);
@@ -994,7 +930,7 @@ public class Server implements Runnable {
 			return Client.serialize(dom);
 		}
 		catch (Exception e) {
-			System.out.println(e);
+			System.out.println("[SERVER] " + e);
 			return null;
 		}
 	}
@@ -1013,7 +949,7 @@ public class Server implements Runnable {
 			return Client.serialize(dom);
 		}
 		catch (Exception e) {
-			System.out.println(e);
+			System.out.println("[SERVER] " + e);
 			return null;
 		}
 	}
@@ -1036,7 +972,7 @@ public class Server implements Runnable {
 			return Client.serialize(dom);
 		}
 		catch (Exception e) {
-			System.out.println(e);
+			System.out.println("[SERVER] " + e);
 			return null;
 		}
 	}
@@ -1067,7 +1003,7 @@ public class Server implements Runnable {
 			return Client.serialize(dom);
 		}
 		catch (Exception e) {
-			System.out.println(e);
+			System.out.println("[SERVER] " + e);
 			return null;
 		}
 	}
@@ -1083,11 +1019,11 @@ public class Server implements Runnable {
 			int size = is.available();
 			bytes = new byte[size];
 			is.read(bytes);
-			System.out.println("==BEGIN IS==");
+			System.out.println("[SERVER] ==BEGIN IS==");
 			System.out.write(bytes, 0, size);
-			System.out.println("\n==END IS==");
+			System.out.println("\n[SERVER] ==END IS==");
 		} catch (IOException e) {
-			System.out.println(">>> Inputstream error");
+			System.out.println("[SERVER] >>> Inputstream error");
 			e.printStackTrace();
 		}
 	}
@@ -1098,13 +1034,13 @@ public class Server implements Runnable {
 	public static void printXMLNode(Node n, String prefix, int depth) {
 		
 		try {			
-			System.out.print("\n" + Pad(depth) + "[" + n.getNodeName());
+			System.out.print("\n[SERVER] " + Pad(depth) + "[" + n.getNodeName());
 			NamedNodeMap m = n.getAttributes();
 			for (int i = 0; m != null && i < m.getLength(); i++) {
 				Node item = m.item(i);
-				System.out.print(" " + item.getNodeName() + "=" + item.getNodeValue());
+				System.out.print("[SERVER]  " + item.getNodeName() + "=" + item.getNodeValue());
 			}
-			System.out.print("] ");
+			System.out.print("[SERVER] ] ");
 			
 			NodeList cn = n.getChildNodes();
 			
@@ -1112,12 +1048,12 @@ public class Server implements Runnable {
 				Node item = cn.item(i);
 				if (item.getNodeType() == Node.TEXT_NODE) {
 					String val = item.getNodeValue().trim();
-					if (val.length() > 0) System.out.print(" \"" + item.getNodeValue().trim() + "\"");
+					if (val.length() > 0) System.out.print("[SERVER]  \"" + item.getNodeValue().trim() + "\"");
 				} else
 					printXMLNode(item, prefix, depth+2);
 			}
 		} catch (Exception e) {
-			System.out.println(Pad(depth) + "Exception e: ");
+			System.out.println("[SERVER] " + Pad(depth) + "Exception e: ");
 		}
 	}
 	public static StringBuffer Pad(int depth) {

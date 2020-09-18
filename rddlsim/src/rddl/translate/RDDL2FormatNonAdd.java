@@ -164,7 +164,7 @@ public class RDDL2FormatNonAdd {
 			throw new Exception(_sTranslationType + " not currently supported.");
 
 		pw.close();
-		System.out.println("\n>> Exported: '" + filename + "'");
+		System.out.println("\n[SERVER] >> Exported: '" + filename + "'");
 	}
 
 	public void exportSPUDD(PrintWriter pw, boolean curr_format,
@@ -252,20 +252,14 @@ public class RDDL2FormatNonAdd {
 			pw.print("\t" + s);
 
 			// Build both halves of dual action diagram if curr_format
-			System.out.println("Getting: " + action_name + ", " + s);
+			System.out.println("[SERVER] Getting: " + action_name + ", " + s);
 			int dd = _var2transDD.get(new Pair(action_name, s));
 			if (curr_format) {
 
-				// System.out.println("Multiplying..." + dd + ", " + DD_ONE);
-				// _context.printNode(dd);
-				// _context.printNode(DD_ONE);
 				int dd_true = _context.getVarNode(s + "'", 0d, 1d);
 				dd_true = _context.applyInt(dd_true, dd, ADD.ARITH_PROD);
 
 				int dd_false = _context.getVarNode(s + "'", 1d, 0d);
-				// System.out.println("Multiplying..." + dd + ", " + DD_ONE);
-				// _context.printNode(dd);
-				// _context.printNode(DD_ONE);
 				int one_minus_dd = _context.applyInt(DD_ONE, dd,
 						ADD.ARITH_MINUS);
 				dd_false = _context.applyInt(dd_false, one_minus_dd,
@@ -284,16 +278,11 @@ public class RDDL2FormatNonAdd {
 
 				Integer dd = _var2observDD.get(new Pair(action_name, o));
 				if (curr_format) {
-					// dd = _context.remapGIDsInt(dd, _hmPrimeRemap);
 
 					int dd_true = _context.getVarNode(o, 0d, 1d);
 					dd_true = _context.applyInt(dd_true, dd, ADD.ARITH_PROD);
 
 					int dd_false = _context.getVarNode(o, 1d, 0d);
-					// System.out.println("Multiplying..." + dd + ", " +
-					// DD_ONE);
-					// _context.printNode(dd);
-					// _context.printNode(DD_ONE);
 					int one_minus_dd = _context.applyInt(DD_ONE, dd,
 							ADD.ARITH_MINUS);
 					dd_false = _context.applyInt(dd_false, one_minus_dd,
@@ -638,7 +627,7 @@ public class RDDL2FormatNonAdd {
 		_alAllVars.addAll(_alObservVars);
 
 		// Build the ADD context for the trees
-		System.out.println(_alAllVars);
+		System.out.println("[SERVER] " + _alAllVars);
 		_context = new ADD(_alAllVars);
 		DD_ONE = _context.getConstantNode(1d);
 		DD_ZERO = _context.getConstantNode(0d);
@@ -646,9 +635,9 @@ public class RDDL2FormatNonAdd {
 		_alSaveNodes.add(DD_ONE);
 		_alSaveNodes.add(DD_ZERO);
 
-		System.out.println("State vars:  " + state_vars);
-		System.out.println("Action vars: " + action_vars);
-		System.out.println("Observ vars: " + observ_vars);
+		System.out.println("[SERVER] State vars:  " + state_vars);
+		System.out.println("[SERVER] Action vars: " + action_vars);
+		System.out.println("[SERVER] Observ vars: " + observ_vars);
 
 		// For each action, set it to on and others to false and generate all
 		// CPTs. Assume boolean, using only logical connectives and Bernoulli
@@ -673,7 +662,6 @@ public class RDDL2FormatNonAdd {
 				// Go through all variable names p for a variable type
 				PVAR_NAME p = e.getKey();
 				ArrayList<ArrayList<LCONST>> assignments = e.getValue();
-				// System.out.println(_state._hmCPFs);
 
 				CPF_DEF cpf = _state._hmCPFs.get(new PVAR_NAME(p.toString()
 						+ (iter == STATE_ITER ? "'" : "")));
@@ -682,7 +670,7 @@ public class RDDL2FormatNonAdd {
 				for (ArrayList<LCONST> assign : assignments) {
 
 					String cpt_var = CleanFluentName(p.toString() + assign);
-					System.out.println("Processing: " + cpt_var);
+					System.out.println("[SERVER] Processing: " + cpt_var);
 
 					subs.clear();
 					for (int i = 0; i < cpf._exprVarName._alTerms.size(); i++) {
@@ -702,7 +690,7 @@ public class RDDL2FormatNonAdd {
 
 					cpf_expr.collectGFluents(subs, _state, relevant_vars);
 					if (SHOW_RELEVANCE)
-						System.out.println("Vars relevant to " + cpt_var + ": "
+						System.out.println("[SERVER] Vars relevant to " + cpt_var + ": "
 								+ relevant_vars);
 
 					// Filter out action vars if we are not doing a concurrent
@@ -818,7 +806,7 @@ public class RDDL2FormatNonAdd {
 								// is generic
 								// and relatively simple.)
 								if (SHOW_RELEVANCE)
-									System.out.println("Vars relevant to "
+									System.out.println("[SERVER] Vars relevant to "
 											+ action_instance + ", " + cpt_var
 											+ ": " + relevant_vars);
 
@@ -873,7 +861,7 @@ public class RDDL2FormatNonAdd {
 				&& _sTranslationType != SPUDD_CONT_CONC)
 			relevant_vars = filterOutActionVars(relevant_vars);
 
-		System.out.println("Vars relevant to reward: " + relevant_vars);
+		System.out.println("[SERVER] Vars relevant to reward: " + relevant_vars);
 		_reward = null;
 		try {
 			_reward = enumerateAssignments(new ArrayList<Pair>(relevant_vars),
@@ -891,7 +879,7 @@ public class RDDL2FormatNonAdd {
 			for (Map.Entry<Pair, Integer> e : _var2transDD.entrySet()) {
 				if (++i > 3)
 					break;
-				System.out.println("Transition: " + e); // + " :: " +
+				System.out.println("[SERVER] Transition: " + e); // + " :: " +
 														// _context.printNode
 														// ((Integer
 														// )e.getValue()));
@@ -907,7 +895,7 @@ public class RDDL2FormatNonAdd {
 			for (Map.Entry<Pair, Integer> e : _var2observDD.entrySet()) {
 				if (++i > 3)
 					break;
-				System.out.println("Observation: " + e); // + " :: " +
+				System.out.println("[SERVER] Observation: " + e); // + " :: " +
 															// _context.printNode
 															// ((Integer)e.
 															// getValue()));
@@ -922,14 +910,7 @@ public class RDDL2FormatNonAdd {
 			for (Map.Entry<String, Integer> e : _act2rewardDD.entrySet()) {
 				if (++i > 3)
 					break;
-				System.out.println("Action-based reward: " + e); // + " :: " +
-																	// _context
-																	// .printNode
-																	// (
-																	// (Integer)
-																	// e
-																	// .getValue
-																	// ()));
+				System.out.println("[SERVER] Action-based reward: " + e);
 				if (SHOW_GRAPH)
 					_context.getGraph(e.getValue()).launchViewer();
 
@@ -937,24 +918,19 @@ public class RDDL2FormatNonAdd {
 				if (last_reward != null) {
 					reward_action_dependent = reward_action_dependent
 							|| (!e.getValue().equals(last_reward));
-					// System.out.println(reward_action_dependent + " " +
-					// e.getValue() + " != " + last_reward + ", " +
-					// e.getValue().getClass() + ", " + last_reward.getClass() +
-					// " = " + (!e.getValue().equals(last_reward)));
 				}
 				last_reward = e.getValue();
 			}
 
 			// Get the non-action specific reward -- assuming defaults for
 			// actions
-			System.out.println("\nGeneral reward = " + _reward);
+			System.out.println("\n[SERVER] General reward = " + _reward);
 			if (SHOW_GRAPH)
 				_context.getGraph(_reward).launchViewer();
 
 			if (last_reward != null)
 				reward_action_dependent = reward_action_dependent
 						|| (!_reward.equals(last_reward));
-			// System.out.println(reward_action_dependent);
 
 			if (reward_action_dependent)
 				System.err
@@ -990,7 +966,6 @@ public class RDDL2FormatNonAdd {
 			// Just need to get the distribution for the appropriate CPT
 			RDDL.EXPR e = cpf_expr.getDist(subs, _state);
 			double prob_true = -1d;
-			// System.out.println("RDDL.EXPR: " + e);
 			if (e instanceof KronDelta) {
 				EXPR e2 = ((KronDelta) e)._exprIntValue;
 				if (e2 instanceof INT_CONST_EXPR)
@@ -1022,7 +997,6 @@ public class RDDL2FormatNonAdd {
 			ArrayList<LCONST> terms = (ArrayList<LCONST>) vars.get(index)._o2;
 			String var_name = CleanFluentName(p._sPVarName + terms
 					+ (p._bPrimed ? "\'" : ""));
-			// System.out.println(var_name);
 
 			// Set to true
 			_state.setPVariableAssign(p, terms, RDDL.BOOL_CONST_EXPR.TRUE);
@@ -1103,28 +1077,17 @@ public class RDDL2FormatNonAdd {
 	// ////
 
 	public static void ShowFileFormats() {
-		System.out.println("Supported languages are");
-		System.out.println("  spudd_sperseus");
-		System.out.println("  ppddl");
-		System.out.println("  spudd_orig (an older SPUDD format)");
-		System.out
-				.println("  spudd_conc (SPUDD format supporting concurrency)");
+		System.out.println("[SERVER] Supported languages are");
+		System.out.println("[SERVER]   spudd_sperseus");
+		System.out.println("[SERVER]   ppddl");
+		System.out.println("[SERVER]   spudd_orig (an older SPUDD format)");
+		System.out.println("[SERVER]   spudd_conc (SPUDD format supporting concurrency)");
 	}
 
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) throws Exception {
-
-		// Parse file
-		// RDDL rddl = parser.parse(new
-		// File("files/boolean/rddl/game_of_life_nointerm_mdp.rddl"));
-		// RDDL rddl = parser.parse(new
-		// File("files/boolean/rddl/game_of_life_nointerm_pomdp.rddl"));
-		// RDDL rddl = parser.parse(new
-		// File("files/boolean/rddl/sysadmin_bool_mdp.rddl"));
-		// RDDL rddl = parser.parse(new
-		// File("files/boolean/rddl/sysadmin_bool_pomdp.rddl"));
 
 		if (args.length != 3) {
 			System.out
@@ -1135,8 +1098,7 @@ public class RDDL2FormatNonAdd {
 		String arg2_intern = args[2].intern();
 		if (arg2_intern != SPUDD_ORIG && arg2_intern != SPUDD_CURR
 				&& arg2_intern != SPUDD_CONC && arg2_intern != PPDDL) {
-			System.out.println("\nFile format '" + arg2_intern
-					+ "' not supported yet.\n");
+			System.out.println("\n[SERVER] File format '" + arg2_intern + "' not supported yet.\n");
 			ShowFileFormats();
 			System.exit(2);
 		}
@@ -1162,8 +1124,8 @@ public class RDDL2FormatNonAdd {
 			try {
 				r = parser.parse(f);
 			} catch (Exception e) {
-				System.out.println(e);
-				System.out.println("Error processing: " + f + ", skipping...");
+				System.out.println("[SERVER] " + e);
+				System.out.println("[SERVER] Error processing: " + f + ", skipping...");
 				rddl_files.remove(f);
 				continue;
 			}
@@ -1179,7 +1141,7 @@ public class RDDL2FormatNonAdd {
 					r2s.export(output_dir);
 				}
 			} catch (Exception e) {
-				System.err.println("Error processing: " + f);
+				System.err.println("[SERVER] Error processing: " + f);
 				System.err.println(e);
 				e.printStackTrace(System.err);
 				System.err.flush();
@@ -1188,11 +1150,11 @@ public class RDDL2FormatNonAdd {
 			}
 		}
 
-		System.out.println("\n\n===\n");
+		System.out.println("\n\n[SERVER] ===\n");
 		for (File f : rddl_files)
-			System.out.println("Processed: " + f);
+			System.out.println("[SERVER] Processed: " + f);
 		for (File f : rddl_error)
-			System.out.println("Error processing: " + f);
+			System.out.println("[SERVER] Error processing: " + f);
 	}
 
 }

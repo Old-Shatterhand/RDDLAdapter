@@ -111,7 +111,7 @@ public class Client {
 		String TimeStamp;
 		
 		if ( args.length < 4 ) {
-			System.out.println("usage: rddlfilename hostname clientname policyclassname " +
+			System.out.println("[SERVER] usage: rddlfilename hostname clientname policyclassname " +
 					"(optional) portnumber randomSeed instanceName/directory");
 			System.exit(1);
 		}
@@ -136,7 +136,7 @@ public class Client {
 				instanceName = args[6];
 			}
 			if (!rddl._tmInstanceNodes.containsKey(instanceName)) {
-				System.out.println("Instance name '" + instanceName + "' not found in " + args[0] + "\nPossible choices: " + rddl._tmInstanceNodes.keySet());
+				System.out.println("[SERVER] Instance name '" + instanceName + "' not found in " + args[0] + "\nPossible choices: " + rddl._tmInstanceNodes.keySet());
 				System.exit(1);
 			}
 			state = new State();
@@ -153,7 +153,7 @@ public class Client {
 			}
 			domain = rddl._tmDomainNodes.get(instance._sDomain);
 			if (nonFluents != null && !instance._sDomain.equals(nonFluents._sDomain)) {
-				System.err.println("Domain name of instance and fluents do not match: " + 
+				System.err.println("[SERVER] Domain name of instance and fluents do not match: " +
 							instance._sDomain + " vs. " + nonFluents._sDomain);
 				System.exit(1);
 			}
@@ -168,22 +168,16 @@ public class Client {
 			if ((domain._bPartiallyObserved && state._alObservNames.size() == 0)
 					|| (!domain._bPartiallyObserved && state._alObservNames.size() > 0)) {
 				boolean observations_present = (state._alObservNames.size() > 0);
-				System.err.println("WARNING: Domain '" + domain._sDomainName
+				System.err.println("[SERVER] WARNING: Domain '" + domain._sDomainName
 								+ "' partially observed (PO) flag and presence of observations mismatched.\nSetting PO flag = " + observations_present + ".");
 				domain._bPartiallyObserved = observations_present;
 			}
 
-			// Not strictly enforcing flags anymore... 
-			//if ((domain._bPartiallyObserved && state._alObservNames.size() == 0)
-			//		|| (!domain._bPartiallyObserved && state._alObservNames.size() > 0)) {
-			//	System.err.println("Domain '" + domain._sDomainName + "' partially observed flag and presence of observations mismatched.");
-			//}
-			
 			/** Obtain an address object of the server */
 			InetAddress address = InetAddress.getByName(host);
 			/** Establish a socket connetion */
 			Socket connection = new Socket(address, port);
-			System.out.println("RDDL client initialized");
+			System.out.println("[SERVER] RDDL client initialized");
 			
 			/** Instantiate a BufferedOutputStream object */
 			BufferedOutputStream bos = new BufferedOutputStream(connection.
@@ -206,11 +200,11 @@ public class Client {
 
 			InputSource isrc = Server.readOneMessage(isr);
 			Client client = processXMLSessionInit(p, isrc);
-			System.out.println(client.id + ":" + client.numRounds);
+			System.out.println("[SERVER] " + client.id + ":" + client.numRounds);
 			int r = 0;
 			for( ; r < client.numRounds; r++ ) {
 				if (SHOW_MEMORY_USAGE)
-					System.out.print("[ Memory usage: " + 
+					System.out.print("[SERVER] [ Memory usage: " +
 							_df.format((RUNTIME.totalMemory() - RUNTIME.freeMemory())/1e6d) + "Mb / " + 
 							_df.format(RUNTIME.totalMemory()/1e6d) + "Mb" + 
 							" = " + _df.format(((double) (RUNTIME.totalMemory() - RUNTIME.freeMemory()) / 
@@ -229,22 +223,21 @@ public class Client {
 					break;
 				} // TODO
 				int h =0;
-				//System.out.println(instance._nHorizon);
 				boolean round_ended_early = false;
 				for(; h < instance._nHorizon; h++ ) {
-					if (SHOW_MSG) System.out.println("Reading turn message");
+					if (SHOW_MSG) System.out.println("[SERVER] Reading turn message");
 					isrc = Server.readOneMessage(isr);
 					Element e = parseMessage(p, isrc);
 					round_ended_early = e.getNodeName().equals(Server.ROUND_END);
 					if (round_ended_early)
 						break;
-					if (SHOW_MSG) System.out.println("Done reading turn message");
+					if (SHOW_MSG) System.out.println("[SERVER] Done reading turn message");
 					//if (SHOW_XML)
 					//	Server.printXMLNode(e); // DEBUG
 					ArrayList<PVAR_INST_DEF> obs = processXMLTurn(e,state);
-					if (SHOW_MSG) System.out.println("Done parsing turn message");
+					if (SHOW_MSG) System.out.println("[SERVER] Done parsing turn message");
 					if ( obs == null ) {
-						if (SHOW_MSG) System.out.println("No state/observations received.");
+						if (SHOW_MSG) System.out.println("[SERVER] No state/observations received.");
 						if (SHOW_XML)
 							Server.printXMLNode(p.getDocument()); // DEBUG
 					} else if (domain._bPartiallyObserved) {
@@ -259,7 +252,7 @@ public class Client {
 						policy.getActions(obs == null ? null : state);
 					msg = createXMLAction(actions);
 					if (SHOW_MSG)
-						System.out.println("Sending: " + msg);
+						System.out.println("[SERVER] Sending: " + msg);
 					Server.sendOneMessage(osw, msg);
 				}
 				if ( h < instance._nHorizon ) {
@@ -270,8 +263,7 @@ public class Client {
 				Element round_end_msg = parseMessage(p, isrc);
 				double reward = processXMLRoundEnd(round_end_msg);
 				policy.roundEnd(reward);
-				//System.out.println("Round reward: " + reward);
-				
+
 				if (getTimeLeft(round_end_msg) <= 0l)
 					break;
 			}
@@ -281,10 +273,10 @@ public class Client {
 			
 			/** Close the socket connection. */
 			connection.close();
-			System.out.println(instr);
+			System.out.println("[SERVER] " + instr);
 		}
 		catch (Exception g) {
-			System.out.println("Exception: " + g);
+			System.out.println("[SERVER] Exception: " + g);
 			g.printStackTrace();
 		}
 	}

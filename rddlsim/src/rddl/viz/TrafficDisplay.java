@@ -35,9 +35,9 @@ public class TrafficDisplay extends StateViz {
 	
 	public void display(State s, int time) {
 		try {
-			System.out.println("TIME = " + time + ": " + getStateDescription(s));
+			System.out.println("[SERVER] TIME = " + time + ": " + getStateDescription(s));
 		} catch (EvalException e) {
-			System.out.println("\n\nError during visualization:\n" + e);
+			System.out.println("\n\n[SERVER] Error during visualization:\n" + e);
 			e.printStackTrace();
 			System.exit(1);
 		}
@@ -95,12 +95,10 @@ public class TrafficDisplay extends StateViz {
 			
 			// Get state values
 			boolean occ = (Boolean)s.getPVariableAssign(occupied, params);
-			//System.out.println("'" + cell + "'");
 			String[] split = cell.toString().split("[_a]");
 			int row = new Integer(split[1]);
 			int col = new Integer(split[2]);
 			Color c = Color.gray; //_bd._colors[row % _bd._colors.length];
-			//System.out.println(occupied + " (" + row + "," + col + ") = " + occ);
 
 			_bd.setCell(row, col, c, occ ? null : ".");
 		}
@@ -155,7 +153,7 @@ public class TrafficDisplay extends StateViz {
 	    try {
 			Thread.currentThread().sleep(_nTimeDelay);
 		} catch (InterruptedException e) {
-			System.err.println(e);
+			System.err.println("[SERVER] " + e);
 			e.printStackTrace(System.err);
 		}
 				

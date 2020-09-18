@@ -50,26 +50,9 @@ public class LogReader {
 	        parser.parse(new org.xml.sax.InputSource(byteStream));
 	        _doc = parser.getDocument();
 		} catch (Exception e) {
-			System.out.println(e);
+			System.out.println("[SERVER] " + e);
 		}
 
-        //PrintNode(_doc, "", 0);
-
-//        NodeList nodes = (NodeList)XPathQuery(_doc, "//client-name", XPathConstants.NODESET);
-//        _sClientName = nodes.item(0).getFirstChild().getNodeValue();
-//		if (!ALLOW_MULTIPLE_CLIENT_NAMES) {
-//	        // Verify that only a single client name was used
-//	        for (int i = 1; i < nodes.getLength(); i++) {
-//	        	String node_name = nodes.item(i).getFirstChild().getNodeValue();
-//	        	if (!_sClientName.equals(node_name)) {
-//	        		System.out.println("\n\n*** LOG ERROR [" + f + "]: " + _sClientName + " != " + node_name);
-//	        		System.exit(1);
-//	        	}
-//	        }
-//		}
-        
-		//NodeList nodes = (NodeList)XPathQuery(_doc, "//round-end", XPathConstants.NODESET);		
-		//System.out.println("\n\nQuery result: " + result.getClass());
 		NodeList nodes = _doc.getChildNodes().item(0).getChildNodes();
 		for (int i = 0; i < nodes.getLength(); i++) {
 
@@ -94,8 +77,6 @@ public class LogReader {
 					instance_name = c.getFirstChild().getNodeValue(); 
 				}
 				if (c.getNodeName().equals("round-reward")) {
-					//PrintNode(c.getFirstChild(), "", 0);
-					//System.out.println("C:" + c.getFirstChild().getNodeValue());
 					reward = new Double(c.getFirstChild().getNodeValue());
 				}
 				if (c.getNodeName().equals("time-used")) {
@@ -104,13 +85,11 @@ public class LogReader {
 			}
 
 			if (client_name == null) {
-				System.err.println("Client name null... skipping");
+				System.err.println("[SERVER] Client name null... skipping");
 				PrintNode(n, "", 0);
 				continue;
-				//System.exit(1);
 			}
 			
-			//System.out.println(_sClientName + ": " + instance_name + " -> " + reward);
 			MapList ml = _client2data.get(client_name);
 			if (ml == null) {
 				ml = new MapList();
@@ -119,8 +98,6 @@ public class LogReader {
 			ml.putValue(instance_name, reward);
 			ml.putValue(instance_name + "__trial_time", time_used);
 		}
-		
-		//System.out.println(_client2data);
 	}
 	
 	public static void CleanFile(File f, File f2) {
@@ -138,7 +115,7 @@ public class LogReader {
 			br.close();
 			ps.close();
 		} catch (Exception e) {
-			System.out.println("Cannot process file: '" + f + "'\n" + e);
+			System.out.println("[SERVER] Cannot process file: '" + f + "'\n" + e);
 			System.exit(1);
 		}
 	}
@@ -164,13 +141,13 @@ public class LogReader {
 	public static void PrintNode(Node n, String prefix, int depth) {
 		
 		try {			
-			System.out.print("\n" + Pad(depth) + "[" + n.getNodeName());
+			System.out.print("[SERVER] \n" + Pad(depth) + "[" + n.getNodeName());
 			NamedNodeMap m = n.getAttributes();
 			for (int i = 0; m != null && i < m.getLength(); i++) {
 				Node item = m.item(i);
-				System.out.print(" " + item.getNodeName() + "=" + item.getNodeValue());
+				System.out.print("[SERVER]  " + item.getNodeName() + "=" + item.getNodeValue());
 			}
-			System.out.print("] ");
+			System.out.print("[SERVER] ] ");
 			
 			NodeList cn = n.getChildNodes();
 			
@@ -178,12 +155,12 @@ public class LogReader {
 				Node item = cn.item(i);
 				if (item.getNodeType() == Node.TEXT_NODE) {
 					String val = item.getNodeValue().trim();
-					if (val.length() > 0) System.out.print(" \"" + item.getNodeValue().trim() + "\"");
+					if (val.length() > 0) System.out.print("[SERVER]  \"" + item.getNodeValue().trim() + "\"");
 				} else
 					PrintNode(item, prefix, depth+2);
 			}
 		} catch (Exception e) {
-			System.out.println(Pad(depth) + "Exception e: ");
+			System.out.println("[SERVER] " + Pad(depth) + "Exception e: ");
 		}
 	}
 	
@@ -204,11 +181,11 @@ public class LogReader {
 	public static void main(String[] args) {
 		
 		if (args.length != 1) {
-			System.err.println("Must specify log file to read.");
+			System.err.println("[SERVER] Must specify log file to read.");
 			System.exit(1);
 		}
 		
 		LogReader d = new LogReader(new File(args[0]));
-		System.out.println(d._client2data);
+		System.out.println("[SERVER] " + d._client2data);
 	}
 }

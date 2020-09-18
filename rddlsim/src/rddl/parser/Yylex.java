@@ -169,7 +169,7 @@ public int yyline() { return yyline; }
 		"Error: Unmatched input.\n"
 	};
 	private void yy_error (int code,boolean fatal) {
-		java.lang.System.out.print(yy_error_string[code]);
+		java.lang.System.out.print("[SERVER] " + yy_error_string[code]);
 		java.lang.System.out.flush();
 		if (fatal) {
 			throw new Error("Fatal Error.\n");

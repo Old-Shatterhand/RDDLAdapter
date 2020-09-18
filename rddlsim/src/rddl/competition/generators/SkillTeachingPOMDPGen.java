@@ -26,8 +26,8 @@ public class SkillTeachingPOMDPGen extends SkillTeachingMDPGen {
 	}
 	
 	public static void usage() {
-		System.err.println("Usage: output-dir instance-name minNumSkils maxNumSkills maxPreReqs  maxMedCorrectProb maxLowCorrectProb horizon discount noiseMax");
-		System.err.println("Example: files/testcomp/rddl recon-2 5 10 3  0.8 0.7 100 0.9 0.25");
+		System.err.println("[SERVER] Usage: output-dir instance-name minNumSkils maxNumSkills maxPreReqs  maxMedCorrectProb maxLowCorrectProb horizon discount noiseMax");
+		System.err.println("[SERVER] Example: files/testcomp/rddl recon-2 5 10 3  0.8 0.7 100 0.9 0.25");
 		System.exit(127);
 	}
 	

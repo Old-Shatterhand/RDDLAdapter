@@ -37,10 +37,6 @@ public class ActionGenerator {
 	
 		--actions_left;
 		if (actions_left < 0) {
-			// TODO: Build string name with "___"
-			// TODO: Add multiple action ability to cclient
-			// TODO: Add multiple action translation to problem generator
-			//       ... verify equivalent for translations
 			StringBuilder sb = new StringBuilder();
 			boolean first = true;
 			for (PVAR_INST_DEF p : action_list) {
@@ -64,7 +60,7 @@ public class ActionGenerator {
 				try {
 					inst = s.generateAtoms(p);
 				} catch (EvalException e) {
-					System.out.println("ERROR: could not generate atoms for " + p + "\n" + e);
+					System.out.println("[SERVER] ERROR: could not generate atoms for " + p + "\n" + e);
 					e.printStackTrace();
 					System.exit(1);
 				}

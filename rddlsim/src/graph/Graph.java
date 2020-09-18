@@ -147,7 +147,7 @@ public class Graph {
 			cur_label = cur_label.substring(1);
 			String new_label = (String)id2var.get(new Integer(cur_label));
 			if (new_label == null)
-				System.out.println("Graph error: remap of '" + cur_label + "' is null");
+				System.out.println("[SERVER] Graph error: remap of '" + cur_label + "' is null");
 			_hmNodeLabel.put(o, new_label);
 		}
 	}
@@ -408,7 +408,7 @@ public class Graph {
 			ps.print(format());
 			ps.close();
 		} catch (Exception e) {
-			System.err.println("Graph.formatDotFile: " + e);
+			System.err.println("[SERVER] Graph.formatDotFile: " + e);
 			return false;
 		}
 		return true;
@@ -441,7 +441,7 @@ public class Graph {
 	           return sb;
 
 	       } catch (IOException ioe) {
-	           System.out.println("ERROR in Graph.format: Check executable.\n" + ioe);
+	           System.out.println("[SERVER] ERROR in Graph.format: Check executable.\n" + ioe);
 	           return null;
 	       }
 	}
@@ -451,7 +451,7 @@ public class Graph {
 			PrintStream os = new PrintStream(new FileOutputStream(filename));
 			genDotFile(os);
 		} catch (IOException e) {
-			System.err.println(e);
+			System.err.println("[SERVER] " + e);
 		}
 	}
 	
@@ -609,7 +609,7 @@ public class Graph {
 		try {
 			launchViewer(width, height, 0, 0, 20);
 		} catch (Throwable t) {
-			System.err.println(t);
+			System.err.println("[SERVER] " + t);
 			t.printStackTrace(System.err);
 		}
 	}
@@ -634,7 +634,7 @@ public class Graph {
 
 	/** Show different tree widths * */
 	public List computeBestOrder() {
-		System.out.println("Searching for a good order...");
+		System.out.println("[SERVER] Searching for a good order...");
 		String[] name = new String[6];
 		name[0] = "minf_deepest       ";
 		name[1] = "minf_shallow       ";
@@ -653,15 +653,15 @@ public class Graph {
 		int best_order = -1;
 		for (int i = 0; i < order.length; i++) {
 			int tw = computeTreeWidth(order[i]);
-			System.out.print(((tw < best_tw) ? "* " : "  ") + "TW of "
+			System.out.print("[SERVER] " + ((tw < best_tw) ? "* " : "  ") + "TW of "
 					+ name[i] + ": " + tw);
-			System.out.println("  " + order[i]);
+			System.out.println("[SERVER]   " + order[i]);
 			if (tw < best_tw) {
 				best_tw = tw;
 				best_order = i;
 			}
 		}
-		System.out.println(name[best_order] + "/TW:" + best_tw + "...done");
+		System.out.println("[SERVER] " + name[best_order] + "/TW:" + best_tw + "...done");
 
 		return order[best_order];
 	}
@@ -684,7 +684,6 @@ public class Graph {
 			}
 			factors.add(varset);
 		}
-		// System.out.println(factors);
 
 		// Now perform variable elimination, keeping track of size of merged
 		// factor at each step
@@ -721,8 +720,6 @@ public class Graph {
 			factors.clear();
 			factors.addAll(factors_without_var);
 			factors.add(new_factor);
-			// System.out.println("Elim " + var + " -> " +
-			// new_factor + " + " + factors_without_var);
 		}
 
 		return tw;
@@ -742,7 +739,6 @@ public class Graph {
 		for (int i = 0; i < depths.length; i++) {
 			Map.Entry me = (Map.Entry) depths[i];
 			free.add(me.getKey());
-			// System.out.println(me);
 		}
 
 		// Initialize a set of sets containing vars and their parents
@@ -757,7 +753,6 @@ public class Graph {
 				varset.addAll(s);
 			}
 			factors.add(varset);
-			// System.out.println("Adding varset " + varset + " for " + var);
 		}
 
 		return greedyTWSort(free, factors);
@@ -781,12 +776,8 @@ public class Graph {
 	 */
 	public List greedyTWSort(List free, Set factors) {
 
-		// System.out.println("Factors: " + factors);
-
 		double cur_tw = 0d;
 		ArrayList order = new ArrayList();
-
-		// System.out.println(factors);
 
 		// Now perform variable elimination, choosing the var which minimizes
 		// tree-width
@@ -806,13 +797,10 @@ public class Graph {
 					}
 				}
 			}
-			// System.out.print(".");
-			// System.out.println("min: " + min_tw + " - " + min_var);
 
 			// Separate the sets
 			Set factors_with_var = new HashSet();
 			Set factors_without_var = new HashSet();
-			// System.out.println("Start Factors: " + factors);
 			Iterator j = factors.iterator();
 			while (j.hasNext()) {
 				Set factor_j = (Set) j.next();
@@ -830,7 +818,6 @@ public class Graph {
 				Set factor_k = (Set) j.next();
 				new_factor.addAll(factor_k);
 			}
-			// System.out.println("Elim: " + min_var + "->" + new_factor);
 			new_factor.remove(min_var); // We've eliminated this var!
 			cur_tw = (cur_tw > min_tw) ? cur_tw : min_tw;
 			free.remove(min_var);
@@ -840,15 +827,10 @@ public class Graph {
 			factors.clear();
 			factors.addAll(factors_without_var);
 			factors.add(new_factor);
-			// System.out.println("End Factors: " + factors + "\n");
-			// System.out.println("Elim " + var + " -> " +
-			// new_factor + " + " + factors_without_var);
-			// System.exit(1);
 		}
 
 		_dMaxBinaryWidth = cur_tw;
 		_nTreeWidth = computeTreeWidth(order);
-		// System.out.print("(" + _df.format(cur_tw) + ")");
 
 		return order;
 	}
@@ -867,9 +849,7 @@ public class Graph {
 				affected_vars.addAll(factor_j);
 			}
 		}
-		// System.out.println(factors + ":" + affected_vars + "\n");
 		double num_tuples = 1d;
-		// System.out.println("Affected vars: " + affected_vars);
 		j = affected_vars.iterator();
 		Object t = null;
 		while (j.hasNext()) {
@@ -878,17 +858,17 @@ public class Graph {
 			if (sz == null) {
 				if (PRINT_WARNING) {
 					System.out
-							.println("--------------------------------------------------------------");
-					System.out.println("WARNING: Cannot retrieve " + t
+							.println("[SERVER] --------------------------------------------------------------");
+					System.out.println("[SERVER] WARNING: Cannot retrieve " + t
 							+ " from " + _hmNodes);
 					System.out
-							.println("It is likely that no edge was added for "
+							.println("[SERVER] It is likely that no edge was added for "
 									+ t
-									+ ", i.e. unit \nclause that does not interact "
+									+ ", i.e. unit \n[SERVER] clause that does not interact "
 									+ "with other predicates");
-					System.out.println("Defaulting to 1d");
+					System.out.println("[SERVER] Defaulting to 1d");
 					System.out
-							.println("--------------------------------------------------------------");
+							.println("[SERVER] --------------------------------------------------------------");
 				}
 				sz = new Integer(1);
 				_hmNodes.put(t, sz);
@@ -979,7 +959,6 @@ public class Graph {
 		for (i = 0; i < depths.length; i++) {
 			Map.Entry me = (Map.Entry) depths[i];
 			free.add(me.getKey());
-			// System.out.println(me);
 		}
 
 		// Iterate until no more variables to put in order
@@ -1015,7 +994,6 @@ public class Graph {
 						if (!parents.contains(vk)) {
 							continue;
 						}
-						// System.out.println("Checking " + vj + "<->" + vk);
 						if (!isUniLink(vj, vk) && !isUniLink(vk, vj)) {
 							fill++;
 						}
@@ -1023,7 +1001,6 @@ public class Graph {
 				}
 
 				// Lowest fill so far?
-				// System.out.print(fill + " ");
 				if (fill < minf) {
 					minf = fill;
 					minf_var = var;
@@ -1031,14 +1008,11 @@ public class Graph {
 			}
 
 			// Add the min_fill var for this round
-			// System.out.println(" -> Chose " + minf_var + "::" + minf);
 			order.add(minf_var);
 			free.remove(minf_var);
 			parents.add(minf_var);
 		}
 
-		// System.out.println(order);
-		// System.exit(1);
 		return order;
 	}
 
@@ -1117,7 +1091,7 @@ public class Graph {
 	public HashSet<HashSet<Object>> getStronglyConnectedComponents() {
 
 		if (!_bDirected) {
-			System.err.println("WARNING: did you mean to evaluate strongly connected components on an undirected graph?");
+			System.err.println("[SERVER] WARNING: did you mean to evaluate strongly connected components on an undirected graph?");
 			return null;
 		}
 
@@ -1180,7 +1154,7 @@ public class Graph {
 		if (vertices.size() == 0)
 			return false; // No cycles in an empty graph
 		if (!_bDirected) {
-			System.err.println("WARNING: did you mean to do cycle detection on an undirected graph?");
+			System.err.println("[SERVER] WARNING: did you mean to do cycle detection on an undirected graph?");
 			return _hmLinks.size() > 0; // An undirected graph with any link has a cycle
 		}
 
@@ -1267,11 +1241,11 @@ public class Graph {
 		g.genDotFile("graph_test.dot");
 		g.launchViewer();
 
-		System.out.println(g.format());
+		System.out.println("[SERVER] " + g.format());
 		
-		System.out.println("Topological sort of nodes: " + g.topologicalSort(false));
-		System.out.println("Has cycle: " + g.hasCycle());
-		System.out.println("Strongly connected components: " + g.getStronglyConnectedComponents());
+		System.out.println("[SERVER] Topological sort of nodes: " + g.topologicalSort(false));
+		System.out.println("[SERVER] Has cycle: " + g.hasCycle());
+		System.out.println("[SERVER] Strongly connected components: " + g.getStronglyConnectedComponents());
 	}
 		
 	public static void main2(String[] args) {
@@ -1306,14 +1280,14 @@ public class Graph {
 		// To interactively view the graph in a Java window
 		g.launchViewer();
 		
-		System.out.println(g);
+		System.out.println("[SERVER] " + g);
 		List order = g.computeBestOrder(); // g.greedyTWSort(true);
-		System.out.println("\nOrder:        " + order);
+		System.out.println("\n[SERVER] Order:        " + order);
 		g.computeTreeWidth(order);
-		System.out.println("MAX Bin Size: " + g._df.format(g._dMaxBinaryWidth));
-		System.out.println("TW:           " + g._nTreeWidth + "\n");
-		System.out.println("Has cycle: " + g.hasCycle());
-		System.out.println("Strongly connected components: " + g.getStronglyConnectedComponents());
+		System.out.println("[SERVER] MAX Bin Size: " + g._df.format(g._dMaxBinaryWidth));
+		System.out.println("[SERVER] TW:           " + g._nTreeWidth + "\n");
+		System.out.println("[SERVER] Has cycle: " + g.hasCycle());
+		System.out.println("[SERVER] Strongly connected components: " + g.getStronglyConnectedComponents());
 	}
 
 }

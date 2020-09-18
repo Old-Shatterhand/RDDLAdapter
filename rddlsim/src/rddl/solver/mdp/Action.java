@@ -28,7 +28,7 @@ public class Action {
 		for (Map.Entry<CString, Integer> me : _hmStateVar2CPT.entrySet()) {
 			Integer var_id = (Integer)context._hmVarName2ID.get(me.getKey()._string);
 			if (var_id == null) {
-				System.err.println("ERROR in Action(): could not find var ID for " + me.getKey());
+				System.err.println("[SERVER] ERROR in Action(): could not find var ID for " + me.getKey());
 				System.exit(1);
 			}
 			_hmVarID2CPT.put(var_id, me.getValue());

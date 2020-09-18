@@ -205,13 +205,11 @@ public class PPDDL {
 	}
 
 	public void processFile(String filename) {
-		System.out.println("Processing: " + filename);
+		System.out.println("[SERVER] Processing: " + filename);
 		ArrayList content = HierarchicalParser.ParseFile(filename);
 		if (content == null) {
-			System.out.println("[PDDL] Could not read: " + filename);
+			System.out.println("[SERVER] Could not read: " + filename);
 		} else {
-			// System.out.println(content);
-			// PrintFormattedList(content); // Remove
 			list2IR(content);
 		}
 	}
@@ -230,11 +228,11 @@ public class PPDDL {
 				} else if (s2.equalsIgnoreCase("problem")) {
 					problemList2IR(l);
 				} else {
-					System.out.println("Expected 'domain' or 'problem': " + s);
+					System.out.println("[SERVER] Expected 'domain' or 'problem': " + s);
 					return;
 				}
 			} else {
-				System.out.println("Expected keyword 'define': " + s);
+				System.out.println("[SERVER] Expected keyword 'define': " + s);
 				return;
 			}
 		}
@@ -243,7 +241,6 @@ public class PPDDL {
 	public void domainList2IR(ArrayList l) {
 		ArrayList l2 = (ArrayList) l.get(1);
 		String name = (String) l2.get(1); // [domain name]
-		// System.out.println("Parsing domain: " + name);
 		ArrayList reqs = new ArrayList();
 		ArrayList predicates = new ArrayList();
 		ArrayList constants = new ArrayList();
@@ -365,7 +362,7 @@ public class PPDDL {
 				effect = (ArrayList) l.get(index + 1);
 
 			} else {
-				System.out.println("Expected ':params',':precond',':effects':"
+				System.out.println("[SERVER] Expected ':params',':precond',':effects':"
 						+ ident);
 				return null;
 			}
@@ -374,7 +371,6 @@ public class PPDDL {
 	}
 
 	public void problemList2IR(ArrayList l) {
-		//System.out.println("Processing problem: " + l);
 		ArrayList l2 = (ArrayList) l.get(1);
 		String name = (String) l2.get(1);
 		String domain = null;
@@ -384,7 +380,6 @@ public class PPDDL {
 		ArrayList metric = null;
 		ArrayList goal = null;
 		double reward = -1;
-		// System.out.println("Parsing problem: " + name);
 		for (int index = 2; index < l.size(); index++) {
 			ArrayList nl = (ArrayList) l.get(index);
 			String ident = (String) nl.get(0);
@@ -430,17 +425,16 @@ public class PPDDL {
 				try {
 					reward = Double.parseDouble(sval);
 				} catch (NumberFormatException nfe) {
-					System.out.println("Invalid goal reward: " + sval);
+					System.out.println("[SERVER] Invalid goal reward: " + sval);
 					return;
 				}
 			} else {
-				System.out.println("Expected ':params',':precond',':effects',':metric'..."
+				System.out.println("[SERVER] Expected ':params',':precond',':effects',':metric'..."
 						+ ident + "\n got: " + nl);
 				return;
 			}
 		}
 		Problem new_problem = new Problem(name, domain, objects, types, init, goal, metric, reward);
-		//System.out.println("Adding problem: " + new_problem);
 		_alProblems.add(new_problem);
 	}
 
@@ -451,7 +445,7 @@ public class PPDDL {
 	public static void PrintFormattedList(ArrayList l, int n) {
 		Iterator i = l.iterator();
 		boolean prev_recurse = false;
-		System.out.print("\n" + Indent(n) + "[ ");
+		System.out.print("\n[SERVER] " + Indent(n) + "[ ");
 		while (i.hasNext()) {
 			Object next = i.next();
 			if (next instanceof ArrayList) {
@@ -459,14 +453,13 @@ public class PPDDL {
 				prev_recurse = true;
 			} else {
 				if (prev_recurse) {
-					System.out.print("\n" + Indent(n) + "  ");
+					System.out.print("\n[SERVER] " + Indent(n) + "  ");
 					prev_recurse = false;
 				}
-				System.out.print(/* next.getClass() + ":" + */next.toString()
-						+ " ");
+				System.out.print("[SERVER] " + next.toString() + " ");
 			}
 		}
-		System.out.print(" ]");
+		System.out.print("[SERVER]  ]");
 	}
 
 	public static String Indent(int l) {
@@ -479,13 +472,13 @@ public class PPDDL {
 
 	public static void main(String args[]) {
 		if (args.length < 1) {
-			System.out.println("PDDL: Requires a filename argument");
+			System.out.println("[SERVER] PDDL: Requires a filename argument");
 			System.exit(1);
 		}
 
 		PPDDL n = new PPDDL(args[0]);
-		System.out.println(n._alDomains);
-		System.out.println(n._alProblems);
+		System.out.println("[SERVER] " + n._alDomains);
+		System.out.println("[SERVER] " + n._alProblems);
 
 	}
 }

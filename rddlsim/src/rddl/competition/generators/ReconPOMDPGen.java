@@ -29,8 +29,8 @@ public class ReconPOMDPGen extends ReconMDPGen {
 	}
 
 	public static void usage() {
-		System.err.println("Usage: output-dir instance-name size maxObjects damageProbMax maxHazardDensity  lifeDensity horizon discount noiseMax");
-		System.err.println("Example: files/testcomp/rddl recon-2 4 3 0.9 0.5 0.7 0.8 100 0.9 0.2");
+		System.err.println("[SERVER] Usage: output-dir instance-name size maxObjects damageProbMax maxHazardDensity  lifeDensity horizon discount noiseMax");
+		System.err.println("[SERVER] Example: files/testcomp/rddl recon-2 4 3 0.9 0.5 0.7 0.8 100 0.9 0.2");
 		System.exit(127);
 	}
 	

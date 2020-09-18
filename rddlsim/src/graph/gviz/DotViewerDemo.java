@@ -22,7 +22,7 @@ public class DotViewerDemo extends DotViewer
     public static void main(String args[]) {
 
 	if(args.length > 1) {
-	    System.err.println("USAGE: java graph.gviz.DotViewerDemo [input_graph_file]");
+	    System.err.println("[SERVER] USAGE: java graph.gviz.DotViewerDemo [input_graph_file]");
 	    System.exit(1);
 	} 
 

@@ -75,7 +75,7 @@ public class DotViewerApplet extends JApplet {
     }
 
     public void Error(String msg) {
-		System.err.println(msg);
+		System.err.println("[SERVER] " + msg);
 		getContentPane(  ).add( "Center", new JLabel(msg, JLabel.CENTER));
 		repaint();
     }
@@ -86,7 +86,7 @@ public class DotViewerApplet extends JApplet {
 	try {
 	    program.parse();
 	} catch(Exception ex) {
-	    System.err.println("Exception: " + ex.getMessage());
+	    System.err.println("[SERVER] Exception: " + ex.getMessage());
 	    ex.printStackTrace(System.err);
 	    System.exit(1);
 	}

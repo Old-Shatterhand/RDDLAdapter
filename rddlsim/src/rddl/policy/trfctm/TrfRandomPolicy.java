@@ -81,8 +81,6 @@ public class TrfRandomPolicy extends Policy {
 					
 					PVAR_INST_DEF d = new PVAR_INST_DEF(p._sPVarName, r, intersection);
 					actions.add(d);
-//					System.out.println("Action: {signal " + intersection + " = " + r + "} ...until TIME=" + signalTimeOut[col][row]);
-					
 				}
 			}
 		}

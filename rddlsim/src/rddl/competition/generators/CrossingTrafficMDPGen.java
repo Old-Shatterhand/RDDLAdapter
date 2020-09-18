@@ -38,8 +38,8 @@ public class CrossingTrafficMDPGen {
 	}
 	
 	public static void usage() {
-		System.err.println("Usage: output-dir instance-name size_x size_y input_rate horizon discount");
-		System.err.println("Example: files/testcomp/rddl crossing-traffic-5-5 5 5 0.2 40 1.0");
+		System.err.println("[SERVER] Usage: output-dir instance-name size_x size_y input_rate horizon discount");
+		System.err.println("[SERVER] Example: files/testcomp/rddl crossing-traffic-5-5 5 5 0.2 40 1.0");
 		System.exit(127);
 	}
 	

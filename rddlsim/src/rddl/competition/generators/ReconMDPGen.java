@@ -52,8 +52,8 @@ public class ReconMDPGen {
 	}
 
 	public static void usage() {
-		System.err.println("Usage: output-dir instance-name size maxObjects damageProbMax maxHazardDensity  lifeDensity horizon discount");
-		System.err.println("Example: files/testcomp/rddl recon-2 4 5 0.9 0.5 0.7 100 0.9");
+		System.err.println("[SERVER] Usage: output-dir instance-name size maxObjects damageProbMax maxHazardDensity  lifeDensity horizon discount");
+		System.err.println("[SERVER] Example: files/testcomp/rddl recon-2 4 5 0.9 0.5 0.7 100 0.9");
 		System.exit(127);
 	}
 
@@ -80,7 +80,7 @@ public class ReconMDPGen {
 		hor = Integer.parseInt(args[7]);
 		dis = Float.parseFloat(args[8]);
 		} catch (Exception ex) {
-			System.err.println("Error in onr of the inputs");
+			System.err.println("[SERVER] Error in onr of the inputs");
 			System.exit(127);
 		}
 	}
@@ -93,10 +93,7 @@ public class ReconMDPGen {
 			numHazards--;
 		if (numHazards < 1)
 			numHazards = 1;
-		//System.out.println("Num hazards: " + numHazards);
 
-		//System.err.println(numObjects + "  " + numHazards);
-		
 		String s = "";
 		s += "non-fluents nf_" + instance_name 
 				+ " {\n\tdomain = recon_mdp; \n\tobjects { \n";
@@ -154,7 +151,6 @@ public class ReconMDPGen {
 					s+= "\t\tHAS_LIFE(o" + o + ");\n";
 				}
 				life++;
-				//System.err.println(numObjects + "  " + life);
 			}
 			else if(ran.nextFloat()< 0.7){
 				if (!mdp)

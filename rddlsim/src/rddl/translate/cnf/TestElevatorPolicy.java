@@ -101,8 +101,8 @@ public class TestElevatorPolicy extends Policy{
 						rddl.addOtherRDDL(r);
 					}
 				} catch (Exception e) {
-					System.out.println(e);
-					System.out.println("Error processing: " + f + ", skipping...");
+					System.out.println("[SERVER] " + e);
+					System.out.println("[SERVER] Error processing: " + f + ", skipping...");
 					rddl_files.remove(f);
 					continue;
 				}
@@ -116,15 +116,13 @@ public class TestElevatorPolicy extends Policy{
 					for (String instance_name : file2rddl.get(f)._tmInstanceNodes.keySet()) {
 						RDDL2Format r2f = new RDDL2Format(rddl, INST_NAME, FILE_FORMAT, OUTPUT_DIR);
 						File cnffile = new File(CNF_FILE_NAME);
-//						if(!cnffile.exists())cnffile.createNewFile();
 						cnf = new CNF(r2f);
 						PrintWriter pw = new PrintWriter(new FileWriter(CNF_FILE_NAME));
 						cnf.exportCNF(pw);
 						pw.close();
 					}
 				} catch (Exception e) {
-					System.err.println("Error processing: " + f);
-//					System.err.println(e);
+					System.err.println("[SERVER] Error processing: " + f);
 					e.printStackTrace(System.err);
 					System.err.flush();
 					rddl_files.remove(f);
@@ -169,7 +167,7 @@ public class TestElevatorPolicy extends Policy{
 			}
 		} catch (Exception e) {			
 			e.printStackTrace();
-			System.out.println("Error: CNF file output failed!");
+			System.out.println("[SERVER] Error: CNF file output failed!");
 		}
 		//Use ProcessBuilder execute RSAT and redirect output to given file
 		if(needReplan || timestepInCurPlan > 14 || curPlan == null)
@@ -183,7 +181,7 @@ public class TestElevatorPolicy extends Policy{
 			} catch (IOException e) {
 				
 				e.printStackTrace();
-				System.out.println("Error: Failed to execute RSAT");
+				System.out.println("[SERVER] Error: Failed to execute RSAT");
 			}
 			int time_up_cnt = 0;
 			while(RSATRunning()){
@@ -195,7 +193,7 @@ public class TestElevatorPolicy extends Policy{
 				try{
 					Thread.sleep(400);
 				}catch(Exception e){
-					System.out.println("Error: sleep failed");
+					System.out.println("[SERVER] Error: sleep failed");
 				}
 				time_up_cnt++;
 				

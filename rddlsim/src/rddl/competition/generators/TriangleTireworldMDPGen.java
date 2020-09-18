@@ -41,12 +41,11 @@ public class TriangleTireworldMDPGen {
 				new FileOutputStream(gen.output_dir + File.separator + gen.instance_name + ".rddl"));
 		ps.println(content);
 		ps.close();
-		//System.out.println("\n" + content + "\n");
 	}
 	
 	public static void usage() {
-		System.err.println("Usage: output-dir instance-name ppddl_file prob_flat horizon discount");
-		System.err.println("Example: files/testcomp/rddl triangle_tireworld_mdp__1 3 2 0.2 0.1 40 1.0");
+		System.err.println("[SERVER] Usage: output-dir instance-name ppddl_file prob_flat horizon discount");
+		System.err.println("[SERVER] Example: files/testcomp/rddl triangle_tireworld_mdp__1 3 2 0.2 0.1 40 1.0");
 		System.exit(127);
 	}
 	
@@ -69,8 +68,6 @@ public class TriangleTireworldMDPGen {
 		
 		// Load source PPDDL file
 		PPDDL src = new PPDDL(ppddl_file);
-		//System.out.println("Domains" + src._alDomains);
-		//System.out.println("Problems" + src._alProblems.get(0));
 		PPDDL.Problem p = (PPDDL.Problem)src._alProblems.get(0);
 		
 //		Problem: triangle-tire-1

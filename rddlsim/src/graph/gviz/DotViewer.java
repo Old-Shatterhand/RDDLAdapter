@@ -57,10 +57,9 @@ public abstract class DotViewer
 	try {
 	    input = new FileInputStream(filename);
 	} catch(FileNotFoundException fnf) {
-	    System.out.println(fnf.toString());
+	    System.out.println("[SERVER] " + fnf.toString());
 	    System.exit(1);
 	}
-	//System.out.println("Displaying: '" + filename + "'");
 	showWindow(input);
     }
 
@@ -70,7 +69,7 @@ public abstract class DotViewer
 	try {
 	    program.parse();
 	} catch(Exception ex) {
-	    System.err.println("Exception: " + ex.getMessage());
+	    System.err.println("[SERVER] Exception: " + ex.getMessage());
 	    ex.printStackTrace(System.err);
 	    System.exit(1);
 	}
@@ -107,7 +106,6 @@ public abstract class DotViewer
 
 	    if (clickCount == 2) {
 		gp.setScaleToFit(true);
-		//System.out.println("Zoom reset");
 		gp.resetZoom();
 		gp.repaint();
 	    }
@@ -149,8 +147,6 @@ public abstract class DotViewer
 	// The method called when a mouse release occurs on a displayed subgraph.
 	public void grappaReleased(Subgraph subg, Element elem, GrappaPoint pt, int modifiers, Element pressedElem, 
 			    GrappaPoint pressedPt, int pressedModifiers, GrappaBox outline, GrappaPanel panel) {
-	    //System.out.println("Zoom Outline");
-	    //System.out.flush();
 	    gp.setScaleToFit(false);
 	    gp.setScaleToSize(null);
 	    gp.zoomToOutline(outline);
@@ -319,32 +315,27 @@ public abstract class DotViewer
 			    ps.close();
 			}
 		    } catch (FileNotFoundException ex) {
-			System.err.println("File system error... could not write file.");
+			System.err.println("[SERVER] File system error... could not write file.");
 		    }
 		    System.out.flush();
 		} else if(tgt == redraw) {
 		    gp.repaint();
 		} else if(tgt == zoom_reset) {
 		    gp.setScaleToFit(true);
-		    //System.out.println("Zoom reset");
 		    gp.resetZoom();
 		    gp.repaint();
 		} else if(tgt == zoom_half) {
-		    //System.out.println("Zoom 1/2x");
-		    //System.out.flush();
 		    gp.setScaleToFit(false);
 		    gp.setScaleToSize(null);
 		    gp.multiplyScaleFactor(0.5d);
 		    gp.repaint();
 		} else if(tgt == zoom_two) {
-		    //System.out.println("Zoom 2x");	
-		    //System.out.flush();
 		    gp.setScaleToFit(false);
 		    gp.setScaleToSize(null);
 		    gp.multiplyScaleFactor(2d);
 		    gp.repaint();
 		}  else {
-		    System.out.println("Unhandled button: " + evt);
+		    System.out.println("[SERVER] Unhandled button: " + evt);
 		}
 	    }
 	}

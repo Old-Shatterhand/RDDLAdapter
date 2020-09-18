@@ -42,13 +42,13 @@ public class RDDL {
 			if (f.isDirectory()) {
 				for (File f2 : f.listFiles())
 					if (f2.getName().endsWith(".rddl") || f2.getName().endsWith(".rddl2")) {
-						System.out.println("Loading: " + f2);
+						System.out.println("[SERVER] Loading: " + f2);
 						addOtherRDDL(parser.parse(f2), f2.getName().substring(0, f2.getName().lastIndexOf('.')));  
 					}
 			} else
 				addOtherRDDL(parser.parse(f), f.getName().substring(0, f.getName().lastIndexOf('.')));
 		} catch (Exception e) {
-			System.out.println("ERROR: Could not instantiate RDDL for '" + rddl_file_or_dir + "'\n");// + e);
+			System.out.println("[SERVER] ERROR: Could not instantiate RDDL for '" + rddl_file_or_dir + "'\n");// + e);
 			//e.printStackTrace();
 			System.exit(1);
 		}
@@ -56,7 +56,7 @@ public class RDDL {
 
 	public void addDomain(DOMAIN d) {
 		if (_tmDomainNodes.containsKey(d._sDomainName)) {
-			System.err.println("ERROR: conflicting (duplicate) domain names: " + d._sDomainName);
+			System.err.println("[SERVER] ERROR: conflicting (duplicate) domain names: " + d._sDomainName);
 			System.exit(1);
 		}
 		_tmDomainNodes.put(d._sDomainName, d);
@@ -64,7 +64,7 @@ public class RDDL {
 
 	public void addInstance(INSTANCE i) {
 		if (_tmInstanceNodes.containsKey(i._sName)) {
-			System.err.println("ERROR: conflicting (duplicate) instance names: " + i._sName);
+			System.err.println("[SERVER] ERROR: conflicting (duplicate) instance names: " + i._sName);
 			System.exit(1);
 		}
 		_tmInstanceNodes.put(i._sName, i);		
@@ -72,7 +72,7 @@ public class RDDL {
 
 	public void addNonFluents(NONFLUENTS n) {
 		if (_tmNonFluentNodes.containsKey(n._sName)) {
-			System.err.println("ERROR: conflicting (duplicate) nonfluent names: " + n._sName);
+			System.err.println("[SERVER] ERROR: conflicting (duplicate) nonfluent names: " + n._sName);
 			System.exit(1);
 		}
 		_tmNonFluentNodes.put(n._sName, n);		
@@ -86,15 +86,15 @@ public class RDDL {
 		overlap_n.retainAll(rddl._tmNonFluentNodes.keySet());
 		overlap_i.retainAll(rddl._tmInstanceNodes.keySet());
 		if (overlap_d.size() != 0) {
-			System.err.println("ERROR: conflicting (duplicate) domain names: " + overlap_d);
+			System.err.println("[SERVER] ERROR: conflicting (duplicate) domain names: " + overlap_d);
 			System.exit(1);
 		}
 		if (overlap_n.size() != 0) {
-			System.err.println("ERROR: conflicting (duplicate) nonfluent names: " + overlap_n);
+			System.err.println("[SERVER] ERROR: conflicting (duplicate) nonfluent names: " + overlap_n);
 			System.exit(1);
 		}
 		if (overlap_i.size() != 0) {
-			System.err.println("ERROR: conflicting (duplicate) instance names: " + overlap_i);
+			System.err.println("[SERVER] ERROR: conflicting (duplicate) instance names: " + overlap_i);
 			System.exit(1);
 		}
 		for (DOMAIN d : rddl._tmDomainNodes.values()) {
@@ -175,7 +175,7 @@ public class RDDL {
 				} else if (s.equals("preconditions")) {
 					_bPreconditions = true;
 				} else {
-					System.err.println("Unrecognized requirement '" + s + "'.");
+					System.err.println("[SERVER] Unrecognized requirement '" + s + "'.");
 				}
 			}
 		}
@@ -379,7 +379,7 @@ public class RDDL {
 				_nHorizon = Integer.MAX_VALUE;
 				_termCond = (BOOL_EXPR)horizon;
 			} else {
-				System.err.println("Horizon specification not of a recognized type:\n-integer\n-pos-inf\n-terminate-when (boolean expression)}");
+				System.err.println("[SERVER] Horizon specification not of a recognized type:\n-integer\n-pos-inf\n-terminate-when (boolean expression)}");
 				System.exit(1);
 			}
 			_dDiscount = discount;
@@ -1129,7 +1129,7 @@ public class RDDL {
 			try {
 				result = (LCONST)_pvarExpr.sample(subs, s, r);
 			} catch (ClassCastException e) {
-				System.out.println("Could not sample from " + this);
+				System.out.println("[SERVER] Could not sample from " + this);
 				throw e;
 			}
 			return result;
@@ -1232,7 +1232,7 @@ public class RDDL {
 			super(enum_name);
 			
 			if (enum_name.charAt(0) != '@' && !enum_name.equals("default")) { // I don't recall why PVAR_EXPR.DEFAULT is an ENUM_VAL, but accept this as special case 
-				System.out.println("FATAL ERROR (LANGUAGE REQUIREMENT): Enum '" + enum_name + "' currently must defined with a leading @");
+				System.out.println("[SERVER] FATAL ERROR (LANGUAGE REQUIREMENT): Enum '" + enum_name + "' currently must defined with a leading @");
 				System.exit(1);
 			}
 			
@@ -1699,7 +1699,6 @@ public class RDDL {
 			
 			// Check last case for "otherwise" and build expression if necessary
 			int last_index = _exprProbs.size() - 1;
-			//System.out.println(_exprProbs.get(last_index) + " == " + OTHERWISE_CASE + ": " + _exprProbs.get(last_index).equals(OTHERWISE_CASE));
 			if (_exprProbs.get(last_index).equals(OTHERWISE_CASE)) {
 				EXPR otherwise_prob = new REAL_CONST_EXPR(1d);
 				for (int i = 0; i < _exprProbs.size() - 2; i+=2) {
@@ -1708,7 +1707,7 @@ public class RDDL {
 						otherwise_prob = new OPER_EXPR(otherwise_prob, case_prob, "-");
 					} catch (Exception e) { // Fatal error
 						e.printStackTrace();
-						System.err.println(e);
+						System.err.println("[SERVER] " + e);
 						System.exit(1);
 					}
 				}
@@ -1772,7 +1771,6 @@ public class RDDL {
 					if (_sTypeName != null && !value_set.contains(case_label))
 						throw new EvalException("'" + case_label + "' not found in " + etd._alPossibleValues + " for Discrete(" + _sTypeName + ", ... )");
 				}
-				//System.out.println(lconst_probs);
 				if (Math.abs(1.0 - total) > 1.0e-6)
 					throw new EvalException("Discrete probabilities did not sum to 1.0: " + total + " : " + lconst_probs);
 
@@ -2403,7 +2401,7 @@ public class RDDL {
 				
 				Object interm_result = _e.sample(subs, s, r);
 				if (DEBUG_EXPR_EVAL)
-					System.out.println(" - " + subs + " : " + interm_result);
+					System.out.println("[SERVER]  - " + subs + " : " + interm_result);
 
 				if (result == null)
 					result = interm_result;
@@ -2500,7 +2498,7 @@ public class RDDL {
 				else if (o instanceof PVAR_EXPR) 
 					_alTerms.add(new TVAR_EXPR((PVAR_EXPR)o));
 				else {
-					System.err.println(_pName + " argument must be an enum/object type, but " + o + " is not.");
+					System.err.println("[SERVER] " + _pName + " argument must be an enum/object type, but " + o + " is not.");
 					System.exit(1);
 				}
 			}
@@ -2571,8 +2569,8 @@ public class RDDL {
 				// Get the vector index of 'member' by looking it up in the type_def for the range value of this pvar
 				PVARIABLE_DEF pvar_def = s._hmPVariables.get(_pName._pvarUnprimed /*unprimed version to look up range*/);
 				if (pvar_def == null) {
-					System.err.println("RDDL.PVAR_EXPR: expected a type of '" + _pName._pvarUnprimed + "' but got " + pvar_def);
-					System.err.println(s._hmPVariables.keySet());
+					System.err.println("[SERVER] RDDL.PVAR_EXPR: expected a type of '" + _pName._pvarUnprimed + "' but got " + pvar_def);
+					System.err.println("[SERVER] " + s._hmPVariables.keySet());
 				}
 				TYPE_NAME range_type = pvar_def._typeRange;
 		
@@ -2715,7 +2713,7 @@ public class RDDL {
 					_alArgs.add((EXPR)o);
 					_bDet = _bDet && ((EXPR)o)._bDet;
 				} else {
-					System.err.println(_sName + " argument must be an EXPR type, but " + o + " is not.");
+					System.err.println("[SERVER] " + _sName + " argument must be an EXPR type, but " + o + " is not.");
 					System.exit(1);
 				}
 			}
@@ -2928,7 +2926,6 @@ public class RDDL {
 
 		public void collectGFluents(HashMap<LVAR, LCONST> subs,	State s, HashSet<Pair> gfluents) 
 			throws EvalException {
-			//System.out.println("\nGfluents before " + "[" + gfluents.size() + "] " + _test + ": " + gfluents + "... subs:" + subs + " / det:" + _test._bDet);
 			HashSet<Pair> test_gfluents = new HashSet<Pair>();
 			_test.collectGFluents(subs, s, test_gfluents);
 			boolean test_state_indep = test_gfluents.size() == 0;
@@ -2941,12 +2938,10 @@ public class RDDL {
 			
 			if (test_outcome == null || test_outcome == true) // could simplify, but this is explicit and obvious
 				_trueBranch.collectGFluents(subs, s, gfluents);
-			//System.out.println("\nGfluents after T[" + test_outcome + "]: " + "[" + gfluents.size() + "] " + _test + ": " + gfluents);
-			
+
 			if (test_outcome == null || test_outcome == false) // could simplify, but this is explicit and obvious
 				_falseBranch.collectGFluents(subs, s, gfluents);
-			//System.out.println("\nGfluents after F[" + test_outcome + "]: " + "[" + gfluents.size() + "] " + _test + ": " + gfluents);
-			
+
 		}
 	}
 
@@ -3097,10 +3092,8 @@ public class RDDL {
 		
 		public Object sample(HashMap<LVAR,LCONST> subs, State s, RandomDataGenerator r) throws EvalException {
 
-			//System.out.println("VARS: " + _alVariables);
 			ArrayList<ArrayList<LCONST>> possible_subs = s.generateAtoms(_alVariables);
-			//System.out.println(possible_subs);
-			
+
 			// First check for early termination even if some values are null -- to assist with collectGFluents
 			for (ArrayList<LCONST> sub_inst : possible_subs) {
 				for (int i = 0; i < _alVariables.size(); i++) {
@@ -3135,17 +3128,15 @@ public class RDDL {
 				
 				// Update result
 				Boolean interm_result = (Boolean)_expr.sample(subs, s, r);
-				//System.out.println("Quant " + _sQuantType + " [" + subs + "]" + result + "/" + interm_result); 
 				if (DEBUG_EXPR_EVAL)
-					System.out.println(subs + " : " + interm_result);
+					System.out.println("[SERVER] " + subs + " : " + interm_result);
 				
 				if (result == null)
 					result = interm_result;
 				else 
 					result = (_sQuantType == FORALL) ? result && interm_result 
 							  						 : result || interm_result;
-				//System.out.println("After: " + result + " " + (_sQuantType == FORALL));
-								
+
 				// Early cutoff detection
 				if (_sQuantType == FORALL && result == false)
 					return BOOL_EXPR.FALSE;
@@ -3168,7 +3159,6 @@ public class RDDL {
 		public void collectGFluents(HashMap<LVAR, LCONST> subs,	State s, HashSet<Pair> gfluents) 
 			throws EvalException {
 			
-			//System.out.println("VARS: " + _alVariables);
 			ArrayList<ArrayList<LCONST>> possible_subs = s.generateAtoms(_alVariables);
 
 			// First check for a fully deterministic or deterministic early termination outcome 
@@ -3357,10 +3347,8 @@ public class RDDL {
 					if (ASSUME_ACTION_OBSERVED && (b instanceof PVAR_EXPR) && s.getPVariableType(((PVAR_EXPR)b)._pName) == State.ACTION) {
 						
 						// If AND/false or OR/true then the other elements of this connective are irrelevant and can return with no relevant fluents
-						//System.out.println("Testing if can ignoring branch: " + this + " / " + subs);
 						Boolean eval = (Boolean)b.sample(subs, s, null);
 						if ((_sConn == AND && Boolean.FALSE.equals(eval)) || (_sConn == OR && Boolean.TRUE.equals(eval))) {
-							//System.out.println("Ignoring branch: " + this);
 							return;
 						}
 					}
@@ -3371,7 +3359,6 @@ public class RDDL {
 						// If can determine truth value of connective from nonfluents
 						// then any other fluents are irrelevant
 						if ((_sConn == AND && !eval) || (_sConn == OR && eval)) {
-							//System.out.println("\n>> early termination on '" + subs + "'" + this);
 							return; // Terminate fluent collection
 						}
 					} else {
@@ -3404,8 +3391,6 @@ public class RDDL {
 			// Otherwise collect subnodes
 			for (BOOL_EXPR b : _alSubNodes)
 				b.collectGFluents(subs, s, gfluents);
-
-			//System.out.println("CollGfluents: " + this + " -- " + gfluents);
 		}
 
 	}
@@ -3540,7 +3525,6 @@ public class RDDL {
 							"\nOperand 1: " + s1 + "\nOperand 2: " + s2 + "\nComp: " + comp);
 					equal = (Boolean)ComputeCompResult(v1._oVal, v2._oVal, EQUAL);
 				}
-				//System.out.println("EQUAL: " + equal + " for "+ s1 + " and " + s2);
 				return (comp == EQUAL) ? equal : !equal;
 			}
 
@@ -3566,7 +3550,6 @@ public class RDDL {
 			double v2 = ((Number)o2).doubleValue();
 			
 			if (comp == NEQ) {
-				//System.out.println("- NOT EQUAL: " + (v1 != v2) + " for "+ v1 + " and " + v2);
 				return (v1 != v2) ? TRUE : FALSE;
 			} else if (comp == LESSEQ) {
 				return (v1 <= v2) ? TRUE : FALSE;				
@@ -3577,7 +3560,6 @@ public class RDDL {
 			} else if (comp == GREATEREQ) {
 				return (v1 >= v2) ? TRUE : FALSE;
 			} else if (comp == EQUAL) {
-				//System.out.println("- EQUAL: " + (v1 == v2) + " for "+ v1 + " and " + v2);
 				return (v1 == v2) ? TRUE : FALSE;
 			} else
 				throw new EvalException("RDDL.COMP_EXPR: Unknown comparison operator: " + comp);
@@ -3629,7 +3611,6 @@ public class RDDL {
 			_sPredName = new PVAR_NAME(predname);
 			_oValue = value;
 			_alTerms = terms;
-			//System.out.println("Made new: " + this.toString());
 		}
 		
 		public PVAR_NAME _sPredName;

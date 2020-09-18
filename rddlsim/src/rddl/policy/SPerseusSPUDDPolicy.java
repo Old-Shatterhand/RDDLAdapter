@@ -51,13 +51,11 @@ public class SPerseusSPUDDPolicy extends Policy {
 
 	public ArrayList<PVAR_INST_DEF> getActions(State s) throws EvalException {
 		
-		//System.out.println("FULL STATE:\n\n" + getStateDescription(s));
-
 		if (s == null) {
 			// This should only occur on the **first step** of a POMDP trial
 			// when no observations have been generated, for now, we just
 			// return a 'noop'
-			System.out.println("NO STATE/OBS: taking noop\n\n");
+			System.out.println("[SERVER] NO STATE/OBS: taking noop\n\n");
 			return new ArrayList<PVAR_INST_DEF>();
 		}
 		
@@ -74,12 +72,12 @@ public class SPerseusSPUDDPolicy extends Policy {
 		//       of policy evaluation.
 		TreeSet<String> true_vars = getTrueFluents(s, fluent_type);
 		if (SHOW_STATE) {
-			System.out.println("\n==============================================");
-			System.out.println("\nTrue " + 
+			System.out.println("\n[SERVER] ==============================================");
+			System.out.println("\n[SERVER] True " +
 					           (fluent_type.equals("states") ? "state" : "observation") + 
 							   " variables:");
 			for (String prop_var : true_vars)
-				System.out.println(" - " + prop_var);
+				System.out.println("[SERVER]  - " + prop_var);
 		}
 		
 		// Get a map of { legal action names -> RDDL action definition }  
@@ -87,16 +85,16 @@ public class SPerseusSPUDDPolicy extends Policy {
 			ActionGenerator.getLegalBoolActionMap(s);
 
 		if (SHOW_STATE) {
-			System.out.println("\nLegal action names:");
+			System.out.println("\n[SERVER] Legal action names:");
 			for (String action_name : action_map.keySet())
-				System.out.println(" - " + action_name);
+				System.out.println("[SERVER]  - " + action_name);
 		}
 		
 		// Return a random action selection
 		ArrayList<String> actions = new ArrayList<String>(action_map.keySet());
 		String action_taken = actions.get(_rand.nextInt(actions.size()));
 		if (SHOW_ACTION_TAKEN)
-			System.out.println("\n--> Action taken: " + action_taken);
+			System.out.println("\n[SERVER] --> Action taken: " + action_taken);
 		
 		return action_map.get(action_taken);
 	}
@@ -109,21 +107,21 @@ public class SPerseusSPUDDPolicy extends Policy {
 	///////////////////////////////////////////////////////////////////////////
 
 	public void roundInit(double time_left, int horizon, int round_number, int total_rounds) {
-		System.out.println("\n*********************************************************");
-		System.out.println(">>> ROUND INIT " + round_number + "/" + total_rounds + "; time remaining = " + time_left + ", horizon = " + horizon);
-		System.out.println("*********************************************************");
+		System.out.println("\n[SERVER] *********************************************************");
+		System.out.println("[SERVER] >>> ROUND INIT " + round_number + "/" + total_rounds + "; time remaining = " + time_left + ", horizon = " + horizon);
+		System.out.println("[SERVER] *********************************************************");
 	}
 	
 	public void roundEnd(double reward) {
-		System.out.println("\n*********************************************************");
-		System.out.println(">>> ROUND END, reward = " + reward);
-		System.out.println("*********************************************************");
+		System.out.println("\n[SERVER] *********************************************************");
+		System.out.println("[SERVER] >>> ROUND END, reward = " + reward);
+		System.out.println("[SERVER] *********************************************************");
 	}
 	
 	public void sessionEnd(double total_reward) {
-		System.out.println("\n*********************************************************");
-		System.out.println(">>> SESSION END, total reward = " + total_reward);
-		System.out.println("*********************************************************");
+		System.out.println("\n[SERVER] *********************************************************");
+		System.out.println("[SERVER] >>> SESSION END, total reward = " + total_reward);
+		System.out.println("[SERVER] *********************************************************");
 	}
 
 	///////////////////////////////////////////////////////////////////////////
@@ -147,7 +145,7 @@ public class SPerseusSPUDDPolicy extends Policy {
 					}
 				}
 			} catch (Exception ex) {
-				System.err.println("SPerseusSPUDDPolicy: could not retrieve assignment for " + p + "\n");
+				System.err.println("[SERVER] SPerseusSPUDDPolicy: could not retrieve assignment for " + p + "\n");
 			}
 		}
 				

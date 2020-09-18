@@ -45,8 +45,6 @@ public class ManualWorkPolicy extends Policy {
 		Console console = System.console();
 		// Return a random action selection
 		ArrayList<String> actions = new ArrayList<String>(action_map.keySet());
-		//String action_taken = actions.get(_rand.nextInt(action_map.size()));
-		//System.out.println("\n--> Action taken: " + action_taken);
 		int i = 1;
 		for(String act: actions)
 		{
@@ -55,7 +53,7 @@ public class ManualWorkPolicy extends Policy {
 				console.printf("\n %d \t:" + act,i);
 			else
 			{
-				System.out.println("\n " + i + " \t:" + act);
+				System.out.println("[SERVER] \n " + i + " \t:" + act);
 			}
 			i++;
 		}
@@ -68,7 +66,7 @@ public class ManualWorkPolicy extends Policy {
 				temp = console.readLine("\nAction: ");
 			else 
 			{
-				System.out.println("Action:");
+				System.out.println("[SERVER] Action:");
 				Scanner input = new Scanner(System.in);
 				temp = input.nextLine();
 				

@@ -41,7 +41,7 @@ public class Test {
 	    int dd = GetCountingDD(context, MAX_GID, false); // GetCountingDD, GetExpDD, true/false
 	    
 	    // Test different display methods
-	    System.out.println(context.printNode(dd) + "\n");
+	    System.out.println("[SERVER] " + context.printNode(dd) + "\n");
 	    DD.PrintEnum(context, dd);
 	    context.getGraph(dd).launchViewer(1300, 770);
 
@@ -52,8 +52,8 @@ public class Test {
 	    }
 	    
 		// Test evaluation
-		System.out.println("Eval final graph with\n - " + test_eval + "\n");
-		System.out.println(" = " + context.evaluate(dd, test_eval));
+		System.out.println("[SERVER] Eval final graph with\n - " + test_eval + "\n");
+		System.out.println("[SERVER]  = " + context.evaluate(dd, test_eval));
 	}
 
 	public static void TestCompression(DD context) {
@@ -68,8 +68,8 @@ public class Test {
 	    //int count_dd = GetExpDD(context, MAX_GID, false); // GetCountingDD, GetExpDD, true/false
 	    //int count_dd = GetExpSumProdDD(context, (int)(MAX_GID/2), MAX_GID, 0.9d);
 	    //int count_dd = GetExpProdDD(context, MAX_GID, 0.9d); // GetCountingProdDD, GetExpProdDD
-	    System.out.println("Count DD [" + context.countExactNodes(count_dd) + "]:");
-	    System.out.println(context.printNode(count_dd) + "\n");
+	    System.out.println("[SERVER] Count DD [" + context.countExactNodes(count_dd) + "]:");
+	    System.out.println("[SERVER] " + context.printNode(count_dd) + "\n");
 	    //DD.PrintEnum(context,count_dd);
 
 		Graph g3 = context.getGraph(count_dd);
@@ -78,8 +78,8 @@ public class Test {
 
 		// AddPairNoise vs. AddAllPairNoise
 	    int noise_count_dd = AddAllPairNoise(context, MAX_GID/* + 1*/, count_dd, 0.01d, false); // AddPairNoise
-	    System.out.println("\n\nNoisy DD [" + context.countExactNodes(noise_count_dd) + "]:");
-	    System.out.println(context.printNode(noise_count_dd) + "\n");
+	    System.out.println("\n\n[SERVER] Noisy DD [" + context.countExactNodes(noise_count_dd) + "]:");
+	    System.out.println("[SERVER] " + context.printNode(noise_count_dd) + "\n");
 	    //DD.PrintEnum(context,noise_count_dd);
 
 	    Graph g = context.getGraph(noise_count_dd);
@@ -89,11 +89,11 @@ public class Test {
 	    int reduce_noise_dd = context.pruneNodes(noise_count_dd);
 	    //reduce_noise_dd = context.applyInt(reduce_noise_dd, reduce_noise_dd, DD.ARITH_SUM);
 	    //int reduce_noise_dd2 = ((AADD)context).reduce(reduce_noise_dd);
-	    System.out.println("\n\nReduced Noisy DD [" + context.countExactNodes(reduce_noise_dd) + "]:");
-	    System.out.println(context.printNode(reduce_noise_dd) + "\n");
+	    System.out.println("\n\n[SERVER] Reduced Noisy DD [" + context.countExactNodes(reduce_noise_dd) + "]:");
+	    System.out.println("[SERVER] " + context.printNode(reduce_noise_dd) + "\n");
 	    //DD.PrintEnum(context,reduce_noise_dd);
 	    int dd_result = context.applyInt(noise_count_dd, reduce_noise_dd, DD.ARITH_MINUS);
-	    System.out.println("Max approximation error: " + Math.max(Math.abs(context.getMinValue(dd_result)), 
+	    System.out.println("[SERVER] Max approximation error: " + Math.max(Math.abs(context.getMinValue(dd_result)),
 	    							  		   Math.abs(context.getMaxValue(dd_result))));
 
 		Graph g2 = context.getGraph(reduce_noise_dd);
@@ -120,7 +120,6 @@ public class Test {
 		
 			int assign = _rand.nextInt(1 << num_vars);
 			double val = _rand.nextDouble();
-			//System.out.println(assign + ": " + val);
 			ret = context.applyInt(ret, GetJointDD(context, num_vars, assign, val), DD.ARITH_SUM);
 			
 		}
@@ -131,7 +130,6 @@ public class Test {
 	public static int GetJointDD(DD context, int num_bits, int var_assign, double val) {
 		int ret = context.getConstantNode(val);
 		for (int i = 1; i <= num_bits; i++) {
-			//System.out.println(var_assign + ": " + (var_assign % 2));
 			boolean local_assign = (var_assign % 2) == 1;
 			var_assign = var_assign >> 1;
 			ret = context.applyInt(ret, context.getVarNode(i, local_assign ? 0d : 1d, 

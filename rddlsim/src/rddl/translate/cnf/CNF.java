@@ -351,7 +351,7 @@ public class CNF {
 				int size = outcomes.size();
 				if(list.size() < 2)
 				{
-					System.out.println("Error: wrong count of outcomes" );
+					System.out.println("[SERVER] Error: wrong count of outcomes" );
 					continue;
 				}
 				for(int start = 0 ; start < (size -1) ; start++)
@@ -380,7 +380,7 @@ public class CNF {
 			{
 				if(outcomes.size() < 2)
 				{
-					System.out.println("Error: wrong count of outcomes of action-" + action.getSymbol());
+					System.out.println("[SERVER] Error: wrong count of outcomes of action-" + action.getSymbol());
 					continue;
 				}
 				CNFClause clause = new CNFClause(ClauseSources.CONSTRAINT);
@@ -458,21 +458,21 @@ public class CNF {
 					CNFClause clause = getOppositeClause(c);
 					if(clause == null) 
 					{
-						System.out.println("Error: In generating opposite clause of --" + c._literals.toString()	);
+						System.out.println("[SERVER] Error: In generating opposite clause of --" + c._literals.toString()	);
 					}
 					else
 					{
 						Literal truel = genProVar(c);
 						if(truel == null)
 						{
-							System.out.println("Error: Got null probability variable from" + c._literals.toString());
+							System.out.println("[SERVER] Error: Got null probability variable from" + c._literals.toString());
 						}
 						c.addLiteral(truel);
 						Literal falsel = genProVar(clause);
 
 						if(falsel == null)
 						{
-							System.out.println("Error: Got null probability variable(Generated one) from" + clause._literals.toString());
+							System.out.println("[SERVER] Error: Got null probability variable(Generated one) from" + clause._literals.toString());
 						}
 						clause.addLiteral(falsel);
 						
@@ -535,7 +535,7 @@ public class CNF {
 		Literal eff = getEff(c._literals);
 		if(eff == null)
 		{
-			System.out.println("Error: Failed to get effect for Outcome===>" + c._literals.toString());
+			System.out.println("[SERVER] Error: Failed to get effect for Outcome===>" + c._literals.toString());
 		}
 		if(c._literals.remove(eff))
 		{
@@ -583,8 +583,8 @@ public class CNF {
 				Literal o2s =  (Literal)_outcomes2state.get(outcome_name);
 				if( o2s != eff)
 				{
-					System.out.println("Error: Wrong mapping of outcome-1-" + outcome_name + " to " + eff.toString());
-					System.out.println("Error: Wrong mapping of outcome-2-" + outcome_name + " to " + o2s.toString());
+					System.out.println("[SERVER] Error: Wrong mapping of outcome-1-" + outcome_name + " to " + eff.toString());
+					System.out.println("[SERVER] Error: Wrong mapping of outcome-2-" + outcome_name + " to " + o2s.toString());
 				}
 			}
 			else
@@ -611,7 +611,7 @@ public class CNF {
 		}
 		else
 		{
-			System.out.println("Error: Clause from effect without eff--" + c._literals.toString());
+			System.out.println("[SERVER] Error: Clause from effect without eff--" + c._literals.toString());
 		}
 		
 	}
@@ -685,7 +685,7 @@ public class CNF {
 		}
 		else
 		{
-			System.out.println("Error: Find clause with incorrect eff from effect==>" + c._literals.toString());
+			System.out.println("[SERVER] Error: Find clause with incorrect eff from effect==>" + c._literals.toString());
 		}
 		return clause;
 	}
@@ -890,7 +890,7 @@ public class CNF {
 				}
 				else
 				{
-					System.out.println("Error: Without nextstate in effect/observation ===>" + branchClause._literals.toString());
+					System.out.println("[SERVER] Error: Without nextstate in effect/observation ===>" + branchClause._literals.toString());
 					return;
 				}
 			}
@@ -904,12 +904,12 @@ public class CNF {
 					branchClause.getSource() == ClauseSources.OBSERVATION)
 				&& getEff(branchClause._literals) == null )//&& getEff(branchClause._literals)._currentTS)
 			{
-				System.out.println("Error: Wrong clause in effect :" + branchClause._literals.toString() + " ===="+nextState);
+				System.out.println("[SERVER] Error: Wrong clause in effect :" + branchClause._literals.toString() + " ===="+nextState);
 			
 			}
 			else if(branchClause._literals.size() <= 1)
 			{
-				System.out.println("Error: Wrong clause with single Literal from action --->" + branchClause._literals.toString());
+				System.out.println("[SERVER] Error: Wrong clause with single Literal from action --->" + branchClause._literals.toString());
 			}
 			else
 			{
@@ -950,7 +950,7 @@ public class CNF {
 			}
 			else
 			{
-				System.out.println("Error: Failed to add redundant clause-" + clause._literals.toString());
+				System.out.println("[SERVER] Error: Failed to add redundant clause-" + clause._literals.toString());
 			}
 			
 		}
@@ -1008,7 +1008,7 @@ public class CNF {
 		Literal curTimestep = null;
 		if(nextTimestep._currentTS)
 		{
-			System.out.println("Error: Wrong n+1 State: " + nextTimestep.toString());
+			System.out.println("[SERVER] Error: Wrong n+1 State: " + nextTimestep.toString());
 			return curTimestep;
 		}
 		String state = nextTimestep.getSymbol();
@@ -1102,7 +1102,7 @@ public class CNF {
 		// Parse file
 
 		if (args.length != 2) {
-			System.out.println("\nusage: RDDL-file/directory output-dir\n");
+			System.out.println("\n[SERVER] usage: RDDL-file/directory output-dir\n");
 			RDDL2Format.ShowFileFormats();
 			System.exit(1);
 		}
@@ -1132,8 +1132,8 @@ public class CNF {
 					rddl.addOtherRDDL(r);
 				}
 			} catch (Exception e) {
-				System.out.println(e);
-				System.out.println("Error processing: " + f + ", skipping...");
+				System.out.println("[SERVER] " + e);
+				System.out.println("[SERVER] Error processing: " + f + ", skipping...");
 				rddl_files.remove(f);
 				continue;
 			}
@@ -1152,7 +1152,7 @@ public class CNF {
 					_filename = _filename + ".cnf";
 					File cnfFile = new File(_filename);
 					if (cnfFile.exists()) {
-						System.err.println(">> File '" + _filename + "' already exists... skipping");
+						System.err.println("[SERVER] >> File '" + _filename + "' already exists... skipping");
 						_filename = null;
 						return;
 					}
@@ -1164,8 +1164,8 @@ public class CNF {
 					pw.close();
 				}
 			} catch (Exception e) {
-				System.err.println("Error processing: " + f);
-				System.err.println(e);
+				System.err.println("[SERVER] Error processing: " + f);
+				System.err.println("[SERVER] " + e);
 				e.printStackTrace(System.err);
 				System.err.flush();
 				rddl_files.remove(f);
@@ -1173,11 +1173,11 @@ public class CNF {
 			}
 		}
 		
-		System.out.println("\n\n===\n");
+		System.out.println("\n\n[SERVER] ===\n");
 		for (File f : rddl_files)
-			System.out.println("Processed: " + f);
+			System.out.println("[SERVER] Processed: " + f);
 		for (File f : rddl_error)
-			System.out.println("Error processing: " + f);
+			System.out.println("[SERVER] Error processing: " + f);
 	}
 
 }

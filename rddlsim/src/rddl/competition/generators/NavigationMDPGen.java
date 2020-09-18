@@ -42,8 +42,8 @@ public class NavigationMDPGen {
 	}
 	
 	public static void usage() {
-		System.err.println("Usage: output-dir instance-name size_x size_y {obfuscate,normal} horizon discount");
-		System.err.println("Example: files/testcomp/rddl crossing-traffic-5-5 5 5 40 1.0");
+		System.err.println("[SERVER] Usage: output-dir instance-name size_x size_y {obfuscate,normal} horizon discount");
+		System.err.println("[SERVER] Example: files/testcomp/rddl crossing-traffic-5-5 5 5 40 1.0");
 		System.exit(127);
 	}
 	
@@ -57,7 +57,7 @@ public class NavigationMDPGen {
 		else if (args[4].equals("normal"))
 			this.obfuscate = false;
 		else {
-			System.out.println("Expected one of {obfuscate,normal}, got '" + args[4] + "'"); 
+			System.out.println("[SERVER] Expected one of {obfuscate,normal}, got '" + args[4] + "'");
 			usage();
 		}
 		this.horizon = Integer.parseInt(args[5]);

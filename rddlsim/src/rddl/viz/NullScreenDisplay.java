@@ -31,9 +31,9 @@ public class NullScreenDisplay extends StateViz {
 	public void display(State s, int time) {
 		
 		if (_bShowTime)
-			System.out.println("\n============================\n" + 
-			  	               "TIME = " + time + 
-				           	   "\n============================\n");
+			System.out.println("\n[SERVER] ============================\n" + 
+			  	               "[SERVER] TIME = " + time + 
+				           	   "\n[SERVER] ============================\n");
 	}
 
 }

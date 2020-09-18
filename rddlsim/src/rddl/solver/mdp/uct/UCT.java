@@ -86,10 +86,9 @@ public class UCT extends EnumerableStatePolicy {
 			}
 		}
 		
-		System.out.printf("Action: [%s] selected with reward [%f] after [%d] searches in [%f] seconds. Search tree depth: [%d]", 
+		System.out.printf("[SERVER] Action: [%s] selected with reward [%f] after [%d] searches in [%f] seconds. Search tree depth: [%d]\n",
 				action, reward, completedSearches, ((double) elapsedTime) / TIMEOUT_ORDER, searchTreeDepth);
-		System.out.println();
-		
+
 		return action;
 	}
 

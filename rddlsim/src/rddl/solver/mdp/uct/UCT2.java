@@ -88,15 +88,11 @@ public class UCT2 extends EnumerableStatePolicy {
 			State s = cloneState(s0);
 			double rew = this.UCT_search(s, this.getRemainingHorizons());
 			now_time = System.currentTimeMillis();
-			if (_debug_flag) System.out.println("At time: "+Long.toString(now_time-start_time)+"Reward"+Double.toString(rew));
+			if (_debug_flag) System.out.println("[SERVER] At time: "+Long.toString(now_time-start_time)+"Reward"+Double.toString(rew));
 			count++;
 		}
-		//BigInteger s0N = this.getStateDepthLabel(s0,search_horizon);
-		//System.out.println("Inicial = "+ s0N.toString());
-		//System.out.println( averageRewardsPerState.size());		
-		//System.out.println( averageRewardsPerState.get(s0N));
 		String best = getUCTAction(s0, this.getRemainingHorizons());
-		System.out.println("Nvezes = " + Long.toString(count) + " best = "+best);
+		System.out.println("[SERVER] Nvezes = " + Long.toString(count) + " best = "+best);
 		return best;
 	}
 		
@@ -116,7 +112,7 @@ public class UCT2 extends EnumerableStatePolicy {
 				bestActionReward = averageReward;
 			}
 		}				
-		System.out.println("Best Reward = "+ Double.toString(bestActionReward));
+		System.out.println("[SERVER] Best Reward = "+ Double.toString(bestActionReward));
 		return bestAction._string;			
 	}
 		
@@ -289,7 +285,6 @@ public class UCT2 extends EnumerableStatePolicy {
 	{
 		BigInteger sh = this.getStateLabel(s);
 		sh = sh.multiply(BigInteger.valueOf(HORIZON_MAX));
-		//System.out.println("State Part:"+sh.toString()+"depthpart"+BigInteger.valueOf(d).toString() );
 		sh = sh.add(BigInteger.valueOf(d));
 		
 		return sh;

@@ -128,7 +128,7 @@ public class Simulator {
 			
 		// Argument handling
 		if (args.length < 3 || args.length > 6) {
-			System.out.println("usage: RDDL-file policy-class-name instance-name [state-viz-class-name] [rand seed simulator] [rand seed policy]");
+			System.out.println("[SERVER] usage: RDDL-file policy-class-name instance-name [state-viz-class-name] [rand seed simulator] [rand seed policy]");
 			System.exit(1);
 		}
 		String rddl_file = args[0];
@@ -143,8 +143,7 @@ public class Simulator {
 		int rand_seed_policy = (int)System.currentTimeMillis(); // 123456
 		if (args.length >= 6)
 			rand_seed_policy = new Integer(args[5]);
-		//System.out.println("Using seeds " + rand_seed_sim + ", " + rand_seed_policy);
-		
+
 		// Load RDDL files
 		RDDL rddl = new RDDL(rddl_file);
 		
@@ -159,6 +158,6 @@ public class Simulator {
 			
 		// Reset, pass a policy, a visualization interface, a random seed, and simulate!
 		Result r = sim.run(pol, viz, rand_seed_sim);
-		System.out.println("==> " + r);
+		System.out.println("[SERVER] ==> " + r);
 	}
 }

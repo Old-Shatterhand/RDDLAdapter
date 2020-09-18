@@ -37,12 +37,12 @@ public class SolutionReader {
 		
 		if(!cnf.exists() || !solution.exists())
 		{
-			System.out.println("Error: Input files are not exist!");
+			System.out.println("[SERVER] Error: Input files are not exist!");
 			return;
 		}
 		else if(!cnf.isFile() || !solution.isFile())
 		{
-			System.out.println("Error: Input are not file!");
+			System.out.println("[SERVER] Error: Input are not file!");
 			return;
 		}
 		outputName = cnf.getParentFile().getPath() + cnf.getName()+solution.getName();
@@ -57,12 +57,12 @@ public class SolutionReader {
 		
 		if(!cnf.exists() || !solution.exists())
 		{
-			System.out.println("Error: Input files are not exist!");
+			System.out.println("[SERVER] Error: Input files are not exist!");
 			return;
 		}
 		else if(!cnf.isFile() || !solution.isFile())
 		{
-			System.out.println("Error: Input are not file!");
+			System.out.println("[SERVER] Error: Input are not file!");
 			return;
 		}
 		outputName = outputDir + cnf.getName()+solution.getName();
@@ -76,12 +76,12 @@ public class SolutionReader {
 		
 		if(!cnf.exists() )
 		{
-			System.out.println("Error: Input files are not exist!");
+			System.out.println("[SERVER] Error: Input files are not exist!");
 			return;
 		}
 		else if(!cnf.isFile() )
 		{
-			System.out.println("Error: Input are not file!");
+			System.out.println("[SERVER] Error: Input are not file!");
 			return;
 		}
 		actList = ReadCNF(cnf);
@@ -108,28 +108,28 @@ public class SolutionReader {
 			m = p1.matcher(line);
 			if(!m.find())
 			{
-				System.out.println("Error: Result file is not correct.1");
+				System.out.println("[SERVER] Error: Result file is not correct.1");
 				return context;
 			}
 			line = br.readLine();
 			m = p2.matcher(line);
 			if(!m.find())
 			{
-				System.out.println("Error: Result file is not correct.2");
+				System.out.println("[SERVER] Error: Result file is not correct.2");
 				return context;
 			}
 			line = br.readLine();
 			m = p3.matcher(line);
 			if(!m.find())
 			{
-				System.out.println("Error: Result file is not correct.3");
+				System.out.println("[SERVER] Error: Result file is not correct.3");
 				return context;
 			}
 			line = br.readLine();
 			m = p4.matcher(line);
 			if(!m.find())
 			{
-				System.out.println("Error: Result file is not correct.4");
+				System.out.println("[SERVER] Error: Result file is not correct.4");
 				return context;
 			}
 			line = line.replace(LINE4_RESULT,NULLSTRING);
@@ -177,7 +177,7 @@ public class SolutionReader {
 		}
 		else 
 		{
-			System.out.println("Error: Wrong solution file!");
+			System.out.println("[SERVER] Error: Wrong solution file!");
 			return null;
 			
 		}
@@ -251,7 +251,7 @@ public class SolutionReader {
 						String[] temp = line.split(COLON_SPLITTER);
 						if(temp.length != 3)
 						{
-							System.out.println("Error: failed to read cnf, wrong match of mapping");
+							System.out.println("[SERVER] Error: failed to read cnf, wrong match of mapping");
 							break;
 						}else
 						{
@@ -276,7 +276,7 @@ public class SolutionReader {
 				}
 				else
 				{
-					System.out.println("Error: Wrong format!");
+					System.out.println("[SERVER] Error: Wrong format!");
 					return new HashMap<Integer, String>();
 				}
 				line = br.readLine();
@@ -298,7 +298,7 @@ public class SolutionReader {
 		PrintWriter pw;
 		if(actList == null || actList.size() == 0 )
 		{
-			System.out.println("Error: Need init action list.");
+			System.out.println("[SERVER] Error: Need init action list.");
 			return;
 		}
 			
@@ -313,26 +313,26 @@ public class SolutionReader {
 				{
 					
 					pw.print(index + " : " + action + "\n");
-					System.out.println(index + " : " + action);
+					System.out.println("[SERVER] " + index + " : " + action);
 					cnt++;
 				}
 			}
 			pw.print("Finished! Total count: " + cnt);
-			System.out.println("Finished! Total count: " + cnt);
+			System.out.println("[SERVER] Finished! Total count: " + cnt);
 			pw.flush();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
-			System.out.println("Error: Can not find output file");
+			System.out.println("[SERVER] Error: Can not find output file");
 		} catch (IOException e) {
 			e.printStackTrace();
-			System.out.println("Error: Can not create output file");
+			System.out.println("[SERVER] Error: Can not create output file");
 		}
 	}
 	
 	public static void main(String[] args) throws Exception {
 		if (args.length != 2 || args.length != 3) {
-			System.out.println("\nusage: CNF-File Solution-File\n");
-			System.out.println("\n   or  CNF-File Solution-File Output-Dir\n");
+			System.out.println("\n[SERVER] usage: CNF-File Solution-File\n");
+			System.out.println("\n[SERVER]    or  CNF-File Solution-File Output-Dir\n");
 			System.exit(1);
 		}
 		SolutionReader sr ;

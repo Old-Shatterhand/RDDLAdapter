@@ -1448,15 +1448,15 @@ public class parser extends java_cup.runtime.lr_parser {
 	    else if (args.length == 2 && args[1].equalsIgnoreCase("-prefix-output"))
 	    	RDDL.USE_PREFIX = true; // Set prefix output
 	    else if (args.length == 2) {
-	    	System.out.println("Unrecognized option: " + args[1]);
+	    	System.out.println("[SERVER] Unrecognized option: " + args[1]);
 	    	usageAndExit();
 	    }
 		RDDL rddl = parse(new File(args[0]));
-		System.out.println(rddl);
+		System.out.println("[SERVER] " + rddl);
     }
 
 	public static void usageAndExit() {
-		System.out.println("Usage: RDDL-filename [-prefix-output]");
+		System.out.println("[SERVER] Usage: RDDL-filename [-prefix-output]");
 	    System.exit(1);	
 	}
 
@@ -1483,9 +1483,9 @@ public class parser extends java_cup.runtime.lr_parser {
                   Symbol s2 = lex.next_token();
                   next_token = "#" + s2.sym + ": '" + s2.value + "'";
                } catch (Exception e2) { /* discard */ }
-	           System.out.println("Error on line " + 
+	           System.out.println("[SERVER] Error on line " +
 				      ((lex != null) ? ""+ cur_line + ", cur token: " + cur_token + ", next token: " + next_token : "") 
-	 			      + "\nException: " + e);
+	 			      + "\n[SERVER] Exception: " + e);
 		       //e.printStackTrace();
             }
 
@@ -1505,7 +1505,7 @@ public class parser extends java_cup.runtime.lr_parser {
 		       rval = p.parse();
 
             } catch (FileNotFoundException fne) {
-            	System.out.println("ERROR: Could not find file: '" + f + "'");
+            	System.out.println("[SERVER] ERROR: Could not find file: '" + f + "'");
             } catch (Exception e) {
                int cur_line = (lex != null) ? lex.yyline() + 1 : -1;
                String cur_token = "[NOT AVAILABLE]";
@@ -1517,9 +1517,9 @@ public class parser extends java_cup.runtime.lr_parser {
                   Symbol s2 = lex.next_token();
                   next_token = "#" + s2.sym + ": '" + s2.value + "'";
                } catch (Exception e2) { /* discard */ }
-	           System.out.println("Error on line " + 
+	           System.out.println("[SERVER] Error on line " +
 				      ((lex != null) ? ""+ cur_line + ", cur token: " + cur_token + ", next token: " + next_token : "?") 
-	 			      + "\nException: " + e);
+	 			      + "\n[SERVER] Exception: " + e);
 		       //e.printStackTrace();
             }
 

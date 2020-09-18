@@ -41,8 +41,8 @@ public class GameOfLifeMDPGen {
 	}
 	
 	public static void usage() {
-		System.err.println("Usage: output-dir instance-name size_x size_y noise-prob-min noise-prob-max init-state-prob horizon discount");
-		System.err.println("Example: files/testcomp/rddl game_of_life_5_5 5 5 0.1 0.3 0.5 100 0.9");
+		System.err.println("[SERVER] Usage: output-dir instance-name size_x size_y noise-prob-min noise-prob-max init-state-prob horizon discount");
+		System.err.println("[SERVER] Example: files/testcomp/rddl game_of_life_5_5 5 5 0.1 0.3 0.5 100 0.9");
 		System.exit(127);
 	}
 	

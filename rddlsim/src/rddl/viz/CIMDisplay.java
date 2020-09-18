@@ -70,10 +70,9 @@ public class CIMDisplay extends StateViz {
 	@Override
 	public void display(State s, int time) {
 		try {
-			System.out
-					.println("TIME = " + time + ": " + getStateDescription(s));
+			System.out.println("[SERVER] TIME = " + time + ": " + getStateDescription(s));
 		} catch (EvalException e) {
-			System.out.println("\n\nError during visualization:");
+			System.out.println("\n\n[SERVER] Error during visualization:");
 			e.printStackTrace();
 			System.exit(1);
 		}
@@ -199,7 +198,7 @@ public class CIMDisplay extends StateViz {
 		try {
 			Thread.sleep(_nTimeDelay);
 		} catch (InterruptedException e) {
-			System.err.println(e);
+			System.err.println("[SERVER] " + e);
 			e.printStackTrace(System.err);
 		}
 

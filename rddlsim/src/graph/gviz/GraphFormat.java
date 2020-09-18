@@ -35,19 +35,19 @@ public class GraphFormat {
     public static boolean FormatGraphRedirectIO(String file_in, String file_out) {
     	try {
      		
-    		System.out.println("Executing: '" + WinUNIX.GVIZ_CMD + " " + file_in + " > " + file_out + WinUNIX.GVIZ_CMD_CLOSE + "'");
+    		System.out.println("[SERVER] Executing: '" + WinUNIX.GVIZ_CMD + " " + file_in + " > " + file_out + WinUNIX.GVIZ_CMD_CLOSE + "'");
 			Process p = Runtime.getRuntime().exec(WinUNIX.GVIZ_CMD + " " + file_in + " > " + file_out + WinUNIX.GVIZ_CMD_CLOSE);
-			System.out.print("Waiting for graphviz to finish... ");
+			System.out.print("[SERVER] Waiting for graphviz to finish... ");
 			p.waitFor();
-			System.out.println("done.");
+			System.out.println("[SERVER] done.");
 			
 		    return true;
     		
     	} catch (InterruptedException ie) {
-    		System.out.println(ie);
+    		System.out.println("[SERVER] " + ie);
     		return false;
     	} catch (IOException ioe) {
-    		System.out.println(ioe);
+    		System.out.println("[SERVER] " + ioe);
     		return false;
     	}
     }
@@ -83,22 +83,22 @@ public class GraphFormat {
 			while ((bytes_read = process_out.read(buffer)) >= 0) {
 				String temp_str = new String(buffer, 0, bytes_read);
 				fos_writer.print(temp_str);
-				System.out.print(temp_str);
+				System.out.print("[SERVER] " + temp_str);
 			}
 			process_out.close();
 			fos_writer.close();
 			
-			System.out.print("Waiting for graphviz to finish... ");
+			System.out.print("[SERVER] Waiting for graphviz to finish... ");
 			p.waitFor();
-			System.out.println("done.");
+			System.out.println("[SERVER] done.");
 					    
 		    return true;
     		
     	} catch (InterruptedException ie) {
-    		System.out.println(ie);
+    		System.out.println("[SERVER] " + ie);
     		return false;
     	} catch (IOException ioe) {
-    		System.out.println(ioe);
+    		System.out.println("[SERVER] " + ioe);
     		return false;
     	}
     }
@@ -108,23 +108,21 @@ public class GraphFormat {
     // here. -SPS
     public static void LayoutGraph(Graph g) {
 
-	System.out.print("\nPerforming graph layout... ");
+	System.out.print("\n[SERVER] Performing graph layout... ");
 	    Object connector = null;
 	    try {
-			//System.out.println("Trying local");
 	    	if (g.isDirected())
 	    		connector = Runtime.getRuntime().exec(WinUNIX.GVIZ_EXE);
 	    	else
 	    		connector = Runtime.getRuntime().exec(WinUNIX.GVIZ2_EXE);
 	    } catch(Exception ex) {
-			System.err.println("Exception while setting up Process: " + 
+			System.err.println("[SERVER] Exception while setting up Process: " +
 					     ex.getMessage() + 
-					   "\nTrying format via URLConnection...");
+					   "\n[SERVER] Trying format via URLConnection...");
 			connector = null;
 	    }
 	    if(connector == null) {
 		try {
-		    //System.out.println("Trying URL");
 		    connector = (new URL("http://www.research.att.com/~john/cgi-bin/format-graph")).openConnection();
 		    URLConnection urlConn = (URLConnection)connector;
 		    urlConn.setDoInput(true);
@@ -132,31 +130,31 @@ public class GraphFormat {
 		    urlConn.setUseCaches(false);
 		    urlConn.setRequestProperty("Content-Type","application/x-www-form-urlencoded");
 		} catch(Exception ex) {
-		    System.err.println("Exception while setting up URLConnection: " + ex.getMessage() + "\nLayout not performed.");
+		    System.err.println("[SERVER] Exception while setting up URLConnection: " + ex.getMessage() + "\nLayout not performed.");
 		    connector = null;
 		}
 	    }
 	    if(connector != null) {
 			if(!GrappaSupport.filterGraph(g,connector)) {
-			    System.err.println("ERROR: somewhere in filterGraph");
+			    System.err.println("[SERVER] ERROR: somewhere in filterGraph");
 			}
 		if(connector instanceof Process) {
 		    try {
 				int code = ((Process)connector).waitFor();
 				if(code != 0) {
-				    System.err.println("WARNING: proc exit code is: " + code);
+				    System.err.println("[SERVER] WARNING: proc exit code is: " + code);
 				}
 		    } catch(InterruptedException ex) {
-				System.err.println("Exception while closing down proc: " + ex.getMessage());
+				System.err.println("[SERVER] Exception while closing down proc: " + ex.getMessage());
 				ex.printStackTrace(System.err);
 		    }
 		}
 		connector = null;
 	    } else {
-			System.out.println("Could not access local or web-based graph layout.");
+			System.out.println("[SERVER] Could not access local or web-based graph layout.");
 			System.exit(1);
 	    }
-	    System.out.println("DONE");
+	    System.out.println("[SERVER] DONE");
     }
 
     public static void main(String[] args) {

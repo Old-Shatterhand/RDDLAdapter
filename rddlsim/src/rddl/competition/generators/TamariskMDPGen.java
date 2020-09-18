@@ -44,8 +44,8 @@ public class TamariskMDPGen {
 	}
 	
 	public static void usage() {
-		System.err.println("Usage: output-dir instance-name num_reaches num_slots prob_native prob_tamarisk horizon discount");
-		System.err.println("Example: files/testcomp/rddl tamarisk_mdp__1 3 2 0.2 0.1 40 1.0");
+		System.err.println("[SERVER] Usage: output-dir instance-name num_reaches num_slots prob_native prob_tamarisk horizon discount");
+		System.err.println("[SERVER] Example: files/testcomp/rddl tamarisk_mdp__1 3 2 0.2 0.1 40 1.0");
 		System.exit(127);
 	}
 	

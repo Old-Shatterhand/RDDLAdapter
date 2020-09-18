@@ -32,7 +32,7 @@ public class DynamicValidator {
 	public static void main(String[] args) throws Exception {
 		
 		if (args.length < 1 || args.length > 2) {
-			System.out.println("usage: RDDL-file-or-dir [instance-name]");
+			System.out.println("[SERVER] usage: RDDL-file-or-dir [instance-name]");
 			System.exit(1);
 		}
 		String rddl_file = args[0];
@@ -57,6 +57,6 @@ public class DynamicValidator {
 
 		// Show all variable names in use
 		if (RDDL.DEBUG_PVAR_NAMES)
-			System.out.println("Pvar names in use: " + RDDL.PVAR_SRC_SET);
+			System.out.println("[SERVER] Pvar names in use: " + RDDL.PVAR_SRC_SET);
 	}
 }

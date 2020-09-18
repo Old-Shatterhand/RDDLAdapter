@@ -57,8 +57,8 @@ public class SkillTeachingMDPGen {
 	}
 
 	public static void usage() {
-		System.err.println("Usage: output-dir instance-name minNumSkils maxNumSkills maxPreReqs  maxMedCorrectProb maxLowCorrectProb horizon discount");
-		System.err.println("Example: files/testcomp/rddl recon-2 5 10 3  0.8 0.7 100 0.9");
+		System.err.println("[SERVER] Usage: output-dir instance-name minNumSkils maxNumSkills maxPreReqs  maxMedCorrectProb maxLowCorrectProb horizon discount");
+		System.err.println("[SERVER] Example: files/testcomp/rddl recon-2 5 10 3  0.8 0.7 100 0.9");
 		System.exit(127);
 	
 		
@@ -88,7 +88,7 @@ public class SkillTeachingMDPGen {
 		hor = Integer.parseInt(args[7]);
 		dis = Float.parseFloat(args[8]);
 		} catch (Exception ex) {
-			System.err.println("Error in onr of the inputs");
+			System.err.println("[SERVER] Error in onr of the inputs");
 			System.exit(127);
 		}
 	}

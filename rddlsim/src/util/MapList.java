@@ -63,8 +63,8 @@ public class MapList {
 		if (_bUnique) {
 			ArrayList val_array = getValues(key);
 			if (values.size() >= 1) {
-				System.out.println("ERROR: Should not add multiple values for one key in unique MapList");
-				System.out.println("       " + key + " -> " + values);
+				System.out.println("[SERVER] ERROR: Should not add multiple values for one key in unique MapList");
+				System.out.println("[SERVER]        " + key + " -> " + values);
 				val_array.clear();
 				val_array.add(values.get(0));
 			}

@@ -239,7 +239,7 @@ public abstract class DD {
 	    }
 
 	    // Now show the assignment
-	    System.out.println("Assignment: " + 
+	    System.out.println("[SERVER] Assignment: " +
 			       PrintBitVector(assign) + " -> " + 
 			       DD._df.format(a.evaluate(id, assign)));
 	}
@@ -306,7 +306,6 @@ public abstract class DD {
 	    }
 	}
 	
-	//System.out.println("Iter: " + c + ", nvars: " + nvars);
 	return max_diff;
     }
 

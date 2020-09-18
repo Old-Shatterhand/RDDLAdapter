@@ -207,7 +207,7 @@ public class BlockDisplay extends JPanel implements ActionListener {
 		if (i < _nRows && j < _nCols) {
 			_grid[i][j] = new Cell(col, text);
 		} else {
-			System.err.println("Cell out of range: <" + i + "," + j + "> / "
+			System.err.println("[SERVER] Cell out of range: <" + i + "," + j + "> / "
 					+ "<" + _nRows + "," + _nCols + ">");
 		}
 	}
@@ -377,7 +377,7 @@ public class BlockDisplay extends JPanel implements ActionListener {
 			// bd.close();
 
 		} catch (InterruptedException e) {
-			System.out.println(e);
+			System.out.println("[SERVER] " + e);
 			System.exit(1);
 		}
 	}

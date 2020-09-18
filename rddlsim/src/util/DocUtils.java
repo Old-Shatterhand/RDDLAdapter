@@ -30,13 +30,12 @@ public class DocUtils {
 			java.io.BufferedReader br = new BufferedReader(new FileReader(f));
 			String line = null;
 			while ((line = br.readLine()) != null) {
-				//System.out.println(line);
 				sb.append((sb.length()> 0 ? (keep_newline ? "\n" : " ") : "") + line);
 			}
 			br.close();
 			return sb.toString();
 		} catch (Exception e) {
-			System.out.println("ERROR: " + e);
+			System.out.println("[SERVER] ERROR: " + e);
 			return null;
 		}
 	}

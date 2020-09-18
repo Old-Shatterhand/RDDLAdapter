@@ -48,8 +48,8 @@ public class ElevatorMDPGen {
 	}
 
 	public static void usage() {
-		System.err.println("Usage: output-dir instance-name numElevators numFloors max-arrive min_arrive horizon discount");
-		System.err.println("Example: files/testcomp/rddl elevator-1-4 1 4 0.3 0.1 100 0.9");
+		System.err.println("[SERVER] Usage: output-dir instance-name numElevators numFloors max-arrive min_arrive horizon discount");
+		System.err.println("[SERVER] Example: files/testcomp/rddl elevator-1-4 1 4 0.3 0.1 100 0.9");
 		System.exit(127);
 	}
 
@@ -69,13 +69,13 @@ public class ElevatorMDPGen {
 		try {
 			els = Integer.parseInt(args[2]);
 		} catch (Exception ex) {
-			System.err.println("Number of elevators must be an integer");
+			System.err.println("[SERVER] Number of elevators must be an integer");
 			System.exit(127);
 		}
 		try {
 			floors = Integer.parseInt(args[3]);
 		} catch (Exception ex) {
-			System.err.println("Number of floors must be an integer");
+			System.err.println("[SERVER] Number of floors must be an integer");
 			System.exit(127);
 		}
 
@@ -119,7 +119,7 @@ public class ElevatorMDPGen {
 					arrs[x] = 1.0f;
 			}
 		} catch (Exception ex) {
-			System.err.println("Arrival params must be floats");
+			System.err.println("[SERVER] Arrival params must be floats");
 			System.exit(127);
 		}
 

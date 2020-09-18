@@ -59,7 +59,7 @@ public class DDUtils {
 			Integer index = (Integer)context._hmVarName2ID.get(s._string); // if null, var not in var2ID
 			Integer level = (Integer)context._hmGVarToLevel.get(index);
 			if (index == null || level == null) {
-				System.err.println("ERROR: could not find ADD index/level for " + s);
+				System.err.println("[SERVER] ERROR: could not find ADD index/level for " + s);
 				System.exit(1);
 			}
 			assign.set(level, (Boolean)true_vars.contains(s));
@@ -83,8 +83,7 @@ public class DDUtils {
 		}
         Double cur_value = context.evaluate(dd, assignprime);
 		if (Double.isNaN(cur_value)) {
-			System.err.println("ERROR in DDUtils.UpdateValue: Expected single value when evaluating: " + assignprime);
-			//System.err.println("in " + context.printNode(dd));
+			System.err.println("[SERVER] ERROR in DDUtils.UpdateValue: Expected single value when evaluating: " + assignprime);
 			System.exit(1);
 		}
 		double diff = new_value - cur_value;
@@ -116,8 +115,7 @@ public class DDUtils {
 	public static int UpdateValue(DD context, int dd, ArrayList assign, double new_value) {
 		Double cur_value = context.evaluate(dd, assign);
 		if (Double.isNaN(cur_value)) {
-			System.err.println("ERROR in DDUtils.UpdateValue: Expected single value when evaluating: " + assign);
-			//System.err.println("in " + context.printNode(dd));
+			System.err.println("[SERVER] ERROR in DDUtils.UpdateValue: Expected single value when evaluating: " + assign);
 			System.exit(1);
 		}
 		double diff = new_value - cur_value;

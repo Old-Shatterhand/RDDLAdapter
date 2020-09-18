@@ -217,7 +217,7 @@ public class State {
 				STRUCT_TYPE_DEF ldef = (STRUCT_TYPE_DEF)e.getValue();
 				ArrayList<LCONST> constants = _hmObject2Consts.get(ldef._sLabelEnumOrObjectType);
 				if (constants == null) {
-					System.err.println("Could not instantiate object tuple\n" + ldef + 
+					System.err.println("[SERVER] Could not instantiate object tuple\n" + ldef +
 							"\nwith constants from '" + ldef._sLabelEnumOrObjectType+ "'");
 					System.exit(1);
 				}
@@ -255,7 +255,7 @@ public class State {
 					try {
 						((STRUCT_VAL)ddef._oDefValue).instantiate(ddef._typeRange, typedefs, _hmObject2Consts);
 					} catch (Exception e2) {
-						System.err.println("ERROR: Could not instantiate object tuple: " + msg_def_value +
+						System.err.println("[SERVER] ERROR: Could not instantiate object tuple: " + msg_def_value +
 								"\n... check definition and that all subtypes and object/enum lists are defined.\n" + e2);
 						System.exit(1);
 					}
@@ -300,10 +300,8 @@ public class State {
 		try {
 			_r2g = new RDDL2Graph(this);
 			deriveDAGOrdering();
-			//System.out.println("Derived: " + _alDerivedGfluentOrdering);
-			//System.out.println("Interm:  " + _alIntermGfluentOrdering);
 		} catch (Exception e) {
-			System.out.println("Could not derive legal fluent ordering:\n" + e);
+			System.out.println("[SERVER] Could not derive legal fluent ordering:\n" + e);
 			e.printStackTrace();
 			System.exit(1);
 		}
@@ -312,8 +310,8 @@ public class State {
 		try {
 			computeDerivedFluents();
 		} catch (EvalException e) {
-			System.out.println("Could not evaluate/initialize derived fluents in initial state:\n" + e);
-			System.out.println("**Ensure that derived fluents only depend on other derived fluents and state fluents (not intermediate or observation fluents)");
+			System.out.println("[SERVER] Could not evaluate/initialize derived fluents in initial state:\n" + e);
+			System.out.println("[SERVER] **Ensure that derived fluents only depend on other derived fluents and state fluents (not intermediate or observation fluents)");
 			System.exit(1);
 		}
 	}
@@ -329,7 +327,7 @@ public class State {
 			HashSet<HashSet<Object>> sccs = _r2g._graph.getStronglyConnectedComponents();
 			for (HashSet<Object> connected_component : sccs)
 				if (connected_component.size() > 1)
-					System.err.println("- Cycle: " + connected_component);
+					System.err.println("[SERVER] - Cycle: " + connected_component);
 			
 			// Self-cycles 
 			HashSet<Object> self_cycles = _r2g._graph.getSelfCycles();
@@ -363,7 +361,7 @@ public class State {
 		// First check that object_class is defined 
 		if (!(_hmTypes.get(object_class) instanceof RDDL.OBJECT_TYPE_DEF) &&
 			!(_hmTypes.get(object_class) instanceof RDDL.ENUM_TYPE_DEF)) {
-			System.err.println("FATAL ERROR: '" + 
+			System.err.println("[SERVER] FATAL ERROR: '" +
 					object_class + "' is not a defined object/enum type; " + 
 					"cannot initialize with " + constants + ".");
 			System.exit(1);
@@ -403,10 +401,10 @@ public class State {
 				if (! (Boolean)constraint.sample(subs, this, null) )
 					throw new EvalException("Violated state invariant or action precondition constraint: " + constraint + "\n**in state**\n" + this);
 			} catch (NullPointerException e) {
-				System.out.println("\n***SIMULATOR ERROR EVALUATING: " + constraint);
+				System.out.println("\n[SERVER] ***SIMULATOR ERROR EVALUATING: " + constraint);
 				throw e;
 			} catch (ClassCastException e) {
-				System.out.println("\n***SIMULATOR ERROR EVALUATING: " + constraint);
+				System.out.println("\n[SERVER] ***SIMULATOR ERROR EVALUATING: " + constraint);
 				throw e;
 			}
 		}
@@ -427,10 +425,10 @@ public class State {
 							"\nNOTE: state invariants should never be violated by a correctly defined transition model starting from a legal initial state.\n" + 
 							"**in state**\n" + this);
 			} catch (NullPointerException e) {
-				System.out.println("\n***SIMULATOR ERROR EVALUATING: " + constraint);
+				System.out.println("\n[SERVER] ***SIMULATOR ERROR EVALUATING: " + constraint);
 				throw e;
 			} catch (ClassCastException e) {
-				System.out.println("\n***SIMULATOR ERROR EVALUATING: " + constraint);
+				System.out.println("\n[SERVER] ***SIMULATOR ERROR EVALUATING: " + constraint);
 				throw e;
 			}
 		}
@@ -441,7 +439,7 @@ public class State {
 			HashMap<LVAR,LCONST> subs = new HashMap<LVAR,LCONST>();
 			return (Boolean)cond.sample(subs, this, null);
 		} catch (EvalException e) {
-			System.out.println("\n***SIMULATOR ERROR EVALUATING TERMINATION CONDITION: " + cond);
+			System.out.println("\n[SERVER] ***SIMULATOR ERROR EVALUATING TERMINATION CONDITION: " + cond);
 			throw e;
 		}
 	}
@@ -454,18 +452,15 @@ public class State {
 			_actions.get(p).clear();
 		setPVariables(_actions, actions);
 		
-		//System.out.println("Starting state: " + _state + "\n");
-		//System.out.println("Starting nonfluents: " + _nonfluents + "\n");
-		
 		// First compute intermediate variables (derived should have already been computed)
 		HashMap<LVAR,LCONST> subs = new HashMap<LVAR,LCONST>();
-		if (DISPLAY_UPDATES) System.out.println("Updating intermediate variables");
+		if (DISPLAY_UPDATES) System.out.println("[SERVER] Updating intermediate variables");
 		for (Pair ifluent : _alIntermGfluentOrdering) {
 			
 			PVAR_NAME p = (PVAR_NAME)ifluent._o1;
 			ArrayList<LCONST> gfluent = (ArrayList<LCONST>)ifluent._o2;
 			
-			if (DISPLAY_UPDATES) System.out.print("- " + p + gfluent);
+			if (DISPLAY_UPDATES) System.out.print("[SERVER] - " + p + gfluent);
 			CPF_DEF cpf = _hmCPFs.get(p);
 			if (cpf == null) 
 				throw new EvalException("Could not find cpf for: " + p + gfluent);
@@ -478,7 +473,7 @@ public class State {
 			}
 			
 			Object value = cpf._exprEquals.sample(subs, this, _rand);
-			if (DISPLAY_UPDATES) System.out.println(value);
+			if (DISPLAY_UPDATES) System.out.println("[SERVER] " + value);
 			
 			// Update value
 			HashMap<ArrayList<LCONST>,Object> pred_assign = _interm.get(p);
@@ -486,7 +481,7 @@ public class State {
 		}
 		
 		// Do same for next-state (keeping in mind primed variables)
-		if (DISPLAY_UPDATES) System.out.println("Updating next state");
+		if (DISPLAY_UPDATES) System.out.println("[SERVER] Updating next state");
 		for (PVAR_NAME p : _alStateNames) {
 						
 			// Get default value
@@ -499,11 +494,10 @@ public class State {
 			
 			// Generate updates for each ground fluent
 			PVAR_NAME primed = new PVAR_NAME(p._sPVarName + "'");
-			//System.out.println("Updating next state var " + primed + " (" + p + ")");
 			ArrayList<ArrayList<LCONST>> gfluents = generateAtoms(p);
 			
 			for (ArrayList<LCONST> gfluent : gfluents) {
-				if (DISPLAY_UPDATES) System.out.print("- " + primed + gfluent + " := ");
+				if (DISPLAY_UPDATES) System.out.print("[SERVER] - " + primed + gfluent + " := ");
 				CPF_DEF cpf = _hmCPFs.get(primed);
 				if (cpf == null) 
 					throw new EvalException("Could not find cpf for: " + primed + 
@@ -517,7 +511,7 @@ public class State {
 				}
 				
 				Object value = cpf._exprEquals.sample(subs, this, _rand);
-				if (DISPLAY_UPDATES) System.out.println(value);
+				if (DISPLAY_UPDATES) System.out.println("[SERVER] " + value);
 				
 				// Update value if not default
 				if (!value.equals(def_value)) {
@@ -534,15 +528,14 @@ public class State {
 		// Do same for observations... note that this occurs after the next state
 		// update because observations in a POMDP may be modeled on the current
 		// and next state, i.e., P(o'|s,a,s').
-		if (DISPLAY_UPDATES) System.out.println("Updating observations");
+		if (DISPLAY_UPDATES) System.out.println("[SERVER] Updating observations");
 		for (PVAR_NAME p : _alObservNames) {
 			
 			// Generate updates for each ground fluent
-			//System.out.println("Updating observation var " + p);
 			ArrayList<ArrayList<LCONST>> gfluents = generateAtoms(p);
 			
 			for (ArrayList<LCONST> gfluent : gfluents) {
-				if (DISPLAY_UPDATES) System.out.print("- " + p + gfluent + " := ");
+				if (DISPLAY_UPDATES) System.out.print("[SERVER] - " + p + gfluent + " := ");
 				CPF_DEF cpf = _hmCPFs.get(p);
 				if (cpf == null) 
 					throw new EvalException("Could not find cpf for: " + p);
@@ -555,7 +548,7 @@ public class State {
 				}
 				
 				Object value = cpf._exprEquals.sample(subs, this, _rand);
-				if (DISPLAY_UPDATES) System.out.println(value);
+				if (DISPLAY_UPDATES) System.out.println("[SERVER] " + value);
 				
 				// Update value
 				HashMap<ArrayList<LCONST>,Object> pred_assign = _observ.get(p);
@@ -568,13 +561,13 @@ public class State {
 		
 		// Compute derived variables in order
 		HashMap<LVAR,LCONST> subs = new HashMap<LVAR,LCONST>();
-		if (DISPLAY_UPDATES) System.out.println("Updating intermediate variables");
+		if (DISPLAY_UPDATES) System.out.println("[SERVER] Updating intermediate variables");
 		for (Pair ifluent : _alDerivedGfluentOrdering) {
 			
 			PVAR_NAME p = (PVAR_NAME)ifluent._o1;
 			ArrayList<LCONST> gfluent = (ArrayList<LCONST>)ifluent._o2;
 			
-			if (DISPLAY_UPDATES) System.out.print("- " + p + gfluent);
+			if (DISPLAY_UPDATES) System.out.print("[SERVER] - " + p + gfluent);
 			CPF_DEF cpf = _hmCPFs.get(p);
 			if (cpf == null) 
 				throw new EvalException("Could not find cpf for: " + p + gfluent);
@@ -591,7 +584,7 @@ public class State {
 
 			// No randomness for derived fluents (can pass null)
 			Object value = cpf._exprEquals.sample(subs, this, null);
-			if (DISPLAY_UPDATES) System.out.println(value);
+			if (DISPLAY_UPDATES) System.out.println("[SERVER] " + value);
 			
 			// Update value
 			HashMap<ArrayList<LCONST>,Object> pred_assign = _interm.get(p);
@@ -638,7 +631,7 @@ public class State {
 			// Get the assignments for this PVAR
 			HashMap<ArrayList<LCONST>,Object> pred_assign = assign.get(def._sPredName);
 			if (pred_assign == null) {
-				System.out.println("FATAL ERROR: '" + def._sPredName + "' not defined");
+				System.out.println("[SERVER] FATAL ERROR: '" + def._sPredName + "' not defined");
 				fatal_error = true;
 			}
 			
@@ -660,7 +653,7 @@ public class State {
 		}
 		
 		if (fatal_error) {
-			System.out.println("ABORTING DUE TO FATAL ERRORS");
+			System.out.println("[SERVER] ABORTING DUE TO FATAL ERRORS");
 			System.exit(1);
 		}
 		
@@ -734,7 +727,6 @@ public class State {
 			if (def_value == null)
 				throw new EvalException("ERROR: Default value should not be null for action fluent " + pvar_def);
 		}
-		//System.out.println("Default value: " + def_value);
 
 		// Get correct variable assignments
 		HashMap<ArrayList<LCONST>,Object> var_src = null;
@@ -769,10 +761,10 @@ public class State {
 		PVARIABLE_DEF pvar_def = _hmPVariables.get(p);
 		
 		if (pvar_def == null) {
-			System.out.println("ERROR: undefined pvariable: " + p);
+			System.out.println("[SERVER] ERROR: undefined pvariable: " + p);
 			return false;
 		} else if (pvar_def._alParamTypes.size() != terms.size()) {
-			System.out.println("ERROR: expected " + pvar_def._alParamTypes.size() + 
+			System.out.println("[SERVER] ERROR: expected " + pvar_def._alParamTypes.size() +
 					" parameters for " + p + ", but got " + terms.size() + ": " + terms);
 			return false;
 		}
@@ -796,7 +788,7 @@ public class State {
 			var_src = _observ.get(p);
 		
 		if (var_src == null) {
-			System.out.println("ERROR: no variable source for " + p);
+			System.out.println("[SERVER] ERROR: no variable source for " + p);
 			return false;
 		}
 
@@ -814,13 +806,11 @@ public class State {
 	public ArrayList<ArrayList<LCONST>> generateAtoms(PVAR_NAME p) throws EvalException {
 		ArrayList<ArrayList<LCONST>> list = new ArrayList<ArrayList<LCONST>>();
 		PVARIABLE_DEF pvar_def = _hmPVariables.get(p);
-		//System.out.print("Generating pvars for " + pvar_def + ": ");
 		if (pvar_def == null) {
-			System.out.println("Error, could not generate atoms for unknown variable name.");
+			System.out.println("[SERVER] Error, could not generate atoms for unknown variable name.");
 			new Exception().printStackTrace();
 		}
 		generateAtoms(pvar_def, 0, new ArrayList<LCONST>(), list);
-		//System.out.println(list);
 		return list;
 	}
 	
@@ -859,9 +849,8 @@ public class State {
 			TYPE_NAME type = tvar_list.get(index)._sType;
 			ArrayList<LCONST> objects = _hmObject2Consts.get(type);
 			if (objects == null) {
-				System.out.println("Object type '" + type + "' did not have any objects or enumerated values defined.");
+				System.out.println("[SERVER] Object type '" + type + "' did not have any objects or enumerated values defined.");
 			}
-			//System.out.println(type + " : " + objects);
 			for (LCONST obj : objects) {
 				ArrayList<LCONST> new_assign = (ArrayList<LCONST>)cur_assign.clone();
 				new_assign.add(obj);

@@ -58,15 +58,15 @@ public class MinMaxEval {
 			String s_ignore = DocUtils.ReadFile(new File(f.getPath() + File.separator + IGNORE_CLIENT_LIST_FILE));
 			for (String s : s_ignore.split("[\\s]")) {
 				IGNORE_POLICIES.add(s.trim());
-				System.out.println("Ignoring: '" + s.trim() + "'");
+				System.out.println("[SERVER] Ignoring: '" + s.trim() + "'");
 			}
 
 			// Read all log files
 			for (File f2 : f.listFiles())
 				if (f2.getName().endsWith(".log")) {
-					System.out.println("Loading log file: " + f2 + "...");
+					System.out.println("[SERVER] Loading log file: " + f2 + "...");
 					LogReader lr = new LogReader(f2);
-					System.out.println(lr._client2data);
+					System.out.println("[SERVER] " + lr._client2data);
 					client2data.putAll(lr._client2data);
 				}
 		} else
@@ -122,7 +122,7 @@ public class MinMaxEval {
 					double rew = rewards.get(i);
 					long time  = times.get(i);
 					if (FinalEval.ENFORCE_TIME_LIMIT && cumulative_time + time > FinalEval.TIME_ALLOWED) {
-						System.err.println("TIME LIMIT (" + (cumulative_time + time) + "/" + FinalEval.TIME_ALLOWED + ") EXCEEDED on " + instance_name + 
+						System.err.println("[SERVER] TIME LIMIT (" + (cumulative_time + time) + "/" + FinalEval.TIME_ALLOWED + ") EXCEEDED on " + instance_name +
 								           " by " + client_name + ", using last " + last_rewards_in_trial_and_time_limit.size() + " / " + rewards.size() + " trials.");
 						break;
 					}
@@ -136,17 +136,8 @@ public class MinMaxEval {
 				times.clear(); // Need to modify in place since external references to this object
 				times.addAll(last_times_in_trial_and_time_limit);
 				
-//				if (rewards.size() > FinalEval.NUM_EXPECTED_TRIALS) {
-//					// Take the last NUM_EXPECTED_TRIALS
-//					Object[] temp_rewards = rewards.toArray();
-//					rewards.clear();
-//					for (int i = temp_rewards.length - FinalEval.NUM_EXPECTED_TRIALS; i < temp_rewards.length; i++)
-//						rewards.add((Double)temp_rewards[i]);
-//					
-//				} 
-
 				if (rewards.size() != FinalEval.NUM_EXPECTED_TRIALS) {
-					System.err.println("INCORRECT NUMBER OF TRIALS [" + rewards.size() + " / expected: "
+					System.err.println("[SERVER] INCORRECT NUMBER OF TRIALS [" + rewards.size() + " / expected: "
 							+ FinalEval.NUM_EXPECTED_TRIALS + "] for " + client_name + " on " +
 							instance_name + ": continuing with average on these trials.");
 				}		
@@ -188,14 +179,14 @@ public class MinMaxEval {
 			String min_val_srcNoopRandom = instance2minRNameNoopRandom.get(instance_name);;
 			Double min_val_stderrNoopRandom = instance2minRStdErrNoopRandom.get(instance_name);;
 			if (min_val_stderrNoopRandom == null) {
-				System.out.println("ERROR: could not find min for: " + instance_name);
+				System.out.println("[SERVER] ERROR: could not find min for: " + instance_name);
 				System.exit(1);
 			}
 			
 			double max_val = instance2maxR.get(instance_name);
 			String max_val_src = instance2maxRName.get(instance_name);;
 			double max_val_stderr = instance2maxRStdErr.get(instance_name);;
-			System.out.println(instance_name + "\t" + count + "\t" + 
+			System.out.println("[SERVER] " + instance_name + "\t" + count + "\t" +
 					min_val_src + "\t" + df.format(min_val) + "\t+/- " + df.format(min_val_stderr) + "\t" +
 					min_val_srcNoopRandom + "\t" + df.format(min_valNoopRandom) + "\t+/- " + df.format(min_val_stderrNoopRandom) + "\t" +
 					max_val_src + "\t" + df.format(max_val) + "\t+/- " + df.format(max_val_stderr));
@@ -204,7 +195,7 @@ public class MinMaxEval {
 		}
 		ps.close();
 		
-		System.out.println("\nClients evaluated: " + client_names);
+		System.out.println("\n[SERVER] Clients evaluated: " + client_names);
 	}
 	
 	public static class InstNameComparator implements Comparator {

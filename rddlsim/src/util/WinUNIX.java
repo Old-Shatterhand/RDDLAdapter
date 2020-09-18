@@ -53,7 +53,7 @@ public class WinUNIX {
 			GVIZ2_CMD_CLOSE = "'";
 
 		} else {
-			System.out.println("util.WinUNIX: Unrecognized OS.");
+			System.out.println("[SERVER] util.WinUNIX: Unrecognized OS.");
 			System.exit(1);
 		}
 		

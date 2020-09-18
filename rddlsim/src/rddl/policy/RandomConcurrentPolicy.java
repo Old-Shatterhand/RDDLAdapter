@@ -45,8 +45,7 @@ public class RandomConcurrentPolicy extends Policy {
 		if (s == null) return actions; 
 		
 		int num_concurrent_actions = Math.min(MAX_CONCURRENT_ACTIONS, s._nMaxNondefActions);
-		//System.out.println("Allowing maximum " + num_concurrent_actions + " concurrent actions.");
-		
+
 		ArrayList<PVAR_NAME> action_types = s._hmTypeMap.get("action-fluent");
 		
 		boolean passed_constraints = false;
@@ -58,7 +57,6 @@ public class RandomConcurrentPolicy extends Policy {
 			
 			// Get term instantations for that action and select *one*
 			ArrayList<ArrayList<LCONST>> inst = s.generateAtoms(p);
-			//System.out.println("Legal instances for " + p + ": " + inst);
 			int[] index_permutation = Permutation.permute(inst.size(), _random);
 			
 			for (int i = 0; i < index_permutation.length; i++) {
@@ -73,10 +71,7 @@ public class RandomConcurrentPolicy extends Policy {
 				Object value = null;
 				if (_random.nextUniform(0d, 1d) < 0.5d) {
 					continue;
-					//System.out.println("DEFAULT");
-					//value = action_def._oDefValue;
-				} else { 
-					//System.out.println("NOT DEFAULT");
+				} else {
 					value = getRandomValue(s, action_def._typeRange);
 				}
 	
@@ -87,12 +82,9 @@ public class RandomConcurrentPolicy extends Policy {
 				} catch (EvalException e) { 
 					// Got an eval exception, constraint violated
 					actions.remove(actions.size()-1); 
-					//System.out.println(actions + " : " + e);
-					//System.out.println(s);
-					//System.exit(1);
-				} catch (Exception e) { 
+				} catch (Exception e) {
 					// Got a real exception, something is wrong
-					System.out.println("\nERROR evaluating constraint on action set: " + 
+					System.out.println("\n[SERVER] ERROR evaluating constraint on action set: " +
 							actions + /*"\nConstraint: " +*/ e + "\n");
 					e.printStackTrace();
 					throw new EvalException(e.toString());
@@ -111,13 +103,13 @@ public class RandomConcurrentPolicy extends Policy {
 			try {
 				s.checkStateActionConstraints(actions);
 			} catch (EvalException e) {
-				System.out.println(actions + " : " + e);
+				System.out.println("[SERVER] " + actions + " : " + e);
 				throw new EvalException("No actions satisfied state constraints, not even noop!");
 			}
 		}
 				
 		// Return the action list
-		System.out.println("**Action: " + actions);
+		System.out.println("[SERVER] **Action: " + actions);
 		return actions;
 	}
 

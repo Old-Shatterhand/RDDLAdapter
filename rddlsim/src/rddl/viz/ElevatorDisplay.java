@@ -37,9 +37,9 @@ public class ElevatorDisplay extends StateViz {
 	
 	public void display(State s, int time) {
 		try {
-			System.out.println("TIME = " + time + ": " + getStateDescription(s));
+			System.out.println("[SERVER] TIME = " + time + ": " + getStateDescription(s));
 		} catch (EvalException e) {
-			System.out.println("\n\nError during visualization:\n" + e);
+			System.out.println("\n\n[SERVER] Error during visualization:\n" + e);
 			e.printStackTrace();
 			System.exit(1);
 		}
@@ -168,77 +168,13 @@ public class ElevatorDisplay extends StateViz {
 	    try {
 			Thread.currentThread().sleep(_nTimeDelay);
 		} catch (InterruptedException e) {
-			System.err.println(e);
+			System.err.println("[SERVER] " + e);
 			e.printStackTrace(System.err);
 		}
 				
 		return sb.toString();
 	}
-	
-	/*
-	public drawElevators(State s) {
-		
-		if (_bd != null) {
 
-		    _bd.clearAllCells();
-		    _bd.clearAllLines();
-
-		    // Format: Elevator in col 0, 
-		    _bd.setCell(_nFloors - _nElevPos - 1, 0, 
-				"Open".equalsIgnoreCase(_sCurAction) ? Color.white : Color.gray, null);
-
-		    // Vert Line b/w 0,1...0,_nFloors
-		    _bd.addLine(Color.black, 0, 0, 0, _nFloors);
-		    _bd.addLine(Color.black, 1, 0, 1, _nFloors);
-
-		    // Horiz Line b/w 0,_nFloors...MAX_WIDTH,_nFloors
-		    _bd.addLine(Color.black, 0, 0, 0, 1);
-		    _bd.addLine(Color.black, 0, _nFloors, MAX_WIDTH, _nFloors);
-
-		    // People go from col 1... MAX_WIDTH
-		    int i,j;
-		    for (i = 0; i < _nFloors; i++) {
-			for (j = 0; j < _aFloors[i].size() && j < MAX_WIDTH - 4; j++) {
-			    Person p = (Person)_aFloors[i].get(j);
-			    _bd.setCell(_nFloors - i - 1, j + 1, _colors[p._nGroup], p.getLetter());
-			    //System.out.println("Floor[" + i + "] = " + j + ": " + p);
-			}
-			if (_aFloors[i].size() >= (MAX_WIDTH - 4)) {
-			    _bd.setCell(_nFloors - i - 1, MAX_WIDTH - 3, Color.black, 
-					"+"+(_aFloors[i].size()-(MAX_WIDTH - 4)));
-			}
-		    }
-		    // Floors go from (fl-_nFloors)..._nFloors
-
-		    // Elev people go on bottom
-		    _bd.setCell(_nFloors + 1, 0, Color.gray, null);
-		    Iterator pi = _hmPerson2Floor.keySet().iterator();
-		    int elev_people = 1;
-		    while (pi.hasNext()) {
-			Person p = (Person)pi.next();
-			if (p._nCurFloor == -1) {
-			    elev_people++;
-			    if (elev_people < (MAX_WIDTH-2)) {
-				_bd.setCell(_nFloors + 1, elev_people, _colors[p._nGroup], p.getLetter());
-			    }
-			}
-		    }
-		    if (elev_people >= (MAX_WIDTH - 4)) {
-			 _bd.setCell(_nFloors + 1, MAX_WIDTH - 3, Color.black, 
-				     ""+(elev_people-(MAX_WIDTH - 4)));
-		    }
-		    
-		    // Show current action
-		    _bd.setMessage("Step = " + _nStep + "/" + _nStepsMax + 
-				   ",  Action=" + _sCurAction + 
-				   ",  Immed/Accum Value = " + _df.format(_dImmedValue) +
-				   "/" + _df.format(_dAccumValue));
-
-		    _bd.repaint();
-		}
-	}
-	*/
-	
 	public void close() {
 		_bd.close();
 	}

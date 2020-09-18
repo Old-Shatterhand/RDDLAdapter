@@ -139,7 +139,7 @@ public abstract class EnumerableStatePolicy extends Policy {
 			try {
 				this.translation = new RDDL2Format(_rddl, _sInstanceName, RDDL2Format.SPUDD_CURR, "");
 			} catch (Exception e) {
-				System.err.println("Could not construct MDP for: " + _sInstanceName + "\n" + e);
+				System.err.println("[SERVER] Could not construct MDP for: " + _sInstanceName + "\n" + e);
 				e.printStackTrace(System.err);
 				System.exit(1);
 			}
@@ -233,7 +233,7 @@ public abstract class EnumerableStatePolicy extends Policy {
 					variable_values.put(variableName, variable_value);
 				}
 			} catch (Exception ex) {
-				System.err.println("EnumerableStatePolicy: could not retrieve assignment for " + p + "\n");
+				System.err.println("[SERVER] EnumerableStatePolicy: could not retrieve assignment for " + p + "\n");
 			}
 		}
 		

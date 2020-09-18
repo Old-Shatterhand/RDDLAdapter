@@ -45,8 +45,8 @@ public class WildfireMDPGen {
 	}
 	
 	public static void usage() {
-		System.err.println("Usage: output-dir instance-name size_x size_y num_targets prob_drop_neighbor burn_prob horizon discount");
-		System.err.println("Example: files/testcomp/rddl wildfire_inst_mdp__1 3 3 4 0.1 0.1 40 1.0");
+		System.err.println("[SERVER] Usage: output-dir instance-name size_x size_y num_targets prob_drop_neighbor burn_prob horizon discount");
+		System.err.println("[SERVER] Example: files/testcomp/rddl wildfire_inst_mdp__1 3 3 4 0.1 0.1 40 1.0");
 		System.exit(127);
 	}
 	

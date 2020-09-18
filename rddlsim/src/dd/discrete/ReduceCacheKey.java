@@ -52,8 +52,6 @@ public class ReduceCacheKey
 	    } else if (this_hash > s_hash) {
 		return (1);
 	    }
-	    //System.out.println("ReduceCacheKey: Objects not equal but hashcodes equal!!!");
-	    //System.exit(1);
 	    return this._pObj.toString().compareTo(s._pObj.toString());
 	}
 

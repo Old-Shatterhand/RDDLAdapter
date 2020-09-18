@@ -54,7 +54,7 @@ public class HierarchicalParser
 	    ts.open(filename);
 	    return ParseFileInt(ts, 0);
 	} catch (TokenStreamException tse) {
-	    System.out.println("Error: " + tse);
+	    System.out.println("[SERVER] Error: " + tse);
 	    return null;
 	}
 
@@ -103,12 +103,12 @@ public class HierarchicalParser
 					}
 					a.set(max_index, new BigDecimal(bds));
 				    } catch (NumberFormatException nfe) {
-					System.out.println("Parse error after period: " + t);
-					System.out.println("Could not translate: " + bds);
+					System.out.println("[SERVER] Parse error after period: " + t);
+					System.out.println("[SERVER] Could not translate: " + bds);
 					System.exit(1);
 				    }
 				} else {
-				    System.out.println("WARNING: Number did not preceed '.' " + 
+				    System.out.println("[SERVER] WARNING: Number did not preceed '.' " +
 						       "followed by number: " + t);
 				    //System.exit(1);
 				}
@@ -122,12 +122,12 @@ public class HierarchicalParser
 		}
 	    }
 	} catch (TokenStreamException tse) {
-	    System.out.println("Error: " + tse);
+	    System.out.println("[SERVER] Error: " + tse);
 	    return null;
 	}
 
 	if (level != 0) {
-	    System.out.println("'" + ts._sFilename + 
+	    System.out.println("[SERVER] '" + ts._sFilename +
 			       "' contains unbalanced parentheses!");
 	    System.exit(1);
 	} 

@@ -27,14 +27,12 @@ public class TrfDisplay extends StateViz {
 	
 	public void display(State s, int time) {
 		try {
-			System.out.println("TIME = " + time + ": " + getStateDescription(s, time));
+			System.out.println("[SERVER] TIME = " + time + ": " + getStateDescription(s, time));
 		} catch (EvalException e) {
-			System.out.println("\n\nError during visualization:\n" + e);
+			System.out.println("\n\n[SERVER] Error during visualization:\n" + e);
 			e.printStackTrace();
 			System.exit(1);
 		}
-		//System.out.println("TIME = " + time + ": " + getStateDescription(s, time));
-		//System.out.print(getStateDescription(s, time));
 	}
 
 	public String getStateDescription(State s, int time) throws EvalException {
@@ -70,7 +68,6 @@ public class TrfDisplay extends StateViz {
 			ArrayList<ArrayList<LCONST>> gfluents = s.generateAtoms(flow);
 			for (ArrayList<LCONST> gfluent : gfluents) {
 				Object assignment = s.getPVariableAssign(flow, gfluent);
-				//System.out.println("getting: " + flow + ", " + gfluent + " = " + assignment);
 				double dblFlow = 0.0;
 				if (assignment != null)
 					dblFlow = Double.parseDouble(assignment.toString());

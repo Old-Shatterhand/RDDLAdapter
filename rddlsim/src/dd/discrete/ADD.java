@@ -108,7 +108,7 @@ public class ADD extends DD {
 
 		// Print starting info
 		if (print_info) {
-			System.out.print("[FLUSHING CACHES... ");
+			System.out.print("[SERVER] [FLUSHING CACHES... ");
 			// showCacheSize();
 			ResetTimer();
 		}
@@ -137,11 +137,11 @@ public class ADD extends DD {
 			RUNTIME.gc();
 		}
 		if (print_info) {
-			System.out.print(" TIME: " + GetElapsedTime());
-			System.out.print("  RESULT: "
+			System.out.print("[SERVER] TIME: " + GetElapsedTime());
+			System.out.print("[SERVER]  RESULT: "
 							+ _df.format(((double) RUNTIME.freeMemory() 
 									      / (double) RUNTIME.totalMemory())));
-			System.out.print("  CACHE: " + getCacheSize() + "] ");
+			System.out.print("[SERVER]  CACHE: " + getCacheSize() + "] ");
 		}
 	}
 
@@ -169,9 +169,9 @@ public class ADD extends DD {
 
 	// Quick cache snapshot
 	public void showCacheSize() {
-		System.out.println("APPLY CACHE:  " + _hmPairs.size());
-		System.out.println("REDUCE CACHE: " + _hmReduceMap.size());
-		System.out.println("INODE CACHE:  " + _hmINodeCache.size() + "\n");
+		System.out.println("[SERVER] APPLY CACHE:  " + _hmPairs.size());
+		System.out.println("[SERVER] REDUCE CACHE: " + _hmReduceMap.size());
+		System.out.println("[SERVER] INODE CACHE:  " + _hmINodeCache.size() + "\n");
 	}
 
 	// Total cache snapshot
@@ -242,9 +242,6 @@ public class ADD extends DD {
 	}
 
 	public int createINode(int gid, int low, int high) {
-
-		// System.out.println("Create: <" + gid + "," + low + "," + high +
-		// ">  ->  " + _nLocalIDCnt);
 
 		int lid = _nLocalIDCnt++;
 		ADDRNode ref = new ADDRNode(lid);
@@ -551,16 +548,13 @@ public class ADD extends DD {
 
 		if ((PRUNE_TYPE != REPLACE_AVG && PRUNE_TYPE != REPLACE_MIN && 
 				PRUNE_TYPE != REPLACE_MAX)) {
-			System.out.println("Illegal ADD replacement type " + PRUNE_TYPE);
+			System.out.println("[SERVER] Illegal ADD replacement type " + PRUNE_TYPE);
 			System.exit(1);
 		}
 
 		HashSet leaves = new HashSet();
 		collectLeaves(id, leaves);
-		//System.out.println(leaves);
 		HashMap remap = compressLeaves(leaves);
-		//System.out.println(remap);
-		//System.exit(1);
 		return reduceRemapLeaves(id, remap);
 	}
 
@@ -571,16 +565,13 @@ public class ADD extends DD {
 	
 	public int reduceRemapLeaves2(int id, HashMap remap) {
 		// Have we examined this node id already?
-		// System.out.println("Reduce(" + id + ")");
 		ADDRNode qret = null;
 		ReduceCacheKey key = new ReduceCacheKey(this, 0, 0, id);
 		if ((qret = (ADDRNode) _hmPruneMap.get(key)) != null) {
-			// System.out.println("In cache, returning: " + qret);
 			return qret._lid;
 		}
 
 		// Proceed with reduction algorithm
-		// System.out.println("Not in cache");
 		int ret = INVALID;
 		boolean recurse = true;
 		ADDNode n = getNode(id);
@@ -611,11 +602,7 @@ public class ADD extends DD {
 			}
 
 			// Decide which node to return (takes care of 'low==high' case)
-			// System.out.println("Get:    <" + ni._nGlobalID + "," + low +
-			// "," + high + ">");
 			ret = getINode(ni._nTestVarID, low, high, true);
-			// System.out.println("Result: <" + ni._nGlobalID + "," + low +
-			// "," + high + ">  ->  " + ret);
 
 			// getINode may return a DNode or BNode if low==high
 			if (getNode(ret) instanceof ADDINode) {
@@ -682,7 +669,7 @@ public class ADD extends DD {
 			else if (PRUNE_TYPE == REPLACE_MAX || PRUNE_TYPE == REPLACE_MIN)
 				replace_val = minmax;
 			else {
-				System.out.println("Illegal ADD prune type: " + PRUNE_TYPE);
+				System.out.println("[SERVER] Illegal ADD prune type: " + PRUNE_TYPE);
 				System.exit(1);
 			}
 
@@ -734,16 +721,7 @@ public class ADD extends DD {
 				return getDNode(avg, avg, true);
 			}
 			default: {
-				// if (PRUNE_TYPE == REPLACE_RANGE) { // _nWhich == 1
-				// return getDNode(ni._dMinLower, ni._dMinLower, true);
-				// } else if (PRUNE_TYPE == REPLACE_RANGE && _nWhich == 2) {
-				// return getDNode(ni._dMaxUpper, ni._dMaxUpper, true);
-				// } else {
-				// // System.out.println("Illegal replacement type " +
-				// PRUNE_TYPE); // + ", " + _nWhich
-				// Object o1 = null; o1.toString();
-				// }
-				System.out.println("Range replace not implemented yet");
+				System.out.println("[SERVER] Range replace not implemented yet");
 				System.exit(1);
 			}
 			}
@@ -776,43 +754,8 @@ public class ADD extends DD {
 				max_abs_diff = Math.abs(((ADDDNode) adiff)._dLower);
 			}
 
-			// ///////////////// DEBUG ////////////////////
-			// System.out.println("=================================");
-			// System.out.println("Difference: " + max_abs_diff);
-			// System.out.println(getNode(low).toString(this, 0));
-			// System.out.println("---------------------------------");
-			// System.out.println(getNode(high).toString(this, 0));
-			// System.out.println("---------------------------------");
-			// System.out.println(adiff.toString(this, 0));
-
-			// REMOVE!!!
-			// double max_abs_diff2 = Double.POSITIVE_INFINITY;
-			// ADDNode adiff2 = getNode(applyInt(high, low, ARITH_MINUS));
-			// if (adiff2 instanceof ADDINode) {
-			// ADDINode adi = (ADDINode)adiff2;
-			// max_abs_diff2 = Math.max(Math.abs(adi._dMinLower),
-			// Math.abs(adi._dMaxUpper));
-			// } else {
-			// max_abs_diff2 = Math.abs(((ADDDNode)adiff2)._dLower);
-			// }
-			// if (Math.abs(max_abs_diff2 - max_abs_diff) >= 1e-9d) {
-			// System.out.println("Difference: " + max_abs_diff + " / " +
-			// max_abs_diff2);
-			// System.out.println("Assymmetric minus... error!!!");
-			// System.exit(1);
-			// }
-			// System.out.println("=================================");
-			// ////////////////////////////////////////////
-
 			// Should we prune?
 			if ((PRUNE_PRECISION >= 0d) && (max_abs_diff <= PRUNE_PRECISION)) {
-
-				// ///////////////// DEBUG ////////////////////
-				// System.out.println("Pruning type: " + PRUNE_TYPE);
-				// System.out.println("Difference: " + max_abs_diff);
-				// System.out.println("Pruning: \n" + ni.toString(this,0));
-				// System.out.println("---------------------------------");
-				// ////////////////////////////////////////////
 
 				switch (PRUNE_TYPE) {
 				case NO_REPLACE: {
@@ -840,17 +783,8 @@ public class ADD extends DD {
 				}
 					break;
 				default: {
-					// if (PRUNE_TYPE == REPLACE_RANGE) { // && _nWhich == 1
-					// ret = new ADDRNode(applyInt(low, high, ARITH_MIN));
-					// } else if (PRUNE_TYPE == REPLACE_RANGE && _nWhich == 2) {
-					// ret = new ADDRNode(applyInt(low, high, ARITH_MAX));
-					// } else {
-					// System.out.println("Illegal replacement type " +
-					// PRUNE_TYPE); // ", " + _nWhich
-					// Object o1 = null; o1.toString();
-					// }
 					ret = INVALID;
-					System.out.println("Range replace not implemented yet");
+					System.out.println("[SERVER] Range replace not implemented yet");
 					System.exit(1);
 				}
 				}
@@ -901,16 +835,13 @@ public class ADD extends DD {
 	// only be called if 'this' is empty). TODO: Remove printlns!
 	public int reduceRestrict(int id, ADD src, int gid, int op) {
 		// Have we examined this node id already?
-		// System.out.println("Reduce(" + id + ")");
 		ADDRNode qret = null;
 		ReduceCacheKey key = new ReduceCacheKey(src, gid, op, id);
 		if ((qret = (ADDRNode) _hmReduceMap.get(key)) != null) {
-			// System.out.println("In cache, returning: " + qret);
 			return qret._lid;
 		}
 
 		// Proceed with reduction algorithm
-		// System.out.println("Not in cache");
 		int ret = INVALID;
 		boolean recurse = true;
 		ADDNode n = src.getNode(id);
@@ -931,7 +862,7 @@ public class ADD extends DD {
 					ret = ((op == RESTRICT_LOW) ? reduceRestrict(ni._nLow, src,
 							gid, op) : reduceRestrict(ni._nHigh, src, gid, op));
 				} else {
-					System.out.println("ERROR: op not a RESTRICT!");
+					System.out.println("[SERVER] ERROR: op not a RESTRICT!");
 					Object o = null;
 					o.toString();
 					System.exit(1);
@@ -951,11 +882,7 @@ public class ADD extends DD {
 				}
 
 				// Decide which node to return (takes care of 'low==high' case)
-				// System.out.println("Get:    <" + ni._nGlobalID + "," + low +
-				// "," + high + ">");
 				ret = getINode(ni._nTestVarID, low, high, true);
-				// System.out.println("Result: <" + ni._nGlobalID + "," + low +
-				// "," + high + ">  ->  " + ret);
 
 				// getINode may return a DNode or BNode if low==high
 				if (getNode(ret) instanceof ADDINode) {
@@ -974,11 +901,6 @@ public class ADD extends DD {
 		// Note: For both ADD and AADD, reduce() may not completely dec all
 		// ref counts, but easier to be conservative for now.
 
-		// if ((id != ret) && (src == this)) {
-		// //System.out.println("Alternate reduction of " + id + "(del) to " +
-		// ret + "(new)");
-		// decRefCount(id, true /* delete! */, recurse /* recursive? */);
-		// }
 		return ret;
 	}
 
@@ -986,7 +908,7 @@ public class ADD extends DD {
 
 		if (op != ARITH_SUM && op != ARITH_PROD && op != ARITH_MAX
 				&& op != ARITH_MIN) {
-			System.out.println("ERROR: opOut called without SUM/PROD/MIN/MAX");
+			System.out.println("[SERVER] ERROR: opOut called without SUM/PROD/MIN/MAX");
 			Object o = null;
 			o.toString();
 		}
@@ -1002,7 +924,6 @@ public class ADD extends DD {
 	// Remap gids... gid_map = old_id -> new_id (assuming order consistent)
 	public int remapGIDsInt(int lid, HashMap node_map) {
 		ADDNode n = getNode(lid);
-		//System.out.println(lid + ": " + n);
 		if (n instanceof ADDBNode || n instanceof ADDDNode) {
 			return lid;
 		} else { // n instanceof ADDINode so recurse and update caches
@@ -1049,8 +970,8 @@ public class ADD extends DD {
 				}
 			} else {
 				if (!(n2 instanceof ADDINode)) {
-					System.err.println("ERROR: should not reach here with two non-ADDINodes, IDs " + a1 + " and " + a2);
-					System.err.println("\n" + printNode(a1) + "\n\n" + printNode(a2));
+					System.err.println("[SERVER] ERROR: should not reach here with two non-ADDINodes, IDs " + a1 + " and " + a2);
+					System.err.println("\n[SERVER] " + printNode(a1) + "\n\n[SERVER] " + printNode(a2));
 					System.exit(1);
 				}
 				gid = ((ADDINode) n2)._nTestVarID;
@@ -1104,7 +1025,6 @@ public class ADD extends DD {
 			if (((a1 instanceof ADDBNode) && (((ADDBNode) a1)._bVal == false))
 					|| ((a2 instanceof ADDBNode) && (((ADDBNode) a2)._bVal == false))) {
 				ret = getBNode(false, true /* create if not found! */);
-				// System.out.println("AND PRUNE!!!"); // TODO: Remove!!!
 				AND_PRUNE_CNT++;
 
 			} else if ((a1 instanceof ADDBNode) && (a2 instanceof ADDBNode)) {
@@ -1118,7 +1038,6 @@ public class ADD extends DD {
 			if (((a1 instanceof ADDBNode) && (((ADDBNode) a1)._bVal == true))
 					|| ((a2 instanceof ADDBNode) && (((ADDBNode) a2)._bVal == true))) {
 				ret = getBNode(true, true /* create if not found! */);
-				// System.out.println("OR PRUNE!!!"); // TODO: Remove!!!
 				OR_PRUNE_CNT++;
 
 			} else if ((a1 instanceof ADDBNode) && (a2 instanceof ADDBNode)) {
@@ -1176,13 +1095,11 @@ public class ADD extends DD {
 			} else if ((a1 instanceof ADDDNode)
 					&& (((ADDDNode) a1)._dLower == (double) 0.0)
 					&& (((ADDDNode) a1)._dUpper == (double) 0.0)) {
-				// System.out.println("PROD PRUNE!!!"); // TODO: Remove!!!
 				PROD_PRUNE_CNT++;
 				ret = getDNode((double) 0.0, (double) 0.0, true);
 			} else if ((a2 instanceof ADDDNode)
 					&& (((ADDDNode) a2)._dLower == (double) 0.0)
 					&& (((ADDDNode) a2)._dUpper == (double) 0.0)) {
-				// System.out.println("PROD PRUNE!!!"); // TODO: Remove!!!
 				PROD_PRUNE_CNT++;
 				ret = getDNode((double) 0.0, (double) 0.0, true);
 			}
@@ -1203,22 +1120,16 @@ public class ADD extends DD {
 			} else if ((a1 instanceof ADDDNode) && (a2 instanceof ADDINode)
 					&& (((ADDDNode) a1)._dLower <= ((ADDINode) a2)._dMinLower)
 					&& (((ADDDNode) a1)._dUpper <= ((ADDINode) a2)._dMinUpper)) {
-				// If a1.lower < a2.min.lower && a1.upper < a2.min.upper
-				// then can set node to a1
 				ADDDNode a1d = (ADDDNode) a1;
 				ret = getDNode(a1d._dLower, a1d._dUpper, true,
 						a1d._sLowerLabel, a1d._sUpperLabel);
-				// System.out.println("MIN PRUNE!!!"); // TODO: Remove!!!
 				MIN_PRUNE_CNT++;
 			} else if ((a2 instanceof ADDDNode)
 					&& (((ADDDNode) a2)._dLower <= ((ADDINode) a1)._dMinLower)
 					&& (((ADDDNode) a2)._dUpper <= ((ADDINode) a1)._dMinUpper)) {
-				// If a2.lower < a1.min.lower && a2.upper < a1.min.upper
-				// then can set node to a2
 				ADDDNode a2d = (ADDDNode) a2;
 				ret = getDNode(a2d._dLower, a2d._dUpper, true,
 						a2d._sLowerLabel, a2d._sUpperLabel);
-				// System.out.println("MIN PRUNE!!!"); // TODO: Remove!!!
 				MIN_PRUNE_CNT++;
 			}
 		}
@@ -1238,22 +1149,16 @@ public class ADD extends DD {
 			} else if ((a1 instanceof ADDDNode) && (a2 instanceof ADDINode)
 					&& (((ADDDNode) a1)._dLower >= ((ADDINode) a2)._dMaxLower)
 					&& (((ADDDNode) a1)._dUpper >= ((ADDINode) a2)._dMaxUpper)) {
-				// If a1.lower > a2.max.lower && a1.upper > a2.max.upper
-				// then can set node to a1
 				ADDDNode a1d = (ADDDNode) a1;
 				ret = getDNode(a1d._dLower, a1d._dUpper, true,
 						a1d._sLowerLabel, a1d._sUpperLabel);
-				// System.out.println("MAX PRUNE!!!"); // TODO: Remove!!!
 				MAX_PRUNE_CNT++;
 			} else if ((a2 instanceof ADDDNode)
 					&& (((ADDDNode) a2)._dLower >= ((ADDINode) a1)._dMaxLower)
 					&& (((ADDDNode) a2)._dUpper >= ((ADDINode) a1)._dMaxUpper)) {
-				// If a2.lower > a1.max.lower && a2.upper > a1.max.upper
-				// then can set node to a2
 				ADDDNode a2d = (ADDDNode) a2;
 				ret = getDNode(a2d._dLower, a2d._dUpper, true,
 						a2d._sLowerLabel, a2d._sUpperLabel);
-				// System.out.println("MAX PRUNE!!!"); // TODO: Remove!!!
 				MAX_PRUNE_CNT++;
 			}
 		}
@@ -1311,8 +1216,7 @@ public class ADD extends DD {
 		for (Object o : var2assign.entrySet()) {
 			Map.Entry me = (Map.Entry)o; 
 			int index = (Integer)_hmVarName2ID.get(me.getKey()); // if null, var not in var2ID
-			//System.out.println(me.getKey() + " :: " + index + ": " + _hmGVarToLevel);
-			int level = (Integer)_hmGVarToLevel.get(index); 
+			int level = (Integer)_hmGVarToLevel.get(index);
 			assign.set(level, (Boolean)me.getValue());
 		}
 		return evaluate(id, assign);
@@ -1328,7 +1232,6 @@ public class ADD extends DD {
 		while (cur instanceof ADDINode) {
 			int level = ((Integer) _hmGVarToLevel.get(new Integer(
 					((ADDINode) cur)._nTestVarID))).intValue();
-			//System.out.println(level +" "+ assign.get(level));
 			// If we need a var this is unassigned, return null
 			if ((level < assign.size())
 					&& ((b = (Boolean) assign.get(level)) != null)) {
@@ -1385,7 +1288,7 @@ public class ADD extends DD {
 			return getDNode(val, val, true);
 		} else {
 			String var = (String) o;
-			if (((Integer) _hmVarName2ID.get(var)) == null) System.out.println(var);
+			if (((Integer) _hmVarName2ID.get(var)) == null) System.out.println("[SERVER] " + var);
 			int gid = ((Integer) _hmVarName2ID.get(var)).intValue();
 
 			// Get the var ADD
@@ -1411,8 +1314,6 @@ public class ADD extends DD {
 	}
 
 	public int buildNode(ArrayList l) {
-
-		// System.out.println("Building: " + l);
 
 		Object o = l.get(0);
 		if (o instanceof String && HasOnlyDigits((String) o)) {
@@ -1445,7 +1346,7 @@ public class ADD extends DD {
 
 		Integer var_gid = (Integer)_hmVarName2ID.get(var_name);
 		if (var_gid == null)
-			System.err.println("No var ID registered for '" + var_name + "'");
+			System.err.println("[SERVER] No var ID registered for '" + var_name + "'");
 		return getVarNode(var_gid, low, high);
 	}
 
@@ -1552,12 +1453,12 @@ public class ADD extends DD {
 	}
 
 	public void pruneReport() {
-		System.out.println("\nPrune Report:\n-------------");
-		System.out.println("OR:   " + OR_PRUNE_CNT++);
-		System.out.println("AND:  " + AND_PRUNE_CNT++);
-		System.out.println("PROD: " + PROD_PRUNE_CNT++);
-		System.out.println("MIN:  " + MIN_PRUNE_CNT++);
-		System.out.println("MAX:  " + MAX_PRUNE_CNT++ + "\n");
+		System.out.println("\n[SERVER] Prune Report:\n-------------");
+		System.out.println("[SERVER] OR:   " + OR_PRUNE_CNT++);
+		System.out.println("[SERVER] AND:  " + AND_PRUNE_CNT++);
+		System.out.println("[SERVER] PROD: " + PROD_PRUNE_CNT++);
+		System.out.println("[SERVER] MIN:  " + MIN_PRUNE_CNT++);
+		System.out.println("[SERVER] MAX:  " + MAX_PRUNE_CNT++ + "\n");
 	}
 
 }

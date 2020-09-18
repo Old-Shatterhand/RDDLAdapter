@@ -55,15 +55,15 @@ public class FinalEval {
 			String s_ignore = DocUtils.ReadFile(new File(f.getPath() + File.separator + IGNORE_CLIENT_LIST_FILE));
 			for (String s : s_ignore.split("[\\s]")) {
 				IGNORE_POLICIES.add(s.trim());
-				System.out.println("Ignoring: '" + s.trim() + "'");
+				System.out.println("[SERVER] Ignoring: '" + s.trim() + "'");
 			}
 
 			// Read all log files
 			for (File f2 : f.listFiles())
 				if (f2.getName().endsWith(".log")) {
-					System.out.println("Loading log file: " + f2 + "...");
+					System.out.println("[SERVER] Loading log file: " + f2 + "...");
 					LogReader lr = new LogReader(f2);
-					System.out.println(lr._client2data);
+					System.out.println("[SERVER] " + lr._client2data);
 					client2data.putAll(lr._client2data);
 				}
 		} else
@@ -100,10 +100,10 @@ public class FinalEval {
 		for (Map.Entry<String, MapList> e : client2data.entrySet()) {
 			String client_name = e.getKey();
 			if (client_name == null) {
-				System.err.println("Client name was null for " + e + "... skipping");
+				System.err.println("[SERVER] Client name was null for " + e + "... skipping");
 				continue;
 			} else if (IGNORE_POLICIES.contains(client_name)) {
-				System.out.println("Ignoring " + client_name + "... skipping");
+				System.out.println("[SERVER] Ignoring " + client_name + "... skipping");
 				continue;
 			}
 			clients.add(client_name);
@@ -117,7 +117,7 @@ public class FinalEval {
 				
 				Double instance_min = instance2min.get(instance_name);
 				if (instance_min == null) {
-					System.out.println("ERROR: could not find min for: " + instance_name);
+					System.out.println("[SERVER] ERROR: could not find min for: " + instance_name);
 					System.exit(1);
 				}
 
@@ -126,7 +126,7 @@ public class FinalEval {
 				
 				if (MinMaxEval.BASELINE_POLICIES.contains(client_name.toLowerCase())
 						&& rewards.size() != NUM_EXPECTED_TRIALS) {
-						System.err.println("INCORRECT NUMBER OF TRIALS [" + rewards.size() + "/"
+						System.err.println("[SERVER] INCORRECT NUMBER OF TRIALS [" + rewards.size() + "/"
 								+ NUM_EXPECTED_TRIALS + "] for " + client_name + " on " + instance_name);
 						System.exit(1);
 				}
@@ -146,7 +146,7 @@ public class FinalEval {
 					double rew = rewards.get(i);
 					long time  = times.get(i);
 					if (ENFORCE_TIME_LIMIT && cumulative_time + time > FinalEval.TIME_ALLOWED) {
-						System.err.println("TIME LIMIT (" + (cumulative_time + time) + "/" + FinalEval.TIME_ALLOWED + ") EXCEEDED on " + instance_name + 
+						System.err.println("[SERVER] TIME LIMIT (" + (cumulative_time + time) + "/" + FinalEval.TIME_ALLOWED + ") EXCEEDED on " + instance_name +
 								           " by " + client_name + ", using last " + last_rewards_in_trial_and_time_limit.size() + " / " + rewards.size() + " trials.");
 						break;
 					}
@@ -170,16 +170,16 @@ public class FinalEval {
 					
 				if (rewards.size() < NUM_EXPECTED_TRIALS) {
 					// Use min reward if not enough trials
-					System.err.print("- PADDING " + client_name + " / " + instance_name + " WITH MIN REWARD");
+					System.err.print("[SERVER] - PADDING " + client_name + " / " + instance_name + " WITH MIN REWARD");
 					for (int i = rewards.size(); i < NUM_EXPECTED_TRIALS; i++) {
 						rewards.add(instance_min);
-						System.err.print(".");
+						System.err.print("[SERVER] .");
 					}
 					System.err.println();
 				}
 
 				if (rewards.size() != NUM_EXPECTED_TRIALS) {
-					System.out.println("INCORRECT NUMBER OF TRIALS [" + rewards.size() + "/"
+					System.out.println("[SERVER] INCORRECT NUMBER OF TRIALS [" + rewards.size() + "/"
 							+ NUM_EXPECTED_TRIALS + "] for " + client_name + " after correction.");
 					System.exit(1);
 				}
@@ -202,8 +202,8 @@ public class FinalEval {
 
 		PrintStream all_results = new PrintStream(new FileOutputStream(f.getPath() + File.separator + "all_results.txt"));
 
-		System.out.println("All results\n===");
-		all_results.println("All results\n===");
+		System.out.println("[SERVER] All results\n===");
+		all_results.println("[SERVER] All results\n===");
 		
 		MapList client2normval = new MapList();
 		MapList client2normvalAll = new MapList();
@@ -215,7 +215,7 @@ public class FinalEval {
 			double instance_min = instance2min.get(instance_name);
 			double instance_max = instance2max.get(instance_name);
 			all_results.print(instance_name + "\t");
-			System.out.print(instance_name + "\t");
+			System.out.print("[SERVER] " + instance_name + "\t");
 			
 			for (String client_name : clients) {
 				Pair<String,String> key = new Pair<String,String>(client_name,instance_name);
@@ -253,62 +253,62 @@ public class FinalEval {
 					domain_client2normvalAll.putValue(new Pair<String,String>(domain_name,client_name), norm_reward);
 				}
 				
-				System.out.print(client_name + "\t" + count + "\t" + format4(norm_score) + "\t" + format(pre_min_avg) + "\t+/- " + format(stderr) + "\t[ " + format(min_val) + "\t" + format(max_val) + " ]\t");
+				System.out.print("[SERVER] "client_name + "\t" + count + "\t" + format4(norm_score) + "\t" + format(pre_min_avg) + "\t+/- " + format(stderr) + "\t[ " + format(min_val) + "\t" + format(max_val) + " ]\t");
 				all_results.print(client_name + "\t" + count + "\t" + format4(norm_score) + "\t" + format(pre_min_avg) + "\t" + format(stderr) + "\t" + format(min_val) + "\t" + format(max_val) + "\t");
 			}
 			System.out.println();
 			all_results.println();
 		}
 		
-		System.out.println("\nAvg of all normalized rewards by domain\n===");
+		System.out.println("\n[SERVER] Avg of all normalized rewards by domain\n===");
 		all_results.println("\nAvg of all normalized rewards by domain\n===");
 		for (String domain_name : domains) {
-			System.out.print(domain_name + "\t");
+			System.out.print("[SERVER] " + domain_name + "\t");
 			all_results.print(domain_name + "\t");
 			for (String client_name : clients) {
 				ArrayList<Double> norm_scoresAll = (ArrayList<Double>)domain_client2normvalAll.getValues(new Pair<String,String>(domain_name,client_name));
 				double avgAll = Statistics.Avg(norm_scoresAll);
 				double stderrAll = Statistics.StdError95(norm_scoresAll);
-				System.out.print("\t" + client_name + "\t" + norm_scoresAll.size() + "\t" + format4(avgAll) + "\t+/- " + format4(stderrAll));
+				System.out.print("[SERVER] \t" + client_name + "\t" + norm_scoresAll.size() + "\t" + format4(avgAll) + "\t+/- " + format4(stderrAll));
 				all_results.print("\t" + client_name + "\t" + norm_scoresAll.size() + "\t" + format4(avgAll) + "\t" + format4(stderrAll));
 			}
 			System.out.println();
 			all_results.println();
 		}
 		
-		System.out.println("\nAvg of min(0,avg-norm-score-instance)\n===");
+		System.out.println("\n[SERVER] Avg of min(0,avg-norm-score-instance)\n===");
 		all_results.println("\nAvg of min(0,avg-norm-score-instance)\n===");
 		for (String domain_name : domains) {
-			System.out.print(domain_name + "\t");
+			System.out.print("[SERVER] " + domain_name + "\t");
 			all_results.print(domain_name + "\t");
 			for (String client_name : clients) {
 				ArrayList<Double> norm_scores = (ArrayList<Double>)domain_client2normval.getValues(new Pair<String,String>(domain_name,client_name));
 				double avg = Statistics.Avg(norm_scores);
 				double stderr = Statistics.StdError95(norm_scores);
-				System.out.print("\t" + client_name + "\t" + norm_scores.size() + "\t" + format4(avg) + "\t+/- " + format4(stderr));
+				System.out.print("[SERVER] \t" + client_name + "\t" + norm_scores.size() + "\t" + format4(avg) + "\t+/- " + format4(stderr));
 				all_results.print("\t" + client_name + "\t" + norm_scores.size() + "\t" + format4(avg) + "\t" + format4(stderr));
 			}
 			System.out.println();
 			all_results.println();
 		}
 
-		System.out.println("\nAvg of all normalized rewards\n===");
+		System.out.println("\n[SERVER] Avg of all normalized rewards\n===");
 		all_results.println("\nAvg of all normalized rewards\n===");
 		for (String client_name : clients) {
 			ArrayList<Double> norm_scoresAll = (ArrayList<Double>)client2normvalAll.getValues(client_name);
 			double avgAll = Statistics.Avg(norm_scoresAll);
 			double stderrAll = Statistics.StdError95(norm_scoresAll);
-			System.out.println(client_name + "\t" + norm_scoresAll.size() + "\t" + format4(avgAll) + "\t+/- " + format4(stderrAll));
+			System.out.println("[SERVER] " + client_name + "\t" + norm_scoresAll.size() + "\t" + format4(avgAll) + "\t+/- " + format4(stderrAll));
 			all_results.println(client_name + "\t" + norm_scoresAll.size() + "\t" + format4(avgAll) + "\t" + format4(stderrAll));
 		}
-		
-		all_results.println("\nAvg of min(0,avg-norm-score-instance)\n===");
-		System.out.println("\nAvg of min(0,avg-norm-score-instance)\n===");
+
+		System.out.println("\n[SERVER] Avg of min(0,avg-norm-score-instance)\n===");
+		all_results.println("\n Avg of min(0,avg-norm-score-instance)\n===");
 		for (String client_name : clients) {
 			ArrayList<Double> norm_scores = (ArrayList<Double>)client2normval.getValues(client_name);
 			double avg = Statistics.Avg(norm_scores);
 			double stderr = Statistics.StdError95(norm_scores);
-			System.out.println(client_name + "\t" + norm_scores.size() + "\t" + format4(avg) + "\t+/- " + format4(stderr));
+			System.out.println("[SERVER] " + client_name + "\t" + norm_scores.size() + "\t" + format4(avg) + "\t+/- " + format4(stderr));
 			all_results.println(client_name + "\t" + norm_scores.size() + "\t" + format4(avg) + "\t" + format4(stderr));
 		}
 		
@@ -345,7 +345,7 @@ public class FinalEval {
 				NUM_EXPECTED_TRIALS = new Integer(args[index + 1]);
 				index += 2;
 			} else {
-				System.out.println("Unrecognized option '" + args[index] + " " + args[index + 1] + "'");
+				System.out.println("[SERVER] Unrecognized option '" + args[index] + " " + args[index + 1] + "'");
 				usage();
 			}
 		}
@@ -364,6 +364,6 @@ public class FinalEval {
 	}
 
 	public static void usage() {
-		System.out.println("\nUsage: [--time-limit TIME] [--num-trials NUM] <directory of RDDL .log files>");
+		System.out.println("\n[SERVER] Usage: [--time-limit TIME] [--num-trials NUM] <directory of RDDL .log files>");
 	}
 }

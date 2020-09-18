@@ -33,9 +33,9 @@ public class TamariskDisplay extends StateViz {
 	
 	public void display(State s, int time) {
 		try {
-			System.out.println("TIME = " + time + ": " + getStateDescription(s));
+			System.out.println("[SERVER] TIME = " + time + ": " + getStateDescription(s));
 		} catch (EvalException e) {
-			System.out.println("\n\nError during visualization:\n" + e);
+			System.out.println("\n\n[SERVER] Error during visualization:\n" + e);
 			e.printStackTrace();
 			System.exit(1);
 		}
@@ -65,15 +65,12 @@ public class TamariskDisplay extends StateViz {
 		// Set up an arity-1 parameter list
 		ArrayList<LCONST> params = new ArrayList<LCONST>(2);
 		params.add(null);
-		//params.add(null);
 
 		_bd.clearAllCells();
 		_bd.clearAllLines();
-//		for (LCONST xpos : list_reach) {
 		for (LCONST slot : list_slot) {
 			String[] split = slot._sConstValue.split("s"); // FIXME: How did a $ get in this _sConstValue?
 			int sl = split.length;
-			//System.out.println(slot + " : " + Arrays.asList(split) + " : " + slot.getClass() + " : " + new OBJECT_VAL("$test")._sConstValue);
 			int row = new Integer(split[sl-2]) - 1;
 			int col = new Integer(split[sl-1]);
 			if (row % 2 == 0)
@@ -81,8 +78,6 @@ public class TamariskDisplay extends StateViz {
 			else
 				col = list_slot.size() - col;
 			params.set(0, slot);
-			//params.set(1, new OBJECT_VAL("r" + row));
-			//System.out.println(params);
 			boolean b_tamarisk_at = (Boolean)s.getPVariableAssign(tamarisk_at, params);
 			boolean b_native_at   = (Boolean)s.getPVariableAssign(native_at, params);
 			
@@ -111,7 +106,7 @@ public class TamariskDisplay extends StateViz {
 	    try {
 			Thread.currentThread().sleep(_nTimeDelay);
 		} catch (InterruptedException e) {
-			System.err.println(e);
+			System.err.println("[SERVER] " + e);
 			e.printStackTrace(System.err);
 		}
 				

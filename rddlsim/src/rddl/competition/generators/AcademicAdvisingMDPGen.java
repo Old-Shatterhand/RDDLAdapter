@@ -46,8 +46,8 @@ public class AcademicAdvisingMDPGen {
 	}
 	
 	public static void usage() {
-		System.err.println("Usage: output-dir instance-name num_levels num_courses_per_level num_prereqs prob_more_less_prereqs prob_prog_req num_conc_actions horizon discount");
-		System.err.println("Example: files/testcomp/rddl academic_advising_mdp__1 5 2 2 0.5 0.5 2 40 1.0");
+		System.err.println("[SERVER] Usage: output-dir instance-name num_levels num_courses_per_level num_prereqs prob_more_less_prereqs prob_prog_req num_conc_actions horizon discount");
+		System.err.println("[SERVER] Example: files/testcomp/rddl academic_advising_mdp__1 5 2 2 0.5 0.5 2 40 1.0");
 		System.exit(127);
 	}
 	
@@ -92,7 +92,7 @@ public class AcademicAdvisingMDPGen {
 				String new_course = "CS" + level + course_num;
 				if (courses.contains(new_course)) {
 					// Could occur if level=1,course_num=11 and level=11,course_num=1, but unlikely to see these dimensions
-					System.err.println("ERROR: Duplicate course ID: " + new_course);
+					System.err.println("[SERVER] ERROR: Duplicate course ID: " + new_course);
 					System.exit(1);
 				}
 				courses.add(new_course);
@@ -126,9 +126,7 @@ public class AcademicAdvisingMDPGen {
 						sb.append("\t\tPREREQ(" + courses_so_far.get(indices[index]) + "," + course_name + ");\n");
 				}
 				
-				// Generate REQ?
 				float rnum = ran.nextFloat();
-				//System.err.println(rnum + " < " + prob_prog_req + " = " + (rnum < prob_prog_req));
 				if (rnum < prob_prog_req) {
 					sb.append("\t\tPROGRAM_REQUIREMENT(" + course_name + ");\n");
 				}
@@ -139,14 +137,6 @@ public class AcademicAdvisingMDPGen {
 		sb.append("\t};\n");
 		sb.append("}\n\n");
 		
-//		instance academic_advising_inst_mdp__1 {
-//			  domain = academic_advising_mdp;
-//			  non-fluents = nf_academic_advising_inst_mdp__1;
-//			  max-nondef-actions = 2;
-//			  horizon = 40;
-//			  discount = 1.0;
-//		}
-
 		sb.append("instance " + instance_name + " {\n");
 		sb.append("\tdomain = academic_advising_mdp;\n");
 		sb.append("\tnon-fluents = nf_" + instance_name + ";\n");

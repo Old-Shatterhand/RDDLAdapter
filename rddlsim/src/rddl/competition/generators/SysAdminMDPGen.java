@@ -40,8 +40,8 @@ public class SysAdminMDPGen {
 	}
 	
 	public static void usage() {
-		System.err.println("Usage: output-dir instance-name num-comp num-neighbors reboot-prob horizon discount");
-		System.err.println("Example: files/testcomp/rddl sysadmin_10_3 10 3 0.05 100 0.9");
+		System.err.println("[SERVER] Usage: output-dir instance-name num-comp num-neighbors reboot-prob horizon discount");
+		System.err.println("[SERVER] Example: files/testcomp/rddl sysadmin_10_3 10 3 0.05 100 0.9");
 		System.exit(127);
 	}
 	

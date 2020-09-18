@@ -80,12 +80,10 @@ public class RTDP extends Policy {
 	///////////////////////////////////////////////////////////////////////////
 
 	public ArrayList<PVAR_INST_DEF> getActions(State s) throws EvalException {
-		
-		//System.out.println("FULL STATE:\n\n" + SPerseusSPUDDPolicy.getStateDescription(s));
 
 		if (s == null) {
 			// This should only occur on the **first step** of a POMDP trial
-			System.err.println("ERROR: NO STATE/OBS: MDP must have state.");
+			System.err.println("[SERVER] ERROR: NO STATE/OBS: MDP must have state.");
 			System.exit(1);
 		}
 		
@@ -93,10 +91,10 @@ public class RTDP extends Policy {
 		TreeSet<CString> true_vars = 
 			CString.Convert2CString(SPerseusSPUDDPolicy.getTrueFluents(s, "states"));
 		if (SHOW_STATE) {
-			System.out.println("\n==============================================");
-			System.out.println("\nTrue state variables:");
+			System.out.println("\n[SERVER] ==============================================");
+			System.out.println("\n[SERVER] True state variables:");
 			for (CString prop_var : true_vars)
-				System.out.println(" - " + prop_var);
+				System.out.println("[SERVER]  - " + prop_var);
 		}
 		
 		// Get a map of { legal action names -> RDDL action definition }  
@@ -122,10 +120,10 @@ public class RTDP extends Policy {
 			ArrayList<String> actions = new ArrayList<String>(action_map.keySet());
 			action_taken = actions.get(_rand.nextInt(actions.size()));
 			if (SHOW_ACTION_TAKEN)
-				System.out.println("\n--> [Random] action taken: " + action_taken);
+				System.out.println("\n[SERVER] --> [Random] action taken: " + action_taken);
 		} else if (SHOW_ACTION_TAKEN)
-			System.out.println("\n--> [RTDP] best action taken: " + action_taken);
-		System.out.println("Number of VUpper Updates: "+_nContUpperUpdates);
+			System.out.println("\n[SERVER] --> [RTDP] best action taken: " + action_taken);
+		System.out.println("[SERVER] Number of VUpper Updates: "+_nContUpperUpdates);
 		--_nRemainingHorizon; // One less action to take
 		return action_map.get(action_taken);
 	}
@@ -138,9 +136,9 @@ public class RTDP extends Policy {
 	///////////////////////////////////////////////////////////////////////////
 
 	public void roundInit(double time_left, int horizon, int round_number, int total_rounds) {
-		System.out.println("\n*********************************************************");
-		System.out.println(">>> ROUND INIT " + round_number + "/" + total_rounds + "; time remaining = " + time_left + ", horizon = " + horizon);
-		System.out.println("*********************************************************");
+		System.out.println("\n[SERVER] *********************************************************");
+		System.out.println("[SERVER] >>> ROUND INIT " + round_number + "/" + total_rounds + "; time remaining = " + time_left + ", horizon = " + horizon);
+		System.out.println("[SERVER] *********************************************************");
 				
 		// Reset horizon
 		_nRemainingHorizon = horizon;
@@ -153,7 +151,7 @@ public class RTDP extends Policy {
 			try {
 				_translation = new RDDL2Format(_rddl, _sInstanceName, RDDL2Format.SPUDD_CURR, "");
 			} catch (Exception e) {
-				System.err.println("Could not construct MDP for: " + _sInstanceName + "\n" + e);
+				System.err.println("[SERVER] Could not construct MDP for: " + _sInstanceName + "\n" + e);
 				e.printStackTrace(System.err);
 				System.exit(1);
 			}
@@ -194,9 +192,6 @@ public class RTDP extends Policy {
 					dd_true = _context.applyInt(dd_true, dd, ADD.ARITH_PROD);
 		
 					int dd_false = _context.getVarNode(s + "'", 1d, 0d);
-					//System.out.println("Multiplying..." + dd + ", " + DD_ONE);
-					//_context.printNode(dd);
-					//_context.printNode(DD_ONE);
 					int one_minus_dd = _context.applyInt(_context.getConstantNode(1d), dd, ADD.ARITH_MINUS);
 					dd_false = _context.applyInt(dd_false, one_minus_dd, ADD.ARITH_PROD);
 					
@@ -215,12 +210,12 @@ public class RTDP extends Policy {
 			
 			// Display ADDs on terminal?
 			if (DISPLAY_SPUDD_ADDS_TEXT) {
-				System.out.println("State variables: " + _alStateVars);
-				System.out.println("Action names: " + _alActionNames);
+				System.out.println("[SERVER] State variables: " + _alStateVars);
+				System.out.println("[SERVER] Action names: " + _alActionNames);
 				
 				for (CString a : _alActionNames) {
 					Action action = _hmActionName2Action.get(a);
-					System.out.println("Content of action '" + a + "'\n" + action);
+					System.out.println("[SERVER] Content of action '" + a + "'\n" + action);
 				}
 			}
 			
@@ -256,17 +251,17 @@ public class RTDP extends Policy {
 	}
 	
 	public void roundEnd(double reward) {
-		System.out.println("\n*********************************************************");
-		System.out.println(">>> ROUND END, reward = " + reward);
-		System.out.println("*********************************************************");
+		System.out.println("\n[SERVER] *********************************************************");
+		System.out.println("[SERVER] >>> ROUND END, reward = " + reward);
+		System.out.println("[SERVER] *********************************************************");
 		
 		//_context.getGraph(_valueDD).launchViewer(1300, 770);
 	}
 	
 	public void sessionEnd(double total_reward) {
-		System.out.println("\n*********************************************************");
-		System.out.println(">>> SESSION END, total reward = " + total_reward);
-		System.out.println("*********************************************************");
+		System.out.println("\n[SERVER] *********************************************************");
+		System.out.println("[SERVER] >>> SESSION END, total reward = " + total_reward);
+		System.out.println("[SERVER] *********************************************************");
 	}
 	
 	///////////////////////////////////////////////////////////////////////////
@@ -303,7 +298,7 @@ public class RTDP extends Policy {
 		_nTrials = -1;
 		_rddlInstance = _rddl._tmInstanceNodes.get(this._sInstanceName);
 		if (_rddlInstance == null) {
-			System.err.println("ERROR: Could not fine RDDL instance '" + _rddlInstance + "'");
+			System.err.println("[SERVER] ERROR: Could not fine RDDL instance '" + _rddlInstance + "'");
 			System.exit(1);
 		}
 		_dDiscount = _rddlInstance._dDiscount;
@@ -319,7 +314,7 @@ public class RTDP extends Policy {
 			Integer var_id = (Integer)_context._hmVarName2ID.get(var);
 			Integer var_prime_id = (Integer)_context._hmVarName2ID.get(var_prime);
 			if (var_id == null || var_prime_id == null) {
-				System.err.println("ERROR: Could not get var IDs " 
+				System.err.println("[SERVER] ERROR: Could not get var IDs "
 						+ var_id + "/" + var_prime_id
 						+ " for " + var + "/" + var_prime);
 				System.exit(1);
@@ -343,7 +338,7 @@ public class RTDP extends Policy {
 	// Main RTDP Algorithm
 	public void doRTDP(int time_limit_secs, ArrayList init_state) {
 
-		System.out.println("RTDP: Time limit: " + _nTimeLimitSecs + 
+		System.out.println("[SERVER] RTDP: Time limit: " + _nTimeLimitSecs +
 				" seconds, discount: " + _dDiscount + ", horizon: " + 
 				_nRemainingHorizon + "/" + _nHorizon);
 
@@ -359,13 +354,13 @@ public class RTDP extends Policy {
 				_nTrials++;
 			}
 		} catch (TimeOutException e) {
-			System.out.println("RTDP: TIME LIMIT EXCEEDED after " + _nTrials + " trials.");
+			System.out.println("[SERVER] RTDP: TIME LIMIT EXCEEDED after " + _nTrials + " trials.");
 		} catch (Exception e) {
-			System.err.println("RTDP: ERROR at " + _nTrials + " trials.");
+			System.err.println("[SERVER] RTDP: ERROR at " + _nTrials + " trials.");
 			e.printStackTrace(System.err);
 			System.exit(1);
 		} finally {
-			System.out.println("RTDP: Vfun at trial " + _nTrials + ": " + 
+			System.out.println("[SERVER] RTDP: Vfun at trial " + _nTrials + ": " +
 					_context.countExactNodes(_valueDD) + " nodes, best action: " + 
 					_csBestActionInitState);
 		}
@@ -386,9 +381,7 @@ public class RTDP extends Policy {
 		ArrayList cur_state = init_state;
 		ArrayList<ArrayList> visited_states = new ArrayList<ArrayList>(_nRemainingHorizon);
 		for (int steps_to_go = _nRemainingHorizon; steps_to_go > 0; steps_to_go--) {
-			
-			//System.out.println("Forward step [" + steps_to_go + "]: " + cur_state);
-			
+
 			// Flush caches and check time limit
 			flushCaches(); // Only thing to keep is MDP def. and current vfun
 			checkTimeLimit();
@@ -411,8 +404,6 @@ public class RTDP extends Policy {
 		
 		// Do final updates *in reverse* on return
 		for (int depth = visited_states.size() - 1; depth >= 0; depth--) {
-
-			//System.out.println("Reverse step [" + depth + "]: " + cur_state);
 
 			// Flush caches and check time limit
 			flushCaches(); // Only thing to keep is MDP def. and current vfun
@@ -457,9 +448,7 @@ public class RTDP extends Policy {
 				result._csBestAction = a._csActionName;
 				result._dBestQValue = qvalue;
 			}
-			//System.out.println("- " +a._csActionName + "(" + qvalue + ")");
 		}
-		//System.out.println("=> " + result._csBestAction + "(" + result._dBestQValue + ")");
 		return result;
 	}
 
@@ -473,8 +462,8 @@ public class RTDP extends Policy {
 
 		// Show debug info if required
 		if (VERBOSE_LEVEL >= 1) {
-			System.out.println("Regressing action: " + a._csActionName + "\nGIDs: " + vfun_gids);
-			System.out.println("Before sum out: " + _context.printNode(prime_vfun));
+			System.out.println("[SERVER] Regressing action: " + a._csActionName + "\nGIDs: " + vfun_gids);
+			System.out.println("[SERVER] Before sum out: " + _context.printNode(prime_vfun));
 		}
 
 		// Get CPT for each next state variable, restrict out current
@@ -492,8 +481,8 @@ public class RTDP extends Policy {
 			// No need to regress variables not in the value function  
 			if (!vfun_gids.contains(head_var_gid)) {
 				if (VERBOSE_LEVEL >= 1) {
-					System.out.println("Skipping " + _context._hmID2VarName.get(head_var_gid) + " / " + head_var_gid);
-					System.out.println("... not in " + vfun_gids);
+					System.out.println("[SERVER] Skipping " + _context._hmID2VarName.get(head_var_gid) + " / " + head_var_gid);
+					System.out.println("[SERVER] ... not in " + vfun_gids);
 				}
 				continue;
 			}
@@ -503,8 +492,7 @@ public class RTDP extends Policy {
 			cur_state.set(level_prime, true);
 			double prob_true = _context.evaluate(cpt_dd, cur_state);
 			if (Double.isNaN(prob_true)) {
-				System.err.println("ERROR in RTDP.sampleNextState: Expected single value when evaluating: " + cur_state);
-				//System.err.println("in " + context.printNode(cpt_dd));
+				System.err.println("[SERVER] ERROR in RTDP.sampleNextState: Expected single value when evaluating: " + cur_state);
 				System.exit(1);
 			}
 			cur_state.set(level_prime, null); // Undo so as not to change current_state
@@ -512,7 +500,7 @@ public class RTDP extends Policy {
 
 			// Show debug info if required
 			if (VERBOSE_LEVEL >= 2)
-				System.out.println("  - Summing out: " + _context._hmID2VarName.get(head_var_gid));
+				System.out.println("[SERVER]   - Summing out: " + _context._hmID2VarName.get(head_var_gid));
 
 			///////////////////////////////////////////////////////////////////
 			// Multiply next state variable DBN into current value function
@@ -526,7 +514,7 @@ public class RTDP extends Policy {
 		}
 		
 		if (VERBOSE_LEVEL >= 1) 
-			System.out.println("After sum out: " + _context.printNode(prime_vfun));
+			System.out.println("[SERVER] After sum out: " + _context.printNode(prime_vfun));
 
 		// Get action-dependent reward
 		double exp_future_val = 
@@ -555,8 +543,7 @@ public class RTDP extends Policy {
 			current_state.set(level_prime, true);
 			double prob_true = _context.evaluate(cpt_dd, current_state);
 			if (Double.isNaN(prob_true)) {
-				System.err.println("ERROR in RTDP.sampleNextState: Expected single value when evaluating: " + current_state);
-				//System.err.println("in " + context.printNode(cpt_dd));
+				System.err.println("[SERVER] ERROR in RTDP.sampleNextState: Expected single value when evaluating: " + current_state);
 				System.exit(1);
 			}
 			current_state.set(level_prime, null); // Undo so as not to change current_state

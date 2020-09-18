@@ -59,7 +59,7 @@ public class CNFClause {
 	{
 		if(l == null)
 		{
-			System.out.println("Error: Try to add Null to litera list.");
+			System.out.println("[SERVER] Error: Try to add Null to litera list.");
 			return;
 		}
 		if(_literals.size() == 0) _literals.add(l);

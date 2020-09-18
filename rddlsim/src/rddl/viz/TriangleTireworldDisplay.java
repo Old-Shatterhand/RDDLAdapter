@@ -33,9 +33,9 @@ public class TriangleTireworldDisplay extends StateViz {
 	
 	public void display(State s, int time) {
 		try {
-			System.out.println("TIME = " + time + ": " + getStateDescription(s));
+			System.out.println("[SERVER] TIME = " + time + ": " + getStateDescription(s));
 		} catch (EvalException e) {
-			System.out.println("\n\nError during visualization:\n" + e);
+			System.out.println("\n\n[SERVER] Error during visualization:\n" + e);
 			e.printStackTrace();
 			System.exit(1);
 		}
@@ -68,18 +68,14 @@ public class TriangleTireworldDisplay extends StateViz {
 		ArrayList<LCONST> empty = new ArrayList<LCONST>(0);
 		ArrayList<LCONST> params = new ArrayList<LCONST>(1);
 		params.add(null);
-		//params.add(null);
 
 		_bd.clearAllCells();
 		_bd.clearAllLines();
-//		for (LCONST xpos : list_reach) {
 		for (LCONST loc : list_location) {
 			params.set(0, loc);
-			//System.out.println(params);
 
 			String[] split = loc._sConstValue.split("a"); // FIXME: How did a $ get in this _sConstValue?
 			int sl = split.length;
-			//System.out.println(slot + " : " + Arrays.asList(split) + " : " + slot.getClass() + " : " + new OBJECT_VAL("$test")._sConstValue);
 			int row = new Integer(split[sl-2]) - 1;
 			int col = new Integer(split[sl-1]);
 			
@@ -129,7 +125,7 @@ public class TriangleTireworldDisplay extends StateViz {
 	    try {
 			Thread.currentThread().sleep(_nTimeDelay);
 		} catch (InterruptedException e) {
-			System.err.println(e);
+			System.err.println("[SERVER] " + e);
 			e.printStackTrace(System.err);
 		}
 				

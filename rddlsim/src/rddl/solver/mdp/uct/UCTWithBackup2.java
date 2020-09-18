@@ -132,10 +132,10 @@ public class UCTWithBackup2 extends UCT {
 		} while (elapsedTime < timeout);
 		
 		BigInteger sNum = this.getStateLabel(s);
-		System.out.println("### Debug ###");
-		System.out.println("State" + sNum);
-		System.out.println(valuePerHorizon.get(this.getRemainingHorizons()-1));
-		System.out.println(rewardsPerHorizon.get(this.getRemainingHorizons()-1).get(sNum));
+		System.out.println("[SERVER] ### Debug ###");
+		System.out.println("[SERVER] State" + sNum);
+		System.out.println("[SERVER] " + valuePerHorizon.get(this.getRemainingHorizons()-1));
+		System.out.println("[SERVER] " + rewardsPerHorizon.get(this.getRemainingHorizons()-1).get(sNum));
 		this.flushCaches();
 		
 		return new Pair<Integer, Long>(completedSearches, elapsedTime);
@@ -276,7 +276,7 @@ public class UCTWithBackup2 extends UCT {
 		
 		if (!values.containsKey(stateAsNumber) ) {
 			//shouldn`t happen 
-			System.out.println("estado sem valor fazendo update!");
+			System.out.println("[SERVER] estado sem valor fazendo update!");
 		}
 		this.testUpdateValue(stateAsNumber, remainingHorizons, v, action);
 	}
@@ -302,10 +302,7 @@ public class UCTWithBackup2 extends UCT {
 		
 		double freeMemoryPercentage = ((double) runtime.freeMemory() / (double) runtime.totalMemory());
 		
-//		System.out.printf("Memory status - Free Memory Percentage: [%f] Total Memory: [%d]", freeMemoryPercentage, runtime.totalMemory());
-//		System.out.println();
-		
-		if (freeMemoryPercentage > 0.3) 
+		if (freeMemoryPercentage > 0.3)
 			return; // Still enough free mem to exceed minimum requirements
 
 		this.getTranslation()._context.clearSpecialNodes();

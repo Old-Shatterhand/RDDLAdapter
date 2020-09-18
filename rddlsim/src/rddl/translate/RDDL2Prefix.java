@@ -19,7 +19,7 @@ public class RDDL2Prefix {
 		RDDL.USE_PREFIX = true;
 	
 		if (args.length != 2) {
-			System.out.println("\nusage: RDDL-file/directory output-dir\n");
+			System.out.println("\n[SERVER] usage: RDDL-file/directory output-dir\n");
 			System.exit(1);
 		}
 		int arg_offset = 0;
@@ -27,20 +27,6 @@ public class RDDL2Prefix {
 		// Since fluents in prefix format will always be surrounded by parens and object fluents will not, I believe
 		// that it will be unambiguous to always suppress the dollar sign in prefix format, so I will make this default in the RDDL
 		// toString() method for prefix-output rather than making it optional (as the commented out code below was intended to do)
-		
-//		if (args.length < 2 || args.length > 3) {
-//			System.out.println("\nusage: [-nodollar] RDDL-file/directory output-dir\n");
-//			System.exit(1);
-//		}
-//		
-//		int arg_offset = 0;
-//		if (args.length == 3) {
-//			arg_offset = 1;
-//			if (args[0].equalsIgnoreCase("-nodollar"))
-//				RDDL.SUPPRESS_OBJECT_CAST = true;
-//			else
-//				System.out.println("Unrecognized option " + args[0] + ", ignoring.");
-//		}
 		
 		String rddl_file = args[arg_offset];
 		String output_dir = args[arg_offset + 1];
@@ -74,15 +60,15 @@ public class RDDL2Prefix {
 				int rddl_index = f.getName().indexOf(".rddl");
 				File output_file = new File(output_dir + File.separator + 
 						f.getName().substring(0, rddl_index) + ".rddl_prefix");
-				System.out.println("Writing to " + output_file);
+				System.out.println("[SERVER] Writing to " + output_file);
 				
 				PrintStream ps = new PrintStream(new FileOutputStream(output_file));
 				ps.print(rddl.toString());
 				ps.close();
 			
 			} catch (Exception e) {
-				System.err.println("Error processing: " + f);
-				System.err.println(e);
+				System.err.println("[SERVER] Error processing: " + f);
+				System.err.println("[SERVER] " + e);
 				e.printStackTrace(System.err);
 				System.err.flush();
 				rddl_files.remove(f);
@@ -90,11 +76,11 @@ public class RDDL2Prefix {
 			}
 		}
 		
-		System.out.println("\n\n===\n");
+		System.out.println("\n\n[SERVER] ===\n");
 		for (File f : rddl_files)
-			System.out.println("Processed: " + f);
+			System.out.println("[SERVER] Processed: " + f);
 		for (File f : rddl_error)
-			System.out.println("Error processing: " + f);
+			System.out.println("[SERVER] Error processing: " + f);
 	}
 
 }

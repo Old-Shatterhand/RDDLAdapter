@@ -85,23 +85,9 @@ public class TrfTestPolicy extends Policy {
 					String[] split = intersection.toString().replace("]", "").split("[_a]");
 					int col = new Integer(split[1]);			
 					int row = new Integer(split[2]);
-					ENUM_VAL r = enums.get(signal[col][row]);					
-/*
-					// time-out -> change the signal to next phase + set new time-out 
-					if (signalTimeOut[col][row] <= time)
-					{				
-						signal[col][row] = (signal[col][row] + 1) % enums.size();
-						r = enums.get(signal[col][row]);					
-						if (r.toString().contains("RED"))
-							signalTimeOut[col][row] = time + RED_TIME;
-						else
-							signalTimeOut[col][row] = time + OFFSET;
-					}
-*/					
+					ENUM_VAL r = enums.get(signal[col][row]);
 					PVAR_INST_DEF d = new PVAR_INST_DEF(p._sPVarName, r, intersection);
 					actions.add(d);
-//					System.out.println("Action: {signal " + intersection + " = " + r + "} ...until TIME=" + signalTimeOut[col][row]);
-					
 				}
 			}
 		}
