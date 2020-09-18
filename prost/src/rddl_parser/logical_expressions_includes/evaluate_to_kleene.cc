@@ -109,8 +109,6 @@ void EqualsExpression::evaluateToKleene(set<double>& res,
             }
         }
     }
-    // print(cout);
-    // cout << ": " << *res.begin() << " " << *res.rbegin() << endl;
     assert(res.size() == 1 || res.size() == 2);
 }
 

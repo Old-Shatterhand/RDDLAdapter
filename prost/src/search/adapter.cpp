@@ -10,26 +10,26 @@ DLRSAdapter::DLRSAdapter(std::string _name) : ProbabilisticSearchEngine(_name){
 
 void DLRSAdapter::initSession(){
     assert(input.good() && pstream.good());
-    std::cout << "printing tasks" << std::endl;
+    std::cout << "[ADAPT.]: printing tasks" << std::endl;
     pstream << numberOfActions;
-    std::cout << "printed: number of actions: " << numberOfActions << std::endl;
+    std::cout << "[ADAPT.]: printed: number of actions: " << numberOfActions << std::endl;
 
     for(int i = 0 ; i < numberOfActions ; ++i){
         pstream << i;
-        std::cout << "printed: " << i << "-th action: " << i << std::endl;
+        std::cout << "[ADAPT.]: printed: " << i << "-th action: " << i << std::endl;
     }
 
-    std::cout << "printing vars" << std::endl;
+    std::cout << "[ADAPT.]: printing vars" << std::endl;
     pstream << State::numberOfDeterministicStateFluents + State::numberOfProbabilisticStateFluents;
-    std::cout << "printed: number of state_variables: " << State::numberOfDeterministicStateFluents + State::numberOfProbabilisticStateFluents << std::endl;
+    std::cout << "[ADAPT.]: printed: number of state_variables: " << State::numberOfDeterministicStateFluents + State::numberOfProbabilisticStateFluents << std::endl;
 
     for(int i = 0 ; i < State::numberOfDeterministicStateFluents + State::numberOfProbabilisticStateFluents ; ++i){
         pstream << i;
-        std::cout << "printed: " << i << "-th state variable has 2 domains" << std::endl;
+        std::cout << "[ADAPT.]: printed: " << i << "-th state variable has 2 domains" << std::endl;
 
         for(int j = 0 ; j < 2 ; ++j){
             pstream << j;
-            std::cout << "printed: " << i << "-th state, " << j << "-th value: " << j << std::endl;
+            std::cout << "[ADAPT.]: printed: " << i << "-th state, " << j << "-th value: " << j << std::endl;
         }
     }
     /*
@@ -61,7 +61,7 @@ void DLRSAdapter::finishStep(std::vector<double> *successor, const double& immed
 
 void DLRSAdapter::finishRound(double roundReward){
 	pstream << roundReward;
-	std::cout << "Round reward" << roundReward;
+	std::cout << "[ADAPT.]: Round reward" << roundReward;
 	pstream << "";
 }
 
@@ -75,11 +75,11 @@ void DLRSAdapter::finishSession(double/* totalReward*/){
 void DLRSAdapter::estimateBestActions(State const&/* _rootState*/, std::vector<int>& bestActions){
     // print executable actions
     pstream << numberOfActions;
-    std::cout << "printed: number of actions: " << numberOfActions << std::endl;
+    std::cout << "[ADAPT.]: printed: number of actions: " << numberOfActions << std::endl;
 
     for(int i = 0 ; i < numberOfActions ; ++i){
         pstream << i;
-        std::cout << "printed: " << i << "-th action: " << i << std::endl;
+        std::cout << "[ADAPT.]: printed: " << i << "-th action: " << i << std::endl;
     }
 
 	char action[256];
@@ -101,12 +101,12 @@ void DLRSAdapter::printState(State const&/* state*/){
 }
 
 void DLRSAdapter::printState(std::vector<double> *stateVariables){
-    std::cout << "printing state";
+    std::cout << "[ADAPT.]: printing state";
     pstream << stateVariables->size();
-    std::cout << "printed: state size: " << stateVariables->size() << std::endl;
+    std::cout << "[ADAPT.]: printed: state size: " << stateVariables->size() << std::endl;
 
     for(auto it = stateVariables->begin() ; it != stateVariables->end() ; ++it){
         pstream << *it;
-        std::cout << "printed state variable: " << *it << std::endl;
+        std::cout << "[ADAPT.]: printed state variable: " << *it << std::endl;
     }
 }

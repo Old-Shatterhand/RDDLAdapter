@@ -10,7 +10,7 @@ Verbosity Logger::runVerbosity = Verbosity::DEBUG;
 
 void Logger::logLine(std::string const &message, Verbosity verbosity) {
     if (runVerbosity >= verbosity) {
-        std::cout << message << std::endl;
+        std::cout << "[PROST ]: " << message << std::endl;
     }
 }
 
@@ -26,7 +26,7 @@ void Logger::logLineIf(
 
 void Logger::log(std::string const &message, Verbosity verbosity) {
     if (runVerbosity >= verbosity) {
-        std::cout << message;
+        std::cout << "[PROST ]: " << message;
     }
 }
 
@@ -40,11 +40,11 @@ void Logger::logSmallSeparator(Verbosity verbosity) {
 
 // prints an error message to stderr
 void Logger::logError(std::string const &message) {
-    std::cerr << "ERROR: " << message << std::endl;
+    std::cerr << "[PROST ]: ERROR: " << message << std::endl;
 }
 
 // prints a warning to stderr
 void Logger::logWarning(std::string const &message) {
-    std::cerr << "WARNING: " << message << std::endl;
+    std::cerr << "[PROST ]: WARNING: " << message << std::endl;
 }
 

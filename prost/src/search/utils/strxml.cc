@@ -101,12 +101,7 @@ static str_vec tokenize_string(const std::string& str) {
 static int do_node(const std::string& token, PSink& ps) {
     str_vec node_tokens = tokenize_string(token);
 
-    // cout << token << ":" << endl;
-    // for (int i=0; i<node_tokens.size(); i++)
-    //  cout << node_tokens[i] << endl;
-
     if (node_tokens.empty()) {
-        // cerr << "e1a" << endl;
         return -2;
     }
 
@@ -124,7 +119,6 @@ static int do_node(const std::string& token, PSink& ps) {
         }
         if (i + 5 > node_tokens.size() || node_tokens[i + 1] != "=" ||
             node_tokens[i + 2] != "\"" || node_tokens[i + 4] != "\"") {
-            // cerr << "e1b" << endl;
             return -2;
         }
         str_pair p(node_tokens[i], node_tokens[i + 3]);
@@ -141,14 +135,12 @@ static bool parse_node(int fd, PSink& ps) {
         if (token == "<") {
             int delta = do_node(next_token(fd), ps);
             if (delta == -2) {
-                // cerr << "e1" << endl;
                 ps.formaterror();
                 return false;
             }
             depth += delta;
             token = next_token(fd);
             if (token != ">") {
-                // cerr << "e2" << endl;
                 ps.formaterror();
                 return false;
             }
@@ -165,7 +157,6 @@ static bool parse_node(int fd, PSink& ps) {
 }
 
 void PSink::pushNode(const std::string& name, const str_pair_vec& params) {
-    // cout << "push: " << name << endl;
     XMLParent* p = new XMLParent(name);
     for (size_t i = 0; i < params.size(); i++) {
         p->params[params[i].first] = params[i].second;
@@ -179,7 +170,6 @@ void PSink::pushNode(const std::string& name, const str_pair_vec& params) {
 }
 
 void PSink::popNode(const std::string& /*name*/) {
-    // cout << "pop: " << name << endl;
     s.pop();
 }
 

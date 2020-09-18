@@ -40,27 +40,6 @@ void RewardFunction::initialize() {
 
     formula->classifyActionFluents(positiveActionDependencies,
                                    negativeActionDependencies);
-
-    // cout << "Action fluents: " << endl;
-    // for(set<ActionFluent*>::iterator it = dependentActionFluents.begin(); it
-    // != dependentActionFluents.end(); ++it) {
-    //     cout << "  " << (*it)->fullName << endl;
-    // }
-    // cout << endl;
-
-    // cout << "Positive action fluents: " << endl;
-    // for(set<ActionFluent*>::iterator it = positiveActionDependencies.begin();
-    // it != positiveActionDependencies.end(); ++it) {
-    //     cout << "  " << (*it)->fullName << endl;
-    // }
-    // cout << endl;
-
-    // cout << "Negative action fluents: " << endl;
-    // for(set<ActionFluent*>::iterator it = negativeActionDependencies.begin();
-    // it != negativeActionDependencies.end(); ++it) {
-    //     cout << "  " << (*it)->fullName << endl;
-    // }
-    // cout << endl;
 }
 
 void Evaluatable::simplify(Simplifications& replace) {

@@ -26,12 +26,12 @@ bool SystemUtils::clockRunning = false;
 bool SystemUtils::CPUMeasurementOfProcessRunning = false;
 
 void SystemUtils::abort(std::string msg) {
-    std::cerr << "\033[1;31mERROR! \033[0m" << msg << std::endl;
+    std::cerr << "[PROST ]: \033[1;31mERROR! \033[0m" << msg << std::endl;
     exit(0);
 }
 
 void SystemUtils::warn(std::string msg) {
-    std::cerr << msg << std::endl;
+    std::cerr << "[PROST ]: " << msg << std::endl;
 }
 
 void SystemUtils::takeTime() {

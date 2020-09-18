@@ -34,6 +34,7 @@ IPCClient::IPCClient(
 IPCClient::~IPCClient() = default;
 
 void IPCClient::run(string const& instanceName, string& plannerDesc) {
+    cout << "[PROST ]: Start planning"
     // Reset static members from possible earlier runs
     ProstPlanner::resetStaticMembers();
     // Init connection to the rddlsim server

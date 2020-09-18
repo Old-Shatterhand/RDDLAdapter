@@ -65,8 +65,7 @@ class ListPlot(object):
         if not os.path.exists(self.eval_path + "properties"):
             # We do not want to throw and error if the properties file does not
             # exist yet.
-            print(
-                "ATTENTION: Properties file does not exist yet.",
+            print("[PROST ]: ATTENTION: Properties file does not exist yet.",
                 "Running any Prost plot will result in an error.",
                 "Please run the other steps first and then rerun the Prost plot steps.",
             )

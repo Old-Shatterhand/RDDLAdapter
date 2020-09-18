@@ -19,77 +19,77 @@ void Preprocessor::preprocess(bool const& output) {
     Timer t;
     // Create and initialize CPFs, rewardCPF, and SACs
     if (output)
-        cout << "    Preparing evaluatables..." << endl;
+        cout << "[PROST ]:     Preparing evaluatables..." << endl;
     prepareEvaluatables();
     if (output)
-        cout << "    ...finished (" << t() << ")" << endl;
+        cout << "[PROST ]:     ...finished (" << t() << ")" << endl;
     t.reset();
 
     // Create action fluents and calculate legal action states
     if (output)
-        cout << "    Preparing actions..." << endl;
+        cout << "[PROST ]:     Preparing actions..." << endl;
     prepareActions();
     if (output)
-        cout << "    ...finished (" << t() << ")" << endl;
+        cout << "[PROST ]:     ...finished (" << t() << ")" << endl;
     t.reset();
 
     // Approximate reachable values (domains) of CPFs
     if (output)
-        cout << "    Calculating CPF domain..." << endl;
+        cout << "[PROST ]:     Calculating CPF domain..." << endl;
     calculateCPFDomains();
     if (output)
-        cout << "    ...finished (" << t() << ")" << endl;
+        cout << "[PROST ]:     ...finished (" << t() << ")" << endl;
     t.reset();
 
     // Remove CPFs with only one reachable value (i.e. a domain size of 1) and
     // simplify remaining CPFs, rewardCPF, and SACs
     if (output)
-        cout << "    Finalizing evaluatables..." << endl;
+        cout << "[PROST ]:     Finalizing evaluatables..." << endl;
     finalizeEvaluatables();
     if (output)
-        cout << "    ...finished (" << t() << ")" << endl;
+        cout << "[PROST ]:     ...finished (" << t() << ")" << endl;
     t.reset();
 
     // Determinize CPFs
     if (output)
-        cout << "    Computing determinization..." << endl;
+        cout << "[PROST ]:     Computing determinization..." << endl;
     determinize();
     if (output)
-        cout << "    ...finished (" << t() << ")" << endl;
+        cout << "[PROST ]:     ...finished (" << t() << ")" << endl;
     t.reset();
 
     // Determine some non-trivial properties
     if (output)
-        cout << "    Determining task properties..." << endl;
+        cout << "[PROST ]:     Determining task properties..." << endl;
     determineTaskProperties();
     if (output)
-        cout << "    ...finished (" << t() << ")" << endl;
+        cout << "[PROST ]:     ...finished (" << t() << ")" << endl;
     t.reset();
 
     // Initialize Hash Key Bases and Mappings
     if (output)
-        cout << "    Preparing hash keys..." << endl;
+        cout << "[PROST ]:     Preparing hash keys..." << endl;
     prepareStateHashKeys();
     prepareKleeneStateHashKeys();
     prepareStateFluentHashKeys();
     if (output)
-        cout << "    ...finished (" << t() << ")" << endl;
+        cout << "[PROST ]:     ...finished (" << t() << ")" << endl;
     t.reset();
 
     // Precompute results of evaluate for (some) evaluatables
     if (output)
-        cout << "    Precomputing evaluatables..." << endl;
+        cout << "[PROST ]:     Precomputing evaluatables..." << endl;
     precomputeEvaluatables();
     if (output)
-        cout << "    ...finished (" << t() << ")" << endl;
+        cout << "[PROST ]:     ...finished (" << t() << ")" << endl;
     t.reset();
 
     // Approximate or calculate the min and max reward
     if (output)
-        cout << "    Calculating min and max reward..." << endl;
+        cout << "[PROST ]:     Calculating min and max reward..." << endl;
     calculateMinAndMaxReward();
     if (output)
-        cout << "    ...finished (" << t() << ")" << endl;
+        cout << "[PROST ]:     ...finished (" << t() << ")" << endl;
 }
 
 /*****************************************************************
@@ -353,20 +353,13 @@ void Preprocessor::prepareActions() {
             }
         }
         if (isLegal) {
-            // cout << "Noop is legal!" << endl;
             legalActionStates.push_back(noop);
         }
         vector<ActionState> base;
         task->numberOfConcurrentActions = 1;    
         while (true) {
-            // cout << "Generating action states with " << task->numberOfConcurrentActions << " many action fluents." << endl;
-            // cout << "Total number of legal action states: " << legalActionStates.size() << endl;
-            // cout << "Number of base actions: " << base.size() << endl;
             set<ActionState> candidates;
             calcAllActionStatesForIPC2018(base, candidates);
-            // cout << "number of action state candidates with up to "
-            //      << task->numberOfConcurrentActions
-            //      << " many action fluents: " << candidates.size() << endl;
             vector<ActionState> addedActionStates;
             bool foundLegal = false;
             for (const ActionState& actionState : candidates) {
@@ -691,8 +684,8 @@ void Preprocessor::calculateCPFDomains() {
     for (unsigned int index = 0; index < task->CPFs.size(); ++index) {
         double max_val = *domains[index].rbegin();
         if (domains[index].size() > 1 && (max_val != domains[index].size() -1)) {
-            cout << "State-fluent " << task->CPFs[index]->head->fullName << " has a domain size of " << domains[index].size() << " and a max val of " << max_val << endl;
-            cout << "Inserting values into domain of state-fluent " << task->CPFs[index]->head->fullName << endl;
+            cout << "[PROST ]: State-fluent " << task->CPFs[index]->head->fullName << " has a domain size of " << domains[index].size() << " and a max val of " << max_val << endl;
+            cout << "[PROST ]: Inserting values into domain of state-fluent " << task->CPFs[index]->head->fullName << endl;
             for (unsigned int val = 0; val < max_val; ++val) {
                 domains[index].insert(val);
             }
@@ -824,15 +817,11 @@ void Preprocessor::determineTaskProperties() {
 }
 
 void Preprocessor::addDominantState(int stateIndex) const {
-    // cout << "Adding action state " <<
-    // task->actionStates[stateIndex].getName() << endl;
     for (vector<int>::iterator it =
              task->candidatesForOptimalFinalAction.begin();
          it != task->candidatesForOptimalFinalAction.end(); ++it) {
         if (actionStateDominates(task->actionStates[stateIndex],
                                  task->actionStates[*it])) {
-            // cout << "It dominates " << task->actionStates[*it].getName() <<
-            // endl;
             task->candidatesForOptimalFinalAction.erase(it);
             --it;
         }

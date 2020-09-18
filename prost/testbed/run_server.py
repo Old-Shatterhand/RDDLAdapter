@@ -96,7 +96,7 @@ def run_server(arguments):
         rddlsim_root = os.environ["RDDLSIM_ROOT"]
     except KeyError:
         err_msg = (
-            "Error: an environment variable RDDLSIM_ROOT pointing to "
+            "[PROST ]: Error: an environment variable RDDLSIM_ROOT pointing to "
             "your rddlsim installation must be setup."
         )
         print(err_msg)
@@ -126,9 +126,9 @@ def run_server(arguments):
     if args.all_ipc_benchmarks:
         # If we want to run all benchmarks, we set up a temporary folder with
         # symlinks to all tasks from the 'benchmarks/' directory.
-        print("Running all benchmarks...")
+        print("[PROST ]: Running all benchmarks...")
         if args.benchmark:
-            print('The "benchmark" argument will be ignored!')
+            print('[PROST ]: The "benchmark" argument will be ignored!')
 
         if not os.path.exists("tmp-benchmark"):
             os.mkdir("tmp-benchmark")
@@ -142,7 +142,7 @@ def run_server(arguments):
                 try:
                     os.symlink(src_file, symlink_name)
                 except OSError:
-                    err_msg = "Error: {1} probably already exists.".format(
+                    err_msg = "[PROST ]: Error: {1} probably already exists.".format(
                         src_file, symlink_name
                     )
                     print(err_msg)
@@ -151,9 +151,9 @@ def run_server(arguments):
 
     else:
         if not args.benchmark:
-            print("No benchmark specified.")
+            print("[PROST ]: No benchmark specified.")
             sys.exit()
-        print("Running benchmark {}...".format(args.benchmark))
+        print("[PROST ]: Running benchmark {}...".format(args.benchmark))
         directory = args.benchmark
 
     try:
@@ -179,13 +179,13 @@ def run_server(arguments):
         pass
     except subprocess.CalledProcessError as e:
         if e.output:
-            print(e.output)
+            print("[PROST ]:", e.output)
 
     if args.all_ipc_benchmarks:
         # Delete temporary benchmark directory
-        print("Delete temporary directory with symlinks.")
+        print("[PROST ]: Delete temporary directory with symlinks.")
         shutil.rmtree("tmp-benchmark")
-    print("Finishing rddlsim.")
+    print("[PROST ]: Finishing rddlsim.")
 
 
 if __name__ == "__main__":

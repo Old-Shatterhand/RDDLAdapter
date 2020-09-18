@@ -10,24 +10,24 @@ using namespace std;
 void Instantiator::instantiate(bool const& output) {
     Timer t;
     if (output)
-        cout << "    Instantiating variables..." << endl;
+        cout << "[PROST ]:     Instantiating variables..." << endl;
     instantiateVariables();
     if (output)
-        cout << "    ...finished (" << t() << ")" << endl;
+        cout << "[PROST ]:     ...finished (" << t() << ")" << endl;
     t.reset();
 
     if (output)
-        cout << "    Instantiating CPFs..." << endl;
+        cout << "[PROST ]:     Instantiating CPFs..." << endl;
     instantiateCPFs();
     if (output)
-        cout << "    ...finished (" << t() << ")" << endl;
+        cout << "[PROST ]:     ...finished (" << t() << ")" << endl;
     t.reset();
 
     if (output)
-        cout << "    Instantiating preconditions..." << endl;
+        cout << "[PROST ]:     Instantiating preconditions..." << endl;
     instantiateSACs();
     if (output)
-        cout << "    ...finished (" << t() << ")" << endl;
+        cout << "[PROST ]:     ...finished (" << t() << ")" << endl;
     t.reset();
 }
 

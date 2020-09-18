@@ -8,7 +8,7 @@ import subprocess
 import sys
 
 def run_prost(argv):
-    print("[PROST]:",argv)
+    print("[PROST] :",argv)
     search_params = []
     run_debug = False
     for arg in argv[1:]:
