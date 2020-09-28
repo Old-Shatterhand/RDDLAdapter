@@ -1,5 +1,7 @@
 #include "pstream.h"
 
+#include <iostream>
+
 
 PStream::PStream(const char* filename){
 	stream.open(filename);

@@ -34,18 +34,20 @@ IPCClient::IPCClient(
 IPCClient::~IPCClient() = default;
 
 void IPCClient::run(string const& instanceName, string& plannerDesc) {
-    cout << "[PROST ]: Start planning" << endl;
+    
     // Reset static members from possible earlier runs
     ProstPlanner::resetStaticMembers();
+    
     // Init connection to the rddlsim server
     initConnection();
-
+    
     // Request round
     initSession(instanceName, plannerDesc);
-
+    
     vector<double> nextState(stateVariableIndices.size());
     double immediateReward = 0.0;
-
+    cout << "[PROST ] Start planning" << endl;
+    
     // Main loop
     for (unsigned int currentRound = 0 ; currentRound < numberOfRounds ; ++currentRound) {
         initRound(nextState, immediateReward);
@@ -59,6 +61,7 @@ void IPCClient::run(string const& instanceName, string& plannerDesc) {
             planner->finishStep(immediateReward, &nextState);
         }
     }
+    cout << "[PROST ] Finished planning" << endl;
 
     // Get end of session message and print total result
     finishSession();
@@ -149,12 +152,12 @@ void IPCClient::initSession(string const& instanceName, string& plannerDesc) {
     }
     s = decodeBase64(s);
     executeParser(s);
-
+    cout << "[PROST ] Parsing completed" << endl;
     if (!serverResponse->dissect("num-rounds", s)) {
         SystemUtils::abort("Error: server response insufficient.");
     }
     numberOfRounds = atoi(s.c_str());
-
+    cout << "[PROST ] Number of rounds" << endl;
     if (!serverResponse->dissect("time-allowed", s)) {
         SystemUtils::abort("Error: server response insufficient.");
     }
@@ -162,6 +165,7 @@ void IPCClient::initSession(string const& instanceName, string& plannerDesc) {
 
     delete serverResponse;
     // in c++ 14 we would use make_unique<ProstPlanner>
+    cout << "[PROST ] Init Planner" << endl;
     planner = std::unique_ptr<ProstPlanner>(new ProstPlanner(plannerDesc));
     planner->initSession(numberOfRounds, remainingTime);
 }

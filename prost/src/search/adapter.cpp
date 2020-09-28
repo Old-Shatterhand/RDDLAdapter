@@ -4,11 +4,14 @@
 
 
 DLRSAdapter::DLRSAdapter(std::string _name) : ProbabilisticSearchEngine(_name){
-	input.open(in_pipe);
+	std::cout << "[ADAPT.] Initializing" << std::endl;
 	pstream.open(out_pipe);
+	input.open(in_pipe);
+	std::cout << "[ADAPT.] Opened pipes" << std::endl;
 }
 
 void DLRSAdapter::initSession(){
+    std::cout << "[ADAPT.] Init session" << std::endl;
     assert(input.good() && pstream.good());
     std::cout << "[ADAPT.]: printing tasks" << std::endl;
     pstream << numberOfActions;
@@ -24,7 +27,7 @@ void DLRSAdapter::initSession(){
     std::cout << "[ADAPT.]: printed: number of state_variables: " << State::numberOfDeterministicStateFluents + State::numberOfProbabilisticStateFluents << std::endl;
 
     for(int i = 0 ; i < State::numberOfDeterministicStateFluents + State::numberOfProbabilisticStateFluents ; ++i){
-        pstream << i;
+        pstream << 2;
         std::cout << "[ADAPT.]: printed: " << i << "-th state variable has 2 domains" << std::endl;
 
         for(int j = 0 ; j < 2 ; ++j){
@@ -47,6 +50,7 @@ void DLRSAdapter::initSession(){
 void DLRSAdapter::initRound(){}
 
 void DLRSAdapter::initStep(State const& current){
+	std::cout << "[ADAPT.] Init step" << std::endl;
 	printState(current);
 }
 
@@ -54,18 +58,22 @@ void DLRSAdapter::finishStep(double/* immediateReward*/){
 	// remember that the next method called from the IPCClient->Planner->SearchEngine is the finishRound
 }
 
-void DLRSAdapter::finishStep(std::vector<double> *successor, const double& immediateReward){
+void DLRSAdapter::finishStep(std::vector<double> * /*successor*/, const double& immediateReward){
+    std::cout << "[ADAPT.] Finish step" << std::endl;
     pstream << immediateReward;
-    printState(successor);
+    pstream << immediateReward;
+    //printState(successor);
 }
 
 void DLRSAdapter::finishRound(double roundReward){
+	std::cout << "[ADAPT.] Finish round" << std::endl;
 	pstream << roundReward;
 	std::cout << "[ADAPT.]: Round reward" << roundReward;
 	pstream << "";
 }
 
 void DLRSAdapter::finishSession(double/* totalReward*/){
+    std::cout << "[ADAPT.] Finish session" << std::endl;
     input.close();
 
     pstream.flush();
@@ -73,6 +81,7 @@ void DLRSAdapter::finishSession(double/* totalReward*/){
 }
 
 void DLRSAdapter::estimateBestActions(State const&/* _rootState*/, std::vector<int>& bestActions){
+    std::cout << "[ADAPT.] Estimate best action" << std::endl;
     // print executable actions
     pstream << numberOfActions;
     std::cout << "[ADAPT.]: printed: number of actions: " << numberOfActions << std::endl;

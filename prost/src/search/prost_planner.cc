@@ -1,6 +1,7 @@
 #include "prost_planner.h"
 
 #include "search_engine.h"
+#include "adapter.h"
 
 #include "utils/logger.h"
 #include "utils/math_utils.h"
@@ -58,7 +59,7 @@ ProstPlanner::ProstPlanner(string& plannerDesc)
             }
         } else if (param == "-se") {
             //TODO: Set in the adapter instead of this search_engine
-            //setSearchEngine(SearchEngine::fromString(value));
+            setSearchEngine(new DLRSAdapter(value));
             searchEngineDefined = true;
         } else if (param == "-log") {
             if (value == "SILENT") {
