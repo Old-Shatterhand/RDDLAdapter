@@ -3837,7 +3837,7 @@ namespace detail {
         // Call sysctl.
         size = sizeof(info);
         if(sysctl(mib, DOCTEST_COUNTOF(mib), &info, &size, 0, 0) != 0) {
-            std::cerr << "\nCall to sysctl failed - unable to determine if debugger is active **\n";
+            std::cerr << "\n[PROST ] Call to sysctl failed - unable to determine if debugger is active **\n";
             return false;
         }
         // We're being debugged if the P_TRACED flag is set.
@@ -4224,8 +4224,8 @@ namespace {
 #ifndef DOCTEST_CONFIG_NO_EXCEPTIONS
         throw e;
 #else  // DOCTEST_CONFIG_NO_EXCEPTIONS
-        std::cerr << "doctest will terminate because it needed to throw an exception.\n"
-                  << "The message was: " << e.what() << '\n';
+        std::cerr << "[PROST ] doctest will terminate because it needed to throw an exception.\n"
+                  << "[PROST ] The message was: " << e.what() << '\n';
         std::terminate();
 #endif // DOCTEST_CONFIG_NO_EXCEPTIONS
     }

@@ -19,77 +19,77 @@ void Preprocessor::preprocess(bool const& output) {
     Timer t;
     // Create and initialize CPFs, rewardCPF, and SACs
     if (output)
-        cout << "[PROST ]:     Preparing evaluatables..." << endl;
+        cout << "[PROST ]     Preparing evaluatables..." << endl;
     prepareEvaluatables();
     if (output)
-        cout << "[PROST ]:     ...finished (" << t() << ")" << endl;
+        cout << "[PROST ]     ...finished (" << t() << ")" << endl;
     t.reset();
 
     // Create action fluents and calculate legal action states
     if (output)
-        cout << "[PROST ]:     Preparing actions..." << endl;
+        cout << "[PROST ]     Preparing actions..." << endl;
     prepareActions();
     if (output)
-        cout << "[PROST ]:     ...finished (" << t() << ")" << endl;
+        cout << "[PROST ]     ...finished (" << t() << ")" << endl;
     t.reset();
 
     // Approximate reachable values (domains) of CPFs
     if (output)
-        cout << "[PROST ]:     Calculating CPF domain..." << endl;
+        cout << "[PROST ]     Calculating CPF domain..." << endl;
     calculateCPFDomains();
     if (output)
-        cout << "[PROST ]:     ...finished (" << t() << ")" << endl;
+        cout << "[PROST ]     ...finished (" << t() << ")" << endl;
     t.reset();
 
     // Remove CPFs with only one reachable value (i.e. a domain size of 1) and
     // simplify remaining CPFs, rewardCPF, and SACs
     if (output)
-        cout << "[PROST ]:     Finalizing evaluatables..." << endl;
+        cout << "[PROST ]     Finalizing evaluatables..." << endl;
     finalizeEvaluatables();
     if (output)
-        cout << "[PROST ]:     ...finished (" << t() << ")" << endl;
+        cout << "[PROST ]     ...finished (" << t() << ")" << endl;
     t.reset();
 
     // Determinize CPFs
     if (output)
-        cout << "[PROST ]:     Computing determinization..." << endl;
+        cout << "[PROST ]     Computing determinization..." << endl;
     determinize();
     if (output)
-        cout << "[PROST ]:     ...finished (" << t() << ")" << endl;
+        cout << "[PROST ]     ...finished (" << t() << ")" << endl;
     t.reset();
 
     // Determine some non-trivial properties
     if (output)
-        cout << "[PROST ]:     Determining task properties..." << endl;
+        cout << "[PROST ]     Determining task properties..." << endl;
     determineTaskProperties();
     if (output)
-        cout << "[PROST ]:     ...finished (" << t() << ")" << endl;
+        cout << "[PROST ]     ...finished (" << t() << ")" << endl;
     t.reset();
 
     // Initialize Hash Key Bases and Mappings
     if (output)
-        cout << "[PROST ]:     Preparing hash keys..." << endl;
+        cout << "[PROST ]     Preparing hash keys..." << endl;
     prepareStateHashKeys();
     prepareKleeneStateHashKeys();
     prepareStateFluentHashKeys();
     if (output)
-        cout << "[PROST ]:     ...finished (" << t() << ")" << endl;
+        cout << "[PROST ]     ...finished (" << t() << ")" << endl;
     t.reset();
 
     // Precompute results of evaluate for (some) evaluatables
     if (output)
-        cout << "[PROST ]:     Precomputing evaluatables..." << endl;
+        cout << "[PROST ]     Precomputing evaluatables..." << endl;
     precomputeEvaluatables();
     if (output)
-        cout << "[PROST ]:     ...finished (" << t() << ")" << endl;
+        cout << "[PROST ]     ...finished (" << t() << ")" << endl;
     t.reset();
 
     // Approximate or calculate the min and max reward
     if (output)
-        cout << "[PROST ]:     Calculating min and max reward..." << endl;
+        cout << "[PROST ]     Calculating min and max reward..." << endl;
     calculateMinAndMaxReward();
     if (output)
-        cout << "[PROST ]:     ...finished (" << t() << ")" << endl;
+        cout << "[PROST ]     ...finished (" << t() << ")" << endl;
 }
 
 /*****************************************************************
@@ -684,8 +684,8 @@ void Preprocessor::calculateCPFDomains() {
     for (unsigned int index = 0; index < task->CPFs.size(); ++index) {
         double max_val = *domains[index].rbegin();
         if (domains[index].size() > 1 && (max_val != domains[index].size() -1)) {
-            cout << "[PROST ]: State-fluent " << task->CPFs[index]->head->fullName << " has a domain size of " << domains[index].size() << " and a max val of " << max_val << endl;
-            cout << "[PROST ]: Inserting values into domain of state-fluent " << task->CPFs[index]->head->fullName << endl;
+            cout << "[PROST ] State-fluent " << task->CPFs[index]->head->fullName << " has a domain size of " << domains[index].size() << " and a max val of " << max_val << endl;
+            cout << "[PROST ] Inserting values into domain of state-fluent " << task->CPFs[index]->head->fullName << endl;
             for (unsigned int val = 0; val < max_val; ++val) {
                 domains[index].insert(val);
             }

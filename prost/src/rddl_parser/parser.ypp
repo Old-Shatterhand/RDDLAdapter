@@ -773,7 +773,7 @@ int main (int argc, char** argv) {
 
 
     Timer t;
-    std::cout << "Parsing..." << std::endl;
+    std::cout << "[PROST ] Parsing..." << std::endl;
     if (argc < 3) {
         // Run unit tests
         doctest::Context context;
@@ -816,20 +816,20 @@ int main (int argc, char** argv) {
         std::string nextOption = std::string(argv[index]);
         if (nextOption == "-s") {
             seed = atoi(std::string(argv[++index]).c_str());
-            std::cout << "Setting seed to " << seed << std::endl;
+            std::cout << "[PROST ] Setting seed to " << seed << std::endl;
         } else if (nextOption == "-trainingSimulations") {
             numSimulations = atoi(std::string(argv[++index]).c_str());
-            std::cout << "Setting number of simulations for training set creation to "
+            std::cout << "[PROST ] Setting number of simulations for training set creation to "
                       << numSimulations << std::endl;
         } else if (nextOption == "-trainingSetSize") {
             numStates = atoi(std::string(argv[++index]).c_str());
-            std::cout << "Setting target training set size to " << numStates << std::endl;
+            std::cout << "[PROST ] Setting target training set size to " << numStates << std::endl;
         } else if (nextOption == "-trainingTimeout") {
             timeout = atof(std::string(argv[++index]).c_str());
-            std::cout << "Setting training timeout to " << timeout << std::endl;
+            std::cout << "[PROST ] Setting training timeout to " << timeout << std::endl;
         } else if (nextOption == "-ipc2018") {
             useIPC2018Rules = atoi(std::string(argv[++index]).c_str());
-            std::cout << "Using IPC 2018 rules: " << useIPC2018Rules << std::endl;
+            std::cout << "[PROST ] Using IPC 2018 rules: " << useIPC2018Rules << std::endl;
         } else {
             assert(false);
         }
@@ -840,7 +840,7 @@ int main (int argc, char** argv) {
 
     yy_scan_string(combined.str().c_str());
     yyparse();
-    std::cout << "...finished (" << t << ")." << std::endl;
+    std::cout << "[PROST ] ...finished (" << t << ")." << std::endl;
 
     rddlTask->execute(targetDir, seed, numStates, numSimulations, timeout, useIPC2018Rules);
     std::cout << "[PROST ] PROST parser complete running time: " << t << std::endl;

@@ -48,7 +48,7 @@ int main(int argc, char** argv) {
             } else if (nextOption == "--parser-options") {
                 parserOptions = string(argv[++i]);
             } else {
-                cerr << "[PROST ]: Unknown option: " << nextOption << endl;
+                cerr << "[PROST ] Unknown option: " << nextOption << endl;
                 return 1;
             }
         }

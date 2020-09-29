@@ -704,30 +704,29 @@ void RDDLTask::execute(std::string outFile, double seed, int numStates,
     srand(seed);
 
     t.reset();
-    std::cout << "[PROST ]: instantiating..." << std::endl;
+    std::cout << "[PROST ] instantiating..." << std::endl;
     Instantiator instantiator(this);
     instantiator.instantiate();
-    std::cout << "[PROST ]: ...finished (" << t << ")." << std::endl;
+    std::cout << "[PROST ] ...finished (" << t << ")." << std::endl;
 
     t.reset();
-    std::cout << "[PROST ]: preprocessing..." << std::endl;
+    std::cout << "[PROST ] preprocessing..." << std::endl;
     Preprocessor preprocessor(this, useIPC2018Rules);
     preprocessor.preprocess();
-    std::cout << "[PROST ]: ...finished (" << t << ")." << std::endl;
+    std::cout << "[PROST ] ...finished (" << t << ")." << std::endl;
 
     t.reset();
-    std::cout << "[PROST ]: analyzing task..." << std::endl;
+    std::cout << "[PROST ] analyzing task..." << std::endl;
     TaskAnalyzer analyzer(this);
     analyzer.analyzeTask(numStates, numSimulations, timeout);
-    std::cout << "[PROST ]: ...finished (" << t << ")." << std::endl;
+    std::cout << "[PROST ] ...finished (" << t << ")." << std::endl;
 
     t.reset();
     std::ofstream resultFile;
 
-    std::cout << "[PROST ]: writing output for instance " << name << " to " << outFile
-              << "[PROST ]:  ..." << std::endl;
+    std::cout << "[PROST ] writing output for instance " << name << " to " << outFile << "..." << std::endl;
     resultFile.open(outFile.c_str());
     print(resultFile);
     resultFile.close();
-    std::cout << "[PROST ]: ...finished (" << t << ")." << std::endl;
+    std::cout << "[PROST ] ...finished (" << t << ")." << std::endl;
 }

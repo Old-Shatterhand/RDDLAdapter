@@ -378,7 +378,7 @@ void Division::calculateDomainAsInterval(Domains const& domains,
     if (MathUtils::doubleIsEqual(rhsMax, 0.0) &&
         MathUtils::doubleIsEqual(rhsMin, 0.0)) {
         // Domain is ill-defined
-        std::cout << "[PROST ]: WARNING: DOMAIN ILL-DEFINED" << std::endl;
+        std::cout << "[PROST ] WARNING: DOMAIN ILL-DEFINED" << std::endl;
         minRes = -numeric_limits<double>::max();
         maxRes = numeric_limits<double>::max();
         return;

@@ -35,7 +35,7 @@ void TaskAnalyzer::analyzeTask(int numStates, int numSimulations, double timeout
         }
 
         if (MathUtils::doubleIsGreater(t(), timeout)) {
-            cout << "[PROST ]: Stopping analysis after " << t << " seconds and "
+            cout << "[PROST ] Stopping analysis after " << t << " seconds and "
                  << numSimulations << " simulations." << endl;
             break;
         }
@@ -246,7 +246,7 @@ bool TaskAnalyzer::checkGoal(KleeneState const& state) const {
 }
 
 void TaskAnalyzer::createTrainingSet(int const& numberOfStates) {
-    cout << "[PROST ]: Creating training set with " << encounteredStates.size()
+    cout << "[PROST ] Creating training set with " << encounteredStates.size()
          << " candidates." << endl;
     if (encounteredStates.size() < numberOfStates) {
         task->trainingSet = encounteredStates;
