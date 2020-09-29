@@ -1,3 +1,7 @@
+# Folder
 ./rddlsim_logs/
 ./rddlsim/bin/
 
+# Files
+./rddl-parser-release
+./search-release
