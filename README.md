@@ -29,10 +29,6 @@ You can install most of the dependencies with the following command
 
 `sudo apt install git g++ cmake bison flex libbdd-dev`
 
-If BuDDy is not found automatically, you can additionally set an
-environment variable `$BDD_ROOT` which points to your BuDDY installation,
-or you can adapt the file `src/cmake_modules/FindBDD.cmake`.
-
 ### RiDDLeSim
 
 Prost interacts with a server called RiDDLeSim that simulates an environment 
@@ -42,6 +38,18 @@ need need to install java:
 `sudo apt install default-jre` (install Java runtime environment)
 
 ## Installation
+
+### BuDDy
+
+To install BuDDy, download the tar.gz file from the link above and extract it.
+Then you need to execute the following calls (in the folder containing the unpacked buddy files):
+
+ * `./configure` (optionally set `--prefix=path/to/installation_target` in case that you don't 
+want to install it to the default location (in case you're not admin))
+ * `make && make install`
+
+If BuDDy is not found automatically, you can additionally set an environment variable 
+`$BDD_ROOT` which points to your BuDDY installation (folder containing buddy lib and include folders).
 
 ### RiDDLeSim
 
